@@ -72,6 +72,7 @@ fn prep_sprites(ctx: &mut Context, sprite_number: usize) -> GameResult<SpriteBat
     Ok(inverted_batch)
 }
 
+#[allow(dead_code)] // For all the  [sprite]_at methods, at least until they have all been used somewhere
 impl MainState {
     fn new(ctx: &mut Context) -> GameResult<MainState> {
         let sprites: Sprites = Sprites {
