@@ -11,8 +11,8 @@ use std::f32::consts::PI;
 
 const SPRITE_SCALE: f32 = 4.0;
 const SPRITE_SIZE: f32 = 8.0 * SPRITE_SCALE;
-const GRID_WIDTH: f32 = 8.0;
-const GRID_HEIGHT: f32 = 8.0;
+const GRID_WIDTH: u8 = 8;
+const GRID_HEIGHT: u8 = 8;
 
 const RED: Color = Color {
     r: 1.0,
@@ -382,7 +382,7 @@ pub fn main() -> GameResult {
     let cb = ggez::ContextBuilder::new("bitter-jam-entry", "ggez")
         .add_resource_path(resource_dir)
         .window_mode(ggez::conf::WindowMode::default()
-                     .dimensions(GRID_WIDTH * SPRITE_SIZE, GRID_HEIGHT * SPRITE_SIZE));
+                     .dimensions(GRID_WIDTH as f32 * SPRITE_SIZE, GRID_HEIGHT as f32 * SPRITE_SIZE));
 
     let (ctx, event_loop) = &mut cb.build()?;
 
