@@ -8,6 +8,12 @@ use ggez::graphics::spritebatch::SpriteBatch;
 use ggez::input::keyboard;
 use ggez::nalgebra as na;
 use ggez::{Context, GameResult};
+
+use rand::{
+    distributions::{Distribution, Standard},
+    Rng,
+};
+
 use std::path;
 use std::f32::consts::PI;
 
@@ -18,6 +24,17 @@ enum Direction {
     Down,
     Left,
     Right,
+}
+
+impl Distribution<Direction> for Standard {
+    fn sample<R: Rng + ?Sized>(&self, rng: &mut R) -> Direction {
+        match rng.gen_range(0, 4) {
+            0 => Direction::Up,
+            1 => Direction::Down,
+            2 => Direction::Left,
+            _ => Direction::Right,
+        }
+    }
 }
 
 const SPRITE_SCALE: f32 = 4.0;
