@@ -70,10 +70,8 @@ impl Cursor {
 
 struct MainState {
     world: World,
-    last_id: EntityId,
     sprites: Sprites,
     cursor: Cursor,
-    villagers: Vec<Villager>,
     death_markers: Vec<DeathMarker>,
     selected_villager_id: Option<EntityId>,
     ticks: Ticks,
@@ -188,10 +186,8 @@ impl MainState {
 
         let s = MainState {
             world: World::new(),
-            last_id: starting_id,
             sprites,
             cursor: Cursor::new(),
-            villagers: vec![Villager::new(starting_id, ticks)],
             death_markers: vec![],
             selected_villager_id: None,
             ticks,
@@ -201,7 +197,7 @@ impl MainState {
 
     // TODO: Fix whatever borrow issues made it necessary to make possible_id into an Option
     fn find_villager(&mut self, id: EntityId) -> Option<Villager> {
-        for villager in self.villagers.iter() {
+        for villager in self.world.villagers.iter() {
             if villager.id == id {
                 return Some(villager.clone());
             }
@@ -373,7 +369,7 @@ impl event::EventHandler for MainState {
         if (self.ticks + 1) % 80 == 0 {
             self.death_markers.clear();
 
-            for villager in self.villagers.iter_mut() {
+            for villager in self.world.villagers.iter_mut() {
                 if self.ticks - villager.last_ate > 40 && villager.satiation > 0 {
                     villager.satiation -= 1;
                 }
@@ -393,11 +389,11 @@ impl event::EventHandler for MainState {
             }
         }
 
-        self.villagers.retain(|v| v.satiation > 0);
+        self.world.villagers.retain(|v| v.satiation > 0);
 
         self.selected_villager_id = None;
 
-        for villager in self.villagers.iter() {
+        for villager in self.world.villagers.iter() {
             if self.cursor.selects(villager.x, villager.y) {
                 self.selected_villager_id = Some(villager.id);
             }
@@ -477,7 +473,7 @@ impl event::EventHandler for MainState {
             self.skull(gp.at(x, y));
         }
 
-        let villager_coords: Vec<(u8, u8)> = self.villagers.iter().map(|v| (v.x, v.y)).collect();
+        let villager_coords: Vec<(u8, u8)> = self.world.villagers.iter().map(|v| (v.x, v.y)).collect();
 
         for (x, y) in villager_coords {
             self.lizard(gp.at(x, y));

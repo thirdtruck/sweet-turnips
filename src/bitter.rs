@@ -28,13 +28,18 @@ impl Distribution<Direction> for Standard {
 }
 
 pub struct World {
+    last_id: EntityId,
     pub villagers: Vec<Villager>,
 }
 
 impl World {
     pub fn new() -> Self {
+        let starting_id = 0;
+        let ticks = 0;
+
         World {
-            villagers: vec![],
+            last_id: 0,
+            villagers: vec![Villager::new(starting_id, ticks)],
         }
     }
 }
