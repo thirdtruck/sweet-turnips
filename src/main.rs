@@ -8,6 +8,11 @@ use ggez::nalgebra as na;
 use ggez::{Context, GameResult};
 use std::path;
 
+const SPRITE_SCALE: f32 = 4.0;
+const SPRITE_SIZE: f32 = 8.0 * SPRITE_SCALE;
+const GRID_WIDTH: f32 = 8.0;
+const GRID_HEIGHT: f32 = 8.0;
+
 struct Sprites {
     curves: graphics::spritebatch::SpriteBatch,
     lines: graphics::spritebatch::SpriteBatch,
@@ -100,7 +105,7 @@ impl MainState {
         };
 
         let default_sprite_param = graphics::DrawParam::new()
-            .scale(na::Vector2::new(4.0, 4.0));
+            .scale(na::Vector2::new(SPRITE_SCALE, SPRITE_SCALE));
 
         let s = MainState {
             sprites,
@@ -228,6 +233,12 @@ impl event::EventHandler for MainState {
 
         self.curve_at(0, 0);
 
+        self.curve_at(0, 7);
+
+        self.curve_at(7, 0);
+
+        self.curve_at(7, 7);
+
         self.line_at(0, 1);
 
         self.cross_at(0, 2);
@@ -243,8 +254,14 @@ impl event::EventHandler for MainState {
 pub fn main() -> GameResult {
     let resource_dir = path::PathBuf::from("./resources");
 
-    let cb = ggez::ContextBuilder::new("bitter-jam-entry", "ggez").add_resource_path(resource_dir);
+    let cb = ggez::ContextBuilder::new("bitter-jam-entry", "ggez")
+        .add_resource_path(resource_dir)
+        .window_mode(ggez::conf::WindowMode::default()
+                     .dimensions(GRID_WIDTH * SPRITE_SIZE, GRID_HEIGHT * SPRITE_SIZE));
+
     let (ctx, event_loop) = &mut cb.build()?;
+
     let state = &mut MainState::new(ctx)?;
+
     event::run(ctx, event_loop, state)
 }
