@@ -362,32 +362,7 @@ impl MainState {
 
 impl event::EventHandler for MainState {
     fn update(&mut self, _ctx: &mut Context) -> GameResult {
-        self.ticks += 1;
-
-        if (self.ticks + 1) % 80 == 0 {
-            self.world.death_markers.clear();
-
-            for villager in self.world.villagers.iter_mut() {
-                if self.ticks - villager.last_ate > 40 && villager.satiation > 0 {
-                    villager.satiation -= 1;
-                }
-
-                if villager.satiation == 0 {
-                    let death_marker = DeathMarker {
-                        x: villager.x,
-                        y: villager.y,
-                    };
-                    self.world.death_markers.push(death_marker);
-
-                    continue;
-                }
-
-                let direction: Direction = rand::random();
-                villager.step(direction);
-            }
-        }
-
-        self.world.villagers.retain(|v| v.satiation > 0);
+        self.world.tick();
 
         self.selected_villager_id = None;
 

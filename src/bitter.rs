@@ -31,6 +31,7 @@ pub struct World {
     last_id: EntityId,
     pub villagers: Vec<Villager>,
     pub death_markers: Vec<DeathMarker>,
+    ticks: Ticks,
 }
 
 impl World {
@@ -40,9 +41,39 @@ impl World {
 
         World {
             last_id: 0,
+            ticks,
             villagers: vec![Villager::new(starting_id, ticks)],
             death_markers: vec![],
         }
+    }
+
+    pub fn tick(&mut self) {
+        self.ticks += 1;
+
+        if (self.ticks + 1) % 80 == 0 {
+            self.death_markers.clear();
+
+            for villager in self.villagers.iter_mut() {
+                if self.ticks - villager.last_ate > 40 && villager.satiation > 0 {
+                    villager.satiation -= 1;
+                }
+
+                if villager.satiation == 0 {
+                    let death_marker = DeathMarker {
+                        x: villager.x,
+                        y: villager.y,
+                    };
+                    self.death_markers.push(death_marker);
+
+                    continue;
+                }
+
+                let direction: Direction = rand::random();
+                villager.step(direction);
+            }
+        }
+
+        self.villagers.retain(|v| v.satiation > 0);
     }
 }
 
