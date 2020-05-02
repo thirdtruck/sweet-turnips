@@ -2,6 +2,7 @@
 use ggez;
 use ggez::event;
 use ggez::graphics;
+use ggez::graphics::DrawParam;
 use ggez::graphics::spritebatch::SpriteBatch;
 use ggez::nalgebra as na;
 use ggez::{Context, GameResult};
@@ -33,6 +34,7 @@ struct Sprites {
 
 struct MainState {
     sprites: Sprites,
+    default_sprite_param: DrawParam,
 }
 
 fn grid_point(x: u8, y: u8) -> na::Point2<f32> {
@@ -96,8 +98,94 @@ impl MainState {
             altars: prep_sprites(ctx, 21)?,
         };
 
-        let s = MainState { sprites };
+        let default_sprite_param = graphics::DrawParam::new()
+            .scale(na::Vector2::new(4.0, 4.0));
+
+        let s = MainState {
+            sprites,
+            default_sprite_param,
+        };
         Ok(s)
+    }
+
+    fn curve_at(&mut self, x: u8, y: u8) {
+        self.sprites.curves.add(self.default_sprite_param.dest(grid_point(x, y)));
+    }
+
+    fn line_at(&mut self, x: u8, y: u8) {
+        self.sprites.lines.add(self.default_sprite_param.dest(grid_point(x, y)));
+    }
+
+    fn cross_at(&mut self, x: u8, y: u8) {
+        self.sprites.crosses.add(self.default_sprite_param.dest(grid_point(x, y)));
+    }
+
+    fn corner_triangle_at(&mut self, x: u8, y: u8) {
+        self.sprites.corner_triangles.add(self.default_sprite_param.dest(grid_point(x, y)));
+    }
+
+    fn small_circle_at(&mut self, x: u8, y: u8) {
+        self.sprites.small_circles.add(self.default_sprite_param.dest(grid_point(x, y)));
+    }
+
+    fn big_circle_at(&mut self, x: u8, y: u8) {
+        self.sprites.big_circles.add(self.default_sprite_param.dest(grid_point(x, y)));
+    }
+
+    fn diamond_at(&mut self, x: u8, y: u8) {
+        self.sprites.diamonds.add(self.default_sprite_param.dest(grid_point(x, y)));
+    }
+
+    fn dash_at(&mut self, x: u8, y: u8) {
+        self.sprites.dashes.add(self.default_sprite_param.dest(grid_point(x, y)));
+    }
+
+    fn boom_at(&mut self, x: u8, y: u8) {
+        self.sprites.booms.add(self.default_sprite_param.dest(grid_point(x, y)));
+    }
+
+    fn skull_at(&mut self, x: u8, y: u8) {
+        self.sprites.skulls.add(self.default_sprite_param.dest(grid_point(x, y)));
+    }
+
+    fn side_triangle_at(&mut self, x: u8, y: u8) {
+        self.sprites.side_triangles.add(self.default_sprite_param.dest(grid_point(x, y)));
+    }
+
+    fn ship_at(&mut self, x: u8, y: u8) {
+        self.sprites.ships.add(self.default_sprite_param.dest(grid_point(x, y)));
+    }
+
+    fn heart_at(&mut self, x: u8, y: u8) {
+        self.sprites.hearts.add(self.default_sprite_param.dest(grid_point(x, y)));
+    }
+
+    fn cursor_at(&mut self, x: u8, y: u8) {
+        self.sprites.cursors.add(self.default_sprite_param.dest(grid_point(x, y)));
+    }
+
+    fn turnip_at(&mut self, x: u8, y: u8) {
+        self.sprites.turnips.add(self.default_sprite_param.dest(grid_point(x, y)));
+    }
+
+    fn squid_at(&mut self, x: u8, y: u8) {
+        self.sprites.squids.add(self.default_sprite_param.dest(grid_point(x, y)));
+    }
+
+    fn lizard_at(&mut self, x: u8, y: u8) {
+        self.sprites.lizards.add(self.default_sprite_param.dest(grid_point(x, y)));
+    }
+
+    fn ball_at(&mut self, x: u8, y: u8) {
+        self.sprites.balls.add(self.default_sprite_param.dest(grid_point(x, y)));
+    }
+
+    fn crab_at(&mut self, x: u8, y: u8) {
+        self.sprites.crabs.add(self.default_sprite_param.dest(grid_point(x, y)));
+    }
+
+    fn altar_at(&mut self, x: u8, y: u8) {
+        self.sprites.altars.add(self.default_sprite_param.dest(grid_point(x, y)));
     }
 }
 
@@ -107,30 +195,13 @@ impl event::EventHandler for MainState {
     }
 
     fn draw(&mut self, ctx: &mut Context) -> GameResult {
-        let default_param = graphics::DrawParam::new()
-            .scale(na::Vector2::new(4.0, 4.0));
-
         graphics::clear(ctx, [0.0, 0.0, 0.0, 1.0].into());
 
-        self.sprites.curves.add(default_param.dest(grid_point(0, 0)));
+        self.curve_at(0, 0);
 
-        self.sprites.lines.add(default_param.dest(na::Point2::new(0.0, 30.0)));
+        self.line_at(0, 1);
 
-        self.sprites.crosses.add(default_param.dest(na::Point2::new(0.0, 60.0)));
-
-        self.sprites.corner_triangles.add(default_param.dest(na::Point2::new(0.0, 90.0)));
-
-        self.sprites.small_circles.add(default_param.dest(na::Point2::new(0.0, 120.0)));
-
-        self.sprites.big_circles.add(default_param.dest(grid_point(1, 0)));
-
-        self.sprites.diamonds.add(default_param.dest(na::Point2::new(30.0, 30.0)));
-
-        self.sprites.dashes.add(default_param.dest(na::Point2::new(30.0, 60.0)));
-
-        self.sprites.dots.add(default_param.dest(na::Point2::new(30.0, 90.0)));
-
-        self.sprites.booms.add(default_param.dest(na::Point2::new(30.0, 120.0)));
+        self.cross_at(0, 2);
 
         let origin_param = graphics::DrawParam::new().dest(na::Point2::new(0.0, 0.0));
 
