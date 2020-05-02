@@ -100,7 +100,7 @@ impl Villager {
     fn new(id: EntityId) -> Self {
         Villager {
             id: id,
-            satiation: 5,
+            satiation: 3,
             x: 4,
             y: 4,
         }
