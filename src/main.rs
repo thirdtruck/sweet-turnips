@@ -101,10 +101,6 @@ impl Cursor {
             y: 2,
         }
     }
-
-    fn overlaps(&self, x: u8, y: u8) -> bool {
-        self.x + 1 == x && self.y + 1 == y
-    }
 }
 
 struct MainState {
