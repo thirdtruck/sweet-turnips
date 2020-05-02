@@ -21,9 +21,13 @@ const RED: Color = Color {
     a: 1.0,
 };
 
+#[allow(dead_code)]
 const D0: f32 = 0.0;
+#[allow(dead_code)]
 const D90: f32 = PI / 2.0;
+#[allow(dead_code)]
 const D180: f32 = (PI / 2.0) * 2.0;
+#[allow(dead_code)]
 const D270: f32 = (PI / 2.0) * 3.0;
 
 struct Sprites {
@@ -74,10 +78,12 @@ impl GridParam {
         }
     }
 
+    // TODO: Figure out why this is broken
+    #[allow(dead_code)]
     fn rotated(&self, radians: f32) -> Self {
         let draw_param = self.draw_param
-            //.offset(na::Point2::new(0.5, 0.5))
-            //.rotation(radians)
+            .offset(na::Point2::new(0.5, 0.5))
+            .rotation(radians)
             ;
 
         GridParam { draw_param }
@@ -282,37 +288,33 @@ impl event::EventHandler for MainState {
         let gp = GridParam::new();
 
 
-        self.curve(gp.at(0, 0).rotated(D0));
+        self.big_circle(gp.at(0, 0));
 
         for x in 1..7 {
-            self.line(gp.at(x, 0));
+            self.big_circle(gp.at(x, 0));
         }
 
-        self.curve(gp.at(0, 7).rotated(D90));
+        self.big_circle(gp.at(0, 7));
 
         for y in 1..7 {
-            self.line(gp.at(7, y).rotated(D90));
+            self.big_circle(gp.at(7, y));
         }
 
-        self.curve(gp.at(7, 7).rotated(D180));
+        self.big_circle(gp.at(7, 7));
 
         for x in 1..7 {
-            self.line(gp.at(x, 7));
+            self.big_circle(gp.at(x, 7));
         }
 
-        self.curve(gp.at(7, 0).rotated(D270));
+        self.big_circle(gp.at(7, 0));
 
         for y in 1..7 {
-            self.line(gp.at(0, y).rotated(D90));
+            self.big_circle(gp.at(0, y));
         }
 
 
-        self.line(gp.at(0, 1));
-
-        self.cross(gp.at(0, 2));
-
-        self.altar(gp.at(2, 2).rotated(D0));
-        self.altar(gp.at(2, 2).rotated(D180).color(RED));
+        self.altar(gp.at(2, 2));
+        self.altar(gp.at(3, 2).color(RED));
 
         self.draw_all_spritebatches(ctx)?;
 
