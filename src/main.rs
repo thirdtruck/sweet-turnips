@@ -54,6 +54,20 @@ struct Sprites {
     altars: graphics::spritebatch::SpriteBatch,
 }
 
+struct Cursor {
+    x: u8,
+    y: u8,
+}
+
+impl Cursor {
+    fn new() -> Self {
+        Self {
+            x: 0,
+            y: 0,
+        }
+    }
+}
+
 struct Villager {
     satiation: u8,
     x: u8,
@@ -72,6 +86,7 @@ impl Villager {
 
 struct MainState {
     sprites: Sprites,
+    cursor: Cursor,
     villagers: Vec<Villager>,
     ticks: usize,
 }
@@ -182,6 +197,7 @@ impl MainState {
 
         let s = MainState {
             sprites,
+            cursor: Cursor::new(),
             villagers: vec![Villager::new()],
             ticks: 0,
         };
@@ -323,7 +339,7 @@ impl event::EventHandler for MainState {
     fn update(&mut self, _ctx: &mut Context) -> GameResult {
         self.ticks += 1;
 
-        if (self.ticks + 1) % 10 == 0 {
+        if (self.ticks + 1) % 20 == 0 {
             for villager in self.villagers.iter_mut() {
                 villager.x += 1;
             }
