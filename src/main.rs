@@ -147,7 +147,6 @@ fn prep_sprites(ctx: &mut Context, sprite_number: usize) -> GameResult<SpriteBat
     Ok(inverted_batch)
 }
 
-#[allow(dead_code)] // For all the  [sprite]_at methods, at least until they have all been used somewhere
 impl MainState {
     fn new(ctx: &mut Context) -> GameResult<MainState> {
         let sprites: Sprites = Sprites {
@@ -245,86 +244,6 @@ impl MainState {
         self.sprites.altars.clear();
 
         Ok(())
-    }
-
-    fn curve(&mut self, gp: GridParam) {
-        self.sprites.curves.add(gp.draw_param);
-    }
-
-    fn line(&mut self, gp: GridParam) {
-        self.sprites.lines.add(gp.draw_param);
-    }
-
-    fn cross(&mut self, gp: GridParam) {
-        self.sprites.crosses.add(gp.draw_param);
-    }
-
-    fn corner_triangle(&mut self, gp: GridParam) {
-        self.sprites.corner_triangles.add(gp.draw_param);
-    }
-
-    fn small_circle(&mut self, gp: GridParam) {
-        self.sprites.small_circles.add(gp.draw_param);
-    }
-
-    fn big_circle(&mut self, gp: GridParam) {
-        self.sprites.big_circles.add(gp.draw_param);
-    }
-
-    fn diamond(&mut self, gp: GridParam) {
-        self.sprites.diamonds.add(gp.draw_param);
-    }
-
-    fn dash(&mut self, gp: GridParam) {
-        self.sprites.dashes.add(gp.draw_param);
-    }
-
-    fn boom(&mut self, gp: GridParam) {
-        self.sprites.booms.add(gp.draw_param);
-    }
-
-    fn skull(&mut self, gp: GridParam) {
-        self.sprites.skulls.add(gp.draw_param);
-    }
-
-    fn side_triangle(&mut self, gp: GridParam) {
-        self.sprites.side_triangles.add(gp.draw_param);
-    }
-
-    fn ship(&mut self, gp: GridParam) {
-        self.sprites.ships.add(gp.draw_param);
-    }
-
-    fn heart(&mut self, gp: GridParam) {
-        self.sprites.hearts.add(gp.draw_param);
-    }
-
-    fn cursor(&mut self, gp: GridParam) {
-        self.sprites.cursors.add(gp.draw_param);
-    }
-
-    fn turnip(&mut self, gp: GridParam) {
-        self.sprites.turnips.add(gp.draw_param);
-    }
-
-    fn squid(&mut self, gp: GridParam) {
-        self.sprites.squids.add(gp.draw_param);
-    }
-
-    fn lizard(&mut self, gp: GridParam) {
-        self.sprites.lizards.add(gp.draw_param);
-    }
-
-    fn ball(&mut self, gp: GridParam) {
-        self.sprites.balls.add(gp.draw_param);
-    }
-
-    fn crab(&mut self, gp: GridParam) {
-        self.sprites.crabs.add(gp.draw_param);
-    }
-
-    fn altar(&mut self, gp: GridParam) {
-        self.sprites.altars.add(gp.draw_param);
     }
 
     fn move_cursor(&mut self, direction: Direction) {
