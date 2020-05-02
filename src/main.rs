@@ -17,7 +17,6 @@ use bitter::{
     GRID_WIDTH,
     GRID_HEIGHT,
     Ticks,
-    Villager,
     World,
 };
 
@@ -185,17 +184,6 @@ impl MainState {
         Ok(s)
     }
 
-    // TODO: Fix whatever borrow issues made it necessary to make possible_id into an Option
-    fn find_villager(&mut self, id: EntityId) -> Option<Villager> {
-        for villager in self.world.villagers.iter() {
-            if villager.id == id {
-                return Some(villager.clone());
-            }
-        }
-
-        None
-    }
-
     fn draw_all_spritebatches(&mut self, ctx: &mut Context) -> GameResult {
         let origin_param = graphics::DrawParam::new().dest(na::Point2::new(0.0, 0.0)).scale(na::Vector2::new(SPRITE_SCALE, SPRITE_SCALE));
 
@@ -329,12 +317,7 @@ impl event::EventHandler for MainState {
     fn draw(&mut self, ctx: &mut Context) -> GameResult {
         graphics::clear(ctx, [0.0, 0.0, 0.0, 1.0].into());
 
-        let selected_villager = match self.selected_villager_id {
-            Some(id) => self.find_villager(id),
-            None => None,
-        };
-
-        let mut sprite_grid = sprite_grid_from_world(&self.world, selected_villager);
+        let mut sprite_grid = sprite_grid_from_world(&self.world, self.selected_villager_id);
 
         sprite_grid.cursor_at(self.cursor.x + 1, self.cursor.y + 1);
 
