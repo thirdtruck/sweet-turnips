@@ -75,6 +75,10 @@ impl Cursor {
             y: 2,
         }
     }
+
+    fn overlaps(&self, x: u8, y: u8) -> bool {
+        self.x + 1 == x && self.y + 1 == y
+    }
 }
 
 struct Villager {
@@ -414,13 +418,19 @@ impl event::EventHandler for MainState {
         self.big_circle(gp.at(0, 7));
 
         for y in 1..7 {
-            self.big_circle(gp.at(7, y));
+            if ! self.cursor.overlaps(7, y) {
+                self.big_circle(gp.at(7, y));
+            }
         }
 
-        self.big_circle(gp.at(7, 7));
+        if ! self.cursor.overlaps(7, 7) {
+            self.big_circle(gp.at(7, 7));
+        }
 
         for x in 1..7 {
-            self.big_circle(gp.at(x, 7));
+            if ! self.cursor.overlaps(x, 7) {
+                self.big_circle(gp.at(x, 7));
+            }
         }
 
         self.big_circle(gp.at(7, 0));
