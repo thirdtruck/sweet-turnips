@@ -40,7 +40,6 @@ struct Sprites {
 
 struct MainState {
     sprites: Sprites,
-    default_sprite_param: DrawParam,
 }
 
 struct GridParam {
@@ -124,12 +123,8 @@ impl MainState {
             altars: prep_sprites(ctx, 21)?,
         };
 
-        let default_sprite_param = graphics::DrawParam::new()
-            .scale(na::Vector2::new(SPRITE_SCALE, SPRITE_SCALE));
-
         let s = MainState {
             sprites,
-            default_sprite_param,
         };
         Ok(s)
     }
@@ -166,84 +161,80 @@ impl MainState {
         self.sprites.curves.add(gp.draw_param);
     }
 
-    fn curve_at(&mut self, x: u8, y: u8) {
-        self.sprites.curves.add(self.default_sprite_param.dest(grid_point(x, y)));
+    fn line(&mut self, gp: GridParam) {
+        self.sprites.lines.add(gp.draw_param);
     }
 
-    fn line_at(&mut self, x: u8, y: u8) {
-        self.sprites.lines.add(self.default_sprite_param.dest(grid_point(x, y)));
+    fn cross(&mut self, gp: GridParam) {
+        self.sprites.crosses.add(gp.draw_param);
     }
 
-    fn cross_at(&mut self, x: u8, y: u8) {
-        self.sprites.crosses.add(self.default_sprite_param.dest(grid_point(x, y)));
+    fn corner_triangle(&mut self, gp: GridParam) {
+        self.sprites.corner_triangles.add(gp.draw_param);
     }
 
-    fn corner_triangle_at(&mut self, x: u8, y: u8) {
-        self.sprites.corner_triangles.add(self.default_sprite_param.dest(grid_point(x, y)));
+    fn small_circle(&mut self, gp: GridParam) {
+        self.sprites.small_circles.add(gp.draw_param);
     }
 
-    fn small_circle_at(&mut self, x: u8, y: u8) {
-        self.sprites.small_circles.add(self.default_sprite_param.dest(grid_point(x, y)));
+    fn big_circle(&mut self, gp: GridParam) {
+        self.sprites.big_circles.add(gp.draw_param);
     }
 
-    fn big_circle_at(&mut self, x: u8, y: u8) {
-        self.sprites.big_circles.add(self.default_sprite_param.dest(grid_point(x, y)));
+    fn diamond(&mut self, gp: GridParam) {
+        self.sprites.diamonds.add(gp.draw_param);
     }
 
-    fn diamond_at(&mut self, x: u8, y: u8) {
-        self.sprites.diamonds.add(self.default_sprite_param.dest(grid_point(x, y)));
+    fn dash(&mut self, gp: GridParam) {
+        self.sprites.dashes.add(gp.draw_param);
     }
 
-    fn dash_at(&mut self, x: u8, y: u8) {
-        self.sprites.dashes.add(self.default_sprite_param.dest(grid_point(x, y)));
+    fn boom(&mut self, gp: GridParam) {
+        self.sprites.booms.add(gp.draw_param);
     }
 
-    fn boom_at(&mut self, x: u8, y: u8) {
-        self.sprites.booms.add(self.default_sprite_param.dest(grid_point(x, y)));
+    fn skull(&mut self, gp: GridParam) {
+        self.sprites.skulls.add(gp.draw_param);
     }
 
-    fn skull_at(&mut self, x: u8, y: u8) {
-        self.sprites.skulls.add(self.default_sprite_param.dest(grid_point(x, y)));
+    fn side_triangle(&mut self, gp: GridParam) {
+        self.sprites.side_triangles.add(gp.draw_param);
     }
 
-    fn side_triangle_at(&mut self, x: u8, y: u8) {
-        self.sprites.side_triangles.add(self.default_sprite_param.dest(grid_point(x, y)));
+    fn ship(&mut self, gp: GridParam) {
+        self.sprites.ships.add(gp.draw_param);
     }
 
-    fn ship_at(&mut self, x: u8, y: u8) {
-        self.sprites.ships.add(self.default_sprite_param.dest(grid_point(x, y)));
+    fn heart(&mut self, gp: GridParam) {
+        self.sprites.hearts.add(gp.draw_param);
     }
 
-    fn heart_at(&mut self, x: u8, y: u8) {
-        self.sprites.hearts.add(self.default_sprite_param.dest(grid_point(x, y)));
+    fn cursor(&mut self, gp: GridParam) {
+        self.sprites.cursors.add(gp.draw_param);
     }
 
-    fn cursor_at(&mut self, x: u8, y: u8) {
-        self.sprites.cursors.add(self.default_sprite_param.dest(grid_point(x, y)));
+    fn turnip(&mut self, gp: GridParam) {
+        self.sprites.turnips.add(gp.draw_param);
     }
 
-    fn turnip_at(&mut self, x: u8, y: u8) {
-        self.sprites.turnips.add(self.default_sprite_param.dest(grid_point(x, y)));
+    fn squid(&mut self, gp: GridParam) {
+        self.sprites.squids.add(gp.draw_param);
     }
 
-    fn squid_at(&mut self, x: u8, y: u8) {
-        self.sprites.squids.add(self.default_sprite_param.dest(grid_point(x, y)));
+    fn lizard(&mut self, gp: GridParam) {
+        self.sprites.lizards.add(gp.draw_param);
     }
 
-    fn lizard_at(&mut self, x: u8, y: u8) {
-        self.sprites.lizards.add(self.default_sprite_param.dest(grid_point(x, y)));
+    fn ball(&mut self, gp: GridParam) {
+        self.sprites.balls.add(gp.draw_param);
     }
 
-    fn ball_at(&mut self, x: u8, y: u8) {
-        self.sprites.balls.add(self.default_sprite_param.dest(grid_point(x, y)));
+    fn crab(&mut self, gp: GridParam) {
+        self.sprites.crabs.add(gp.draw_param);
     }
 
-    fn crab_at(&mut self, x: u8, y: u8) {
-        self.sprites.crabs.add(self.default_sprite_param.dest(grid_point(x, y)));
-    }
-
-    fn altar_at(&mut self, x: u8, y: u8) {
-        self.sprites.altars.add(self.default_sprite_param.dest(grid_point(x, y)));
+    fn altar(&mut self, gp: GridParam) {
+        self.sprites.altars.add(gp.draw_param);
     }
 }
 
@@ -259,17 +250,17 @@ impl event::EventHandler for MainState {
 
         self.curve(gp.at(1, 0));
 
-        self.curve_at(0, 0);
+        self.curve(gp.at(0, 0));
 
-        self.curve_at(0, 7);
+        self.curve(gp.at(0, 7));
 
-        self.curve_at(7, 0);
+        self.curve(gp.at(7, 0));
 
-        self.curve_at(7, 7);
+        self.curve(gp.at(7, 7));
 
-        self.line_at(0, 1);
+        self.line(gp.at(0, 1));
 
-        self.cross_at(0, 2);
+        self.cross(gp.at(0, 2));
 
         self.draw_all_spritebatches(ctx)?;
 
