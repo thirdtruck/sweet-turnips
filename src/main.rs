@@ -1,4 +1,5 @@
 mod bitter;
+mod renderer;
 mod sprites;
 
 use ggez;
@@ -19,6 +20,8 @@ use bitter::{
     Villager,
     World,
 };
+
+use renderer::sprite_grid_from_world;
 
 use sprites::{SpriteGrid, Sprites, SpriteType};
 
@@ -399,42 +402,12 @@ impl event::EventHandler for MainState {
     fn draw(&mut self, ctx: &mut Context) -> GameResult {
         graphics::clear(ctx, [0.0, 0.0, 0.0, 1.0].into());
 
-        let mut sprite_grid = SpriteGrid::new();
-
         let selected_villager = match self.selected_villager_id {
             Some(id) => self.find_villager(id),
             None => None,
         };
 
-        for x in 0..8 {
-            sprite_grid.big_circle_at(x, 0);
-            sprite_grid.big_circle_at(x, 7);
-        }
-
-        for y in 0..8 {
-            sprite_grid.big_circle_at(0, y);
-            sprite_grid.big_circle_at(7, y);
-        }
-
-        let villager_coords: Vec<(u8, u8)> = self.world.villagers.iter().map(|v| (v.x, v.y)).collect();
-
-        for (x, y) in villager_coords {
-            sprite_grid.lizard_at(x, y);
-        }
-
-        if let Some(villager) = selected_villager {
-            for x in 1..7 {
-                if villager.satiation >= x {
-                    sprite_grid.turnip_at(x, 7);
-                }
-            }
-        }
-
-        let death_marker_coords: Vec<(u8, u8)> = self.world.death_markers.iter().map(|dm| (dm.x, dm.y)).collect();
-
-        for (x, y) in death_marker_coords {
-            sprite_grid.skull_at(x, y);
-        }
+        let mut sprite_grid = sprite_grid_from_world(&self.world, selected_villager);
 
         sprite_grid.cursor_at(self.cursor.x + 1, self.cursor.y + 1);
 
