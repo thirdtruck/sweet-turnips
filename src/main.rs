@@ -1,13 +1,22 @@
 
 use ggez;
 use ggez::event;
+use ggez::event::{KeyCode, KeyMods};
 use ggez::graphics;
 use ggez::graphics::{Color, DrawParam};
 use ggez::graphics::spritebatch::SpriteBatch;
+use ggez::input::keyboard;
 use ggez::nalgebra as na;
 use ggez::{Context, GameResult};
 use std::path;
 use std::f32::consts::PI;
+
+enum Direction {
+    Up,
+    Down,
+    Left,
+    Right,
+}
 
 const SPRITE_SCALE: f32 = 4.0;
 const SPRITE_SIZE: f32 = 8.0 * SPRITE_SCALE;
@@ -62,8 +71,8 @@ struct Cursor {
 impl Cursor {
     fn new() -> Self {
         Self {
-            x: 0,
-            y: 0,
+            x: 2,
+            y: 2,
         }
     }
 }
@@ -333,6 +342,31 @@ impl MainState {
     fn altar(&mut self, gp: GridParam) {
         self.sprites.altars.add(gp.draw_param);
     }
+
+    fn move_cursor(&mut self, direction: Direction) {
+        match direction {
+            Direction::Up => {
+                if self.cursor.y > 1 {
+                    self.cursor.y -= 1
+                }
+            },
+            Direction::Down => {
+                if self.cursor.y < GRID_HEIGHT - 2 {
+                    self.cursor.y += 1
+                }
+            },
+            Direction::Left => {
+                if self.cursor.x > 1 {
+                    self.cursor.x -= 1
+                }
+            },
+            Direction::Right => {
+                if self.cursor.x < GRID_WIDTH - 2 {
+                    self.cursor.x += 1
+                }
+            },
+        }
+    }
 }
 
 impl event::EventHandler for MainState {
@@ -346,6 +380,23 @@ impl event::EventHandler for MainState {
         }
 
         Ok(())
+    }
+
+    fn key_down_event(
+        &mut self,
+        ctx: &mut Context,
+        keycode: KeyCode,
+        _keymods: KeyMods,
+        _repeat: bool,
+    ) {
+        match keycode {
+            KeyCode::Escape => event::quit(ctx),
+            KeyCode::W => self.move_cursor(Direction::Up),
+            KeyCode::A => self.move_cursor(Direction::Left),
+            KeyCode::S => self.move_cursor(Direction::Down),
+            KeyCode::D => self.move_cursor(Direction::Right),
+            _ => (),
+        }
     }
 
     fn draw(&mut self, ctx: &mut Context) -> GameResult {
@@ -383,6 +434,8 @@ impl event::EventHandler for MainState {
         for (x, y) in villager_coords {
             self.lizard(gp.at(x, y));
         }
+
+        self.cursor(gp.at(self.cursor.x + 1, self.cursor.y + 1));
 
         self.draw_all_spritebatches(ctx)?;
 
