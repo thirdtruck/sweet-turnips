@@ -20,15 +20,13 @@ use bitter::{
     World,
 };
 
-use sprites::{Sprites, SpriteType};
+use sprites::{SpriteGrid, Sprites, SpriteType};
 
 use std::path;
 use std::f32::consts::PI;
 
 const SPRITE_SCALE: f32 = 4.0;
 const SPRITE_SIZE: f32 = 8.0 * SPRITE_SCALE;
-
-const SPRITE_GRID_LENGTH: usize = (GRID_WIDTH * GRID_HEIGHT) as usize;
 
 const RED: Color = Color {
     r: 1.0,
@@ -45,48 +43,6 @@ const D90: f32 = PI / 2.0;
 const D180: f32 = (PI / 2.0) * 2.0;
 #[allow(dead_code)]
 const D270: f32 = (PI / 2.0) * 3.0;
-
-struct SpriteGrid {
-    sprite_types: [SpriteType; SPRITE_GRID_LENGTH],
-}
-
-impl SpriteGrid {
-    fn new() -> Self {
-        SpriteGrid {
-            sprite_types: [SpriteType::Empty; SPRITE_GRID_LENGTH],
-        }
-    }
-
-    fn big_circle_at(&mut self, x: u8, y: u8) {
-        let index = (y * GRID_WIDTH + x) as usize;
-        self.sprite_types[index] = SpriteType::BigCircle;
-    }
-
-    fn lizard_at(&mut self, x: u8, y: u8) {
-        let index = (y * GRID_WIDTH + x) as usize;
-        self.sprite_types[index] = SpriteType::Lizard;
-    }
-
-    fn turnip_at(&mut self, x: u8, y: u8) {
-        let index = (y * GRID_WIDTH + x) as usize;
-        self.sprite_types[index] = SpriteType::Turnip;
-    }
-
-    fn skull_at(&mut self, x: u8, y: u8) {
-        let index = (y * GRID_WIDTH + x) as usize;
-        self.sprite_types[index] = SpriteType::Skull;
-    }
-
-    fn cursor_at(&mut self, x: u8, y: u8) {
-        let index = (y * GRID_WIDTH + x) as usize;
-        self.sprite_types[index] = SpriteType::Cursor;
-    }
-
-    fn sprite_type_at(&self, x: u8, y: u8) -> SpriteType {
-        let index = (y * GRID_WIDTH + x) as usize;
-        self.sprite_types[index]
-    }
-}
 
 #[derive(Copy,Clone)]
 struct Cursor {

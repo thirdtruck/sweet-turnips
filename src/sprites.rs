@@ -1,5 +1,9 @@
 use ggez::graphics::spritebatch::SpriteBatch;
 
+use crate::bitter::{GRID_HEIGHT, GRID_WIDTH};
+
+const SPRITE_GRID_LENGTH: usize = (GRID_WIDTH * GRID_HEIGHT) as usize;
+
 #[derive(Copy, Clone)]
 #[allow(dead_code)]
 pub enum SpriteType {
@@ -49,4 +53,46 @@ pub struct Sprites {
     pub balls: SpriteBatch,
     pub crabs: SpriteBatch,
     pub altars: SpriteBatch,
+}
+
+pub struct SpriteGrid {
+    sprite_types: [SpriteType; SPRITE_GRID_LENGTH],
+}
+
+impl SpriteGrid {
+    pub fn new() -> Self {
+        SpriteGrid {
+            sprite_types: [SpriteType::Empty; SPRITE_GRID_LENGTH],
+        }
+    }
+
+    pub fn big_circle_at(&mut self, x: u8, y: u8) {
+        let index = (y * GRID_WIDTH + x) as usize;
+        self.sprite_types[index] = SpriteType::BigCircle;
+    }
+
+    pub fn lizard_at(&mut self, x: u8, y: u8) {
+        let index = (y * GRID_WIDTH + x) as usize;
+        self.sprite_types[index] = SpriteType::Lizard;
+    }
+
+    pub fn turnip_at(&mut self, x: u8, y: u8) {
+        let index = (y * GRID_WIDTH + x) as usize;
+        self.sprite_types[index] = SpriteType::Turnip;
+    }
+
+    pub fn skull_at(&mut self, x: u8, y: u8) {
+        let index = (y * GRID_WIDTH + x) as usize;
+        self.sprite_types[index] = SpriteType::Skull;
+    }
+
+    pub fn cursor_at(&mut self, x: u8, y: u8) {
+        let index = (y * GRID_WIDTH + x) as usize;
+        self.sprite_types[index] = SpriteType::Cursor;
+    }
+
+    pub fn sprite_type_at(&self, x: u8, y: u8) -> SpriteType {
+        let index = (y * GRID_WIDTH + x) as usize;
+        self.sprite_types[index]
+    }
 }
