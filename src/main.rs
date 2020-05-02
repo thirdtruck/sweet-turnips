@@ -67,6 +67,11 @@ impl SpriteGrid {
         self.sprite_types[index] = SpriteType::Lizard;
     }
 
+    fn turnip_at(&mut self, x: u8, y: u8) {
+        let index = (y * GRID_WIDTH + x) as usize;
+        self.sprite_types[index] = SpriteType::Turnip;
+    }
+
     fn sprite_type_at(&self, x: u8, y: u8) -> SpriteType {
         let index = (y * GRID_WIDTH + x) as usize;
         self.sprite_types[index]
@@ -439,15 +444,15 @@ impl event::EventHandler for MainState {
             sprite_grid.lizard_at(x, y);
         }
 
-        // ---
-
         if let Some(villager) = selected_villager {
             for x in 1..7 {
                 if villager.satiation >= x {
-                    self.turnip(gp.at(x, 7).color(RED));
+                    sprite_grid.turnip_at(x, 7);
                 }
             }
         }
+
+        // ---
 
         let death_marker_coords: Vec<(u8, u8)> = self.world.death_markers.iter().map(|dm| (dm.x, dm.y)).collect();
 
@@ -465,6 +470,7 @@ impl event::EventHandler for MainState {
                     SpriteType::BigCircle => self.big_circle(gp.at(x, y)),
                     //SpriteType::Cursor => self.cursor(gp.at(x, y)),
                     SpriteType::Lizard => self.lizard(gp.at(x, y)),
+                    SpriteType::Turnip => self.turnip(gp.at(x, 7).color(RED)),
                     _ => (),
                 }
             }
