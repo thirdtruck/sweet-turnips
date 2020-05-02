@@ -5,7 +5,6 @@ use ggez::event::{KeyCode, KeyMods};
 use ggez::graphics;
 use ggez::graphics::{Color, DrawParam};
 use ggez::graphics::spritebatch::SpriteBatch;
-use ggez::input::keyboard;
 use ggez::nalgebra as na;
 use ggez::{Context, GameResult};
 
@@ -512,7 +511,7 @@ impl event::EventHandler for MainState {
         if let Some(villager) = selected_villager {
             for x in 1..7 {
                 if villager.satiation >= x {
-                    self.turnip(gp.at(x, 7));
+                    self.turnip(gp.at(x, 7).color(RED));
                 }
             }
         } else {
