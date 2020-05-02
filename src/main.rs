@@ -122,6 +122,31 @@ impl Villager {
             y: 4,
         }
     }
+
+    fn step(&mut self, direction: Direction) {
+        match direction {
+            Direction::Up => {
+                if self.y > 0 {
+                    self.y -= 1;
+                }
+            },
+            Direction::Down => {
+                if self.y < GRID_HEIGHT {
+                    self.y += 1;
+                }
+            },
+            Direction::Left => {
+                if self.x > 0 {
+                    self.x -= 1;
+                }
+            },
+            Direction::Right => {
+                if self.x < GRID_WIDTH {
+                    self.x += 1;
+                }
+            },
+        }
+    }
 }
 
 struct MainState {
@@ -421,13 +446,12 @@ impl event::EventHandler for MainState {
     fn update(&mut self, _ctx: &mut Context) -> GameResult {
         self.ticks += 1;
 
-        /*
-        if (self.ticks + 1) % 20 == 0 {
+        if (self.ticks + 1) % 80 == 0 {
             for villager in self.villagers.iter_mut() {
-                villager.x += 1;
+                let direction: Direction = rand::random();
+                villager.step(direction);
             }
         }
-        */
 
         self.selected_villager_id = None;
 
