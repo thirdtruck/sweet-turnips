@@ -95,9 +95,9 @@ struct Villager {
 }
 
 impl Villager {
-    fn new() -> Self {
+    fn new(id: EntityId) -> Self {
         Villager {
-            id: 0,
+            id: id,
             satiation: 5,
             x: 4,
             y: 4,
@@ -106,6 +106,7 @@ impl Villager {
 }
 
 struct MainState {
+    last_id: EntityId,
     sprites: Sprites,
     cursor: Cursor,
     villagers: Vec<Villager>,
@@ -217,10 +218,13 @@ impl MainState {
             altars: prep_sprites(ctx, 21)?,
         };
 
+        let starting_id: EntityId = 0;
+
         let s = MainState {
+            last_id: starting_id,
             sprites,
             cursor: Cursor::new(),
-            villagers: vec![Villager::new()],
+            villagers: vec![Villager::new(starting_id)],
             selected_villager: None,
             ticks: 0,
         };
