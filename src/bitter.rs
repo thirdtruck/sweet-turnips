@@ -86,6 +86,15 @@ impl World {
         None
     }
 
+    pub fn villager(&self, id: EntityId) -> Option<Villager> {
+        for v in self.villagers.iter() {
+            if v.id == id {
+                return Some(v.clone());
+            }
+        }
+
+        None
+    }
 }
 
 pub struct DeathMarker {
