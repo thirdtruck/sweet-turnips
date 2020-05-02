@@ -1,4 +1,5 @@
 mod bitter;
+mod sprites;
 
 use ggez;
 use ggez::event;
@@ -18,6 +19,8 @@ use bitter::{
     GRID_WIDTH,
     GRID_HEIGHT,
 };
+
+use sprites::Sprites;
 
 use std::path;
 use std::f32::consts::PI;
@@ -40,30 +43,6 @@ const D90: f32 = PI / 2.0;
 const D180: f32 = (PI / 2.0) * 2.0;
 #[allow(dead_code)]
 const D270: f32 = (PI / 2.0) * 3.0;
-
-struct Sprites {
-    curves: graphics::spritebatch::SpriteBatch,
-    lines: graphics::spritebatch::SpriteBatch,
-    crosses: graphics::spritebatch::SpriteBatch,
-    corner_triangles: graphics::spritebatch::SpriteBatch,
-    small_circles: graphics::spritebatch::SpriteBatch,
-    big_circles: graphics::spritebatch::SpriteBatch,
-    diamonds: graphics::spritebatch::SpriteBatch,
-    dashes: graphics::spritebatch::SpriteBatch,
-    dots: graphics::spritebatch::SpriteBatch,
-    booms: graphics::spritebatch::SpriteBatch,
-    skulls: graphics::spritebatch::SpriteBatch,
-    side_triangles: graphics::spritebatch::SpriteBatch,
-    ships: graphics::spritebatch::SpriteBatch,
-    hearts: graphics::spritebatch::SpriteBatch,
-    cursors: graphics::spritebatch::SpriteBatch,
-    turnips: graphics::spritebatch::SpriteBatch,
-    squids: graphics::spritebatch::SpriteBatch,
-    lizards: graphics::spritebatch::SpriteBatch,
-    balls: graphics::spritebatch::SpriteBatch,
-    crabs: graphics::spritebatch::SpriteBatch,
-    altars: graphics::spritebatch::SpriteBatch,
-}
 
 #[derive(Copy,Clone)]
 struct Cursor {

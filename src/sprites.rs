@@ -1,0 +1,25 @@
+use ggez::graphics::spritebatch::SpriteBatch;
+
+pub struct Sprites {
+    pub curves: SpriteBatch,
+    pub lines: SpriteBatch,
+    pub crosses: SpriteBatch,
+    pub corner_triangles: SpriteBatch,
+    pub small_circles: SpriteBatch,
+    pub big_circles: SpriteBatch,
+    pub diamonds: SpriteBatch,
+    pub dashes: SpriteBatch,
+    pub dots: SpriteBatch,
+    pub booms: SpriteBatch,
+    pub skulls: SpriteBatch,
+    pub side_triangles: SpriteBatch,
+    pub ships: SpriteBatch,
+    pub hearts: SpriteBatch,
+    pub cursors: SpriteBatch,
+    pub turnips: SpriteBatch,
+    pub squids: SpriteBatch,
+    pub lizards: SpriteBatch,
+    pub balls: SpriteBatch,
+    pub crabs: SpriteBatch,
+    pub altars: SpriteBatch,
+}
