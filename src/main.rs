@@ -392,6 +392,24 @@ impl MainState {
             },
         }
     }
+
+    fn render_sprite_grid(&mut self, sprite_grid: SpriteGrid) {
+        let gp = GridParam::new();
+
+        for x in 0..GRID_WIDTH {
+            for y in 0..GRID_HEIGHT {
+                match sprite_grid.sprite_type_at(x, y) {
+                    SpriteType::BigCircle => self.big_circle(gp.at(x, y)),
+                    //SpriteType::Cursor => self.cursor(gp.at(x, y)),
+                    SpriteType::Lizard => self.lizard(gp.at(x, y)),
+                    SpriteType::Turnip => self.turnip(gp.at(x, y).color(RED)),
+                    SpriteType::Skull => self.skull(gp.at(x, y)),
+                    SpriteType::Cursor => self.cursor(gp.at(x, y)),
+                    _ => (),
+                }
+            }
+        }
+    }
 }
 
 impl event::EventHandler for MainState {
@@ -426,8 +444,6 @@ impl event::EventHandler for MainState {
         graphics::clear(ctx, [0.0, 0.0, 0.0, 1.0].into());
 
         let mut sprite_grid = SpriteGrid::new();
-
-        let gp = GridParam::new();
 
         let selected_villager = match self.selected_villager_id {
             Some(id) => self.find_villager(id),
@@ -466,19 +482,7 @@ impl event::EventHandler for MainState {
 
         sprite_grid.cursor_at(self.cursor.x + 1, self.cursor.y + 1);
 
-        for x in 0..GRID_WIDTH {
-            for y in 0..GRID_HEIGHT {
-                match sprite_grid.sprite_type_at(x, y) {
-                    SpriteType::BigCircle => self.big_circle(gp.at(x, y)),
-                    //SpriteType::Cursor => self.cursor(gp.at(x, y)),
-                    SpriteType::Lizard => self.lizard(gp.at(x, y)),
-                    SpriteType::Turnip => self.turnip(gp.at(x, y).color(RED)),
-                    SpriteType::Skull => self.skull(gp.at(x, y)),
-                    SpriteType::Cursor => self.cursor(gp.at(x, y)),
-                    _ => (),
-                }
-            }
-        }
+        self.render_sprite_grid(sprite_grid);
 
         self.draw_all_spritebatches(ctx)?;
 
