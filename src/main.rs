@@ -151,11 +151,17 @@ impl Villager {
     }
 }
 
+struct DeathMarker {
+    x: u8,
+    y: u8,
+}
+
 struct MainState {
     last_id: EntityId,
     sprites: Sprites,
     cursor: Cursor,
     villagers: Vec<Villager>,
+    death_markers: Vec<DeathMarker>,
     selected_villager_id: Option<EntityId>,
     ticks: Ticks,
 }
@@ -272,6 +278,7 @@ impl MainState {
             sprites,
             cursor: Cursor::new(),
             villagers: vec![Villager::new(starting_id, ticks)],
+            death_markers: vec![],
             selected_villager_id: None,
             ticks,
         };
@@ -450,12 +457,20 @@ impl event::EventHandler for MainState {
         self.ticks += 1;
 
         if (self.ticks + 1) % 80 == 0 {
+            self.death_markers.clear();
+
             for villager in self.villagers.iter_mut() {
                 if self.ticks - villager.last_ate > 40 && villager.satiation > 0 {
                     villager.satiation -= 1;
                 }
 
                 if villager.satiation == 0 {
+                    let death_marker = DeathMarker {
+                        x: villager.x,
+                        y: villager.y,
+                    };
+                    self.death_markers.push(death_marker);
+
                     continue;
                 }
 
@@ -540,6 +555,12 @@ impl event::EventHandler for MainState {
 
         for y in 1..7 {
             self.big_circle(gp.at(0, y));
+        }
+
+        let death_marker_coords: Vec<(u8, u8)> = self.death_markers.iter().map(|dm| (dm.x, dm.y)).collect();
+
+        for (x, y) in death_marker_coords {
+            self.skull(gp.at(x, y));
         }
 
         let villager_coords: Vec<(u8, u8)> = self.villagers.iter().map(|v| (v.x, v.y)).collect();
