@@ -107,82 +107,54 @@ impl event::EventHandler for MainState {
     }
 
     fn draw(&mut self, ctx: &mut Context) -> GameResult {
+        let default_param = graphics::DrawParam::new()
+            .scale(na::Vector2::new(4.0, 4.0));
+
         graphics::clear(ctx, [0.0, 0.0, 0.0, 1.0].into());
 
-        self.sprites.curves.add(graphics::DrawParam::new()
-                               .scale(na::Vector2::new(4.0, 4.0))
-                               .dest(grid_point(0, 0))
-                               );
+        self.sprites.curves.add(default_param.dest(grid_point(0, 0)));
 
-        self.sprites.lines.add(graphics::DrawParam::new()
-                               .scale(na::Vector2::new(4.0, 4.0))
-                               .dest(na::Point2::new(0.0, 30.0))
-                               );
+        self.sprites.lines.add(default_param.dest(na::Point2::new(0.0, 30.0)));
 
-        self.sprites.crosses.add(graphics::DrawParam::new()
-                               .scale(na::Vector2::new(4.0, 4.0))
-                               .dest(na::Point2::new(0.0, 60.0))
-                               );
+        self.sprites.crosses.add(default_param.dest(na::Point2::new(0.0, 60.0)));
 
-        self.sprites.corner_triangles.add(graphics::DrawParam::new()
-                               .scale(na::Vector2::new(4.0, 4.0))
-                               .dest(na::Point2::new(0.0, 90.0))
-                               );
+        self.sprites.corner_triangles.add(default_param.dest(na::Point2::new(0.0, 90.0)));
 
-        self.sprites.small_circles.add(graphics::DrawParam::new()
-                               .scale(na::Vector2::new(4.0, 4.0))
-                               .dest(na::Point2::new(0.0, 120.0))
-                               );
+        self.sprites.small_circles.add(default_param.dest(na::Point2::new(0.0, 120.0)));
 
-        self.sprites.big_circles.add(graphics::DrawParam::new()
-                               .scale(na::Vector2::new(4.0, 4.0))
-                               .dest(grid_point(1, 0))
-                               );
+        self.sprites.big_circles.add(default_param.dest(grid_point(1, 0)));
 
-        self.sprites.diamonds.add(graphics::DrawParam::new()
-                               .scale(na::Vector2::new(4.0, 4.0))
-                               .dest(na::Point2::new(30.0, 30.0))
-                               );
+        self.sprites.diamonds.add(default_param.dest(na::Point2::new(30.0, 30.0)));
 
-        self.sprites.dashes.add(graphics::DrawParam::new()
-                               .scale(na::Vector2::new(4.0, 4.0))
-                               .dest(na::Point2::new(30.0, 60.0))
-                               );
+        self.sprites.dashes.add(default_param.dest(na::Point2::new(30.0, 60.0)));
 
-        self.sprites.dots.add(graphics::DrawParam::new()
-                               .scale(na::Vector2::new(4.0, 4.0))
-                               .dest(na::Point2::new(30.0, 90.0))
-                               );
+        self.sprites.dots.add(default_param.dest(na::Point2::new(30.0, 90.0)));
 
-        self.sprites.booms.add(graphics::DrawParam::new()
-                               .scale(na::Vector2::new(4.0, 4.0))
-                               .dest(na::Point2::new(30.0, 120.0))
-                               );
+        self.sprites.booms.add(default_param.dest(na::Point2::new(30.0, 120.0)));
 
-        let param = graphics::DrawParam::new()
-            .dest(na::Point2::new(0.0, 0.0));
+        let origin_param = graphics::DrawParam::new().dest(na::Point2::new(0.0, 0.0));
 
-        graphics::draw(ctx, &self.sprites.lines, param)?;
-        graphics::draw(ctx, &self.sprites.curves, param)?;
-        graphics::draw(ctx, &self.sprites.crosses, param)?;
-        graphics::draw(ctx, &self.sprites.corner_triangles, param)?;
-        graphics::draw(ctx, &self.sprites.small_circles, param)?;
-        graphics::draw(ctx, &self.sprites.big_circles, param)?;
-        graphics::draw(ctx, &self.sprites.diamonds, param)?;
-        graphics::draw(ctx, &self.sprites.dashes, param)?;
-        graphics::draw(ctx, &self.sprites.dots, param)?;
-        graphics::draw(ctx, &self.sprites.booms, param)?;
-        graphics::draw(ctx, &self.sprites.skulls, param)?;
-        graphics::draw(ctx, &self.sprites.side_triangles, param)?;
-        graphics::draw(ctx, &self.sprites.ships, param)?;
-        graphics::draw(ctx, &self.sprites.hearts, param)?;
-        graphics::draw(ctx, &self.sprites.cursors, param)?;
-        graphics::draw(ctx, &self.sprites.turnips, param)?;
-        graphics::draw(ctx, &self.sprites.squids, param)?;
-        graphics::draw(ctx, &self.sprites.lizards, param)?;
-        graphics::draw(ctx, &self.sprites.balls, param)?;
-        graphics::draw(ctx, &self.sprites.crabs, param)?;
-        graphics::draw(ctx, &self.sprites.altars, param)?;
+        graphics::draw(ctx, &self.sprites.lines, origin_param)?;
+        graphics::draw(ctx, &self.sprites.curves, origin_param)?;
+        graphics::draw(ctx, &self.sprites.crosses, origin_param)?;
+        graphics::draw(ctx, &self.sprites.corner_triangles, origin_param)?;
+        graphics::draw(ctx, &self.sprites.small_circles, origin_param)?;
+        graphics::draw(ctx, &self.sprites.big_circles, origin_param)?;
+        graphics::draw(ctx, &self.sprites.diamonds, origin_param)?;
+        graphics::draw(ctx, &self.sprites.dashes, origin_param)?;
+        graphics::draw(ctx, &self.sprites.dots, origin_param)?;
+        graphics::draw(ctx, &self.sprites.booms, origin_param)?;
+        graphics::draw(ctx, &self.sprites.skulls, origin_param)?;
+        graphics::draw(ctx, &self.sprites.side_triangles, origin_param)?;
+        graphics::draw(ctx, &self.sprites.ships, origin_param)?;
+        graphics::draw(ctx, &self.sprites.hearts, origin_param)?;
+        graphics::draw(ctx, &self.sprites.cursors, origin_param)?;
+        graphics::draw(ctx, &self.sprites.turnips, origin_param)?;
+        graphics::draw(ctx, &self.sprites.squids, origin_param)?;
+        graphics::draw(ctx, &self.sprites.lizards, origin_param)?;
+        graphics::draw(ctx, &self.sprites.balls, origin_param)?;
+        graphics::draw(ctx, &self.sprites.crabs, origin_param)?;
+        graphics::draw(ctx, &self.sprites.altars, origin_param)?;
 
         graphics::present(ctx)?;
         Ok(())
