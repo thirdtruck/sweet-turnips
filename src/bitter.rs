@@ -27,6 +27,18 @@ impl Distribution<Direction> for Standard {
     }
 }
 
+pub struct World {
+    pub villagers: Vec<Villager>,
+}
+
+impl World {
+    pub fn new() -> Self {
+        World {
+            villagers: vec![],
+        }
+    }
+}
+
 pub struct DeathMarker {
     pub x: u8,
     pub y: u8,

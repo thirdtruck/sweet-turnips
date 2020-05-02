@@ -14,10 +14,11 @@ use bitter::{
     DeathMarker,
     Direction,
     EntityId,
-    Ticks,
-    Villager,
     GRID_WIDTH,
     GRID_HEIGHT,
+    Ticks,
+    Villager,
+    World,
 };
 
 use sprites::Sprites;
@@ -68,6 +69,7 @@ impl Cursor {
 }
 
 struct MainState {
+    world: World,
     last_id: EntityId,
     sprites: Sprites,
     cursor: Cursor,
@@ -185,6 +187,7 @@ impl MainState {
         let ticks: Ticks = 0;
 
         let s = MainState {
+            world: World::new(),
             last_id: starting_id,
             sprites,
             cursor: Cursor::new(),
