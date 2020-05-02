@@ -14,6 +14,11 @@ const SPRITE_SIZE: f32 = 8.0 * SPRITE_SCALE;
 const GRID_WIDTH: f32 = 8.0;
 const GRID_HEIGHT: f32 = 8.0;
 
+const D0: f32 = 0.0;
+const D90: f32 = PI / 2.0;
+const D180: f32 = PI;
+const D270: f32 = PI * 1.5;
+
 struct Sprites {
     curves: graphics::spritebatch::SpriteBatch,
     lines: graphics::spritebatch::SpriteBatch,
@@ -49,7 +54,9 @@ struct GridParam {
 impl GridParam {
     fn new() -> Self {
         let draw_param = graphics::DrawParam::new()
-            .scale(na::Vector2::new(SPRITE_SCALE, SPRITE_SCALE));
+            //.offset(na::Point2::new(0.0, 0.0))
+            //.scale(na::Vector2::new(SPRITE_SCALE, SPRITE_SCALE))
+            ;
 
         GridParam { draw_param }
     }
@@ -59,10 +66,23 @@ impl GridParam {
             draw_param: self.draw_param.dest(grid_point(x, y)),
         }
     }
+
+    fn rotated(&self, radians: f32) -> Self {
+        let draw_param = self.draw_param
+            .offset(na::Point2::new(0.5, 0.5))
+            .rotation(radians)
+            ;
+
+        GridParam { draw_param }
+    }
 }
 
 fn grid_point(x: u8, y: u8) -> na::Point2<f32> {
-    na::Point2::new((30 * x) as f32, (30 * y) as f32)
+    let x = x as f32;
+    let y = y as f32;
+    let segment_size = 8.0;
+
+    na::Point2::new(segment_size * x, segment_size * y)
 }
 
 fn invert(ctx: &mut Context, image: &graphics::Image) -> GameResult<graphics::Image> {
@@ -130,7 +150,7 @@ impl MainState {
     }
 
     fn draw_all_spritebatches(&mut self, ctx: &mut Context) -> GameResult {
-        let origin_param = graphics::DrawParam::new().dest(na::Point2::new(0.0, 0.0));
+        let origin_param = graphics::DrawParam::new().dest(na::Point2::new(0.0, 0.0)).scale(na::Vector2::new(SPRITE_SCALE, SPRITE_SCALE));
 
         graphics::draw(ctx, &self.sprites.lines, origin_param)?;
         graphics::draw(ctx, &self.sprites.curves, origin_param)?;
@@ -248,19 +268,20 @@ impl event::EventHandler for MainState {
 
         let gp = GridParam::new();
 
-        self.curve(gp.at(1, 0));
+        self.curve(gp.at(0, 0).rotated(D0));
 
-        self.curve(gp.at(0, 0));
+        self.curve(gp.at(0, 7).rotated(D90));
 
-        self.curve(gp.at(0, 7));
+        self.curve(gp.at(7, 7).rotated(D180));
 
-        self.curve(gp.at(7, 0));
-
-        self.curve(gp.at(7, 7));
+        self.curve(gp.at(7, 0).rotated(D270));
 
         self.line(gp.at(0, 1));
 
         self.cross(gp.at(0, 2));
+
+        self.altar(gp.at(2, 2).rotated(D0));
+        self.altar(gp.at(2, 2).rotated(D180));
 
         self.draw_all_spritebatches(ctx)?;
 
