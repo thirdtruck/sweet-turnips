@@ -30,6 +30,7 @@ impl Distribution<Direction> for Standard {
 pub struct World {
     last_id: EntityId,
     pub villagers: Vec<Villager>,
+    pub death_markers: Vec<DeathMarker>,
 }
 
 impl World {
@@ -40,6 +41,7 @@ impl World {
         World {
             last_id: 0,
             villagers: vec![Villager::new(starting_id, ticks)],
+            death_markers: vec![],
         }
     }
 }

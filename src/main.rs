@@ -72,7 +72,6 @@ struct MainState {
     world: World,
     sprites: Sprites,
     cursor: Cursor,
-    death_markers: Vec<DeathMarker>,
     selected_villager_id: Option<EntityId>,
     ticks: Ticks,
 }
@@ -188,7 +187,6 @@ impl MainState {
             world: World::new(),
             sprites,
             cursor: Cursor::new(),
-            death_markers: vec![],
             selected_villager_id: None,
             ticks,
         };
@@ -367,7 +365,7 @@ impl event::EventHandler for MainState {
         self.ticks += 1;
 
         if (self.ticks + 1) % 80 == 0 {
-            self.death_markers.clear();
+            self.world.death_markers.clear();
 
             for villager in self.world.villagers.iter_mut() {
                 if self.ticks - villager.last_ate > 40 && villager.satiation > 0 {
@@ -379,7 +377,7 @@ impl event::EventHandler for MainState {
                         x: villager.x,
                         y: villager.y,
                     };
-                    self.death_markers.push(death_marker);
+                    self.world.death_markers.push(death_marker);
 
                     continue;
                 }
@@ -467,7 +465,7 @@ impl event::EventHandler for MainState {
             self.big_circle(gp.at(0, y));
         }
 
-        let death_marker_coords: Vec<(u8, u8)> = self.death_markers.iter().map(|dm| (dm.x, dm.y)).collect();
+        let death_marker_coords: Vec<(u8, u8)> = self.world.death_markers.iter().map(|dm| (dm.x, dm.y)).collect();
 
         for (x, y) in death_marker_coords {
             self.skull(gp.at(x, y));
