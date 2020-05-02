@@ -77,6 +77,11 @@ impl SpriteGrid {
         self.sprite_types[index] = SpriteType::Skull;
     }
 
+    fn cursor_at(&mut self, x: u8, y: u8) {
+        let index = (y * GRID_WIDTH + x) as usize;
+        self.sprite_types[index] = SpriteType::Cursor;
+    }
+
     fn sprite_type_at(&self, x: u8, y: u8) -> SpriteType {
         let index = (y * GRID_WIDTH + x) as usize;
         self.sprite_types[index]
@@ -463,11 +468,7 @@ impl event::EventHandler for MainState {
             sprite_grid.skull_at(x, y);
         }
 
-        // ---
-
-        self.cursor(gp.at(self.cursor.x + 1, self.cursor.y + 1));
-
-        // ---
+        sprite_grid.cursor_at(self.cursor.x + 1, self.cursor.y + 1);
 
         for x in 0..GRID_WIDTH {
             for y in 0..GRID_HEIGHT {
@@ -477,6 +478,7 @@ impl event::EventHandler for MainState {
                     SpriteType::Lizard => self.lizard(gp.at(x, y)),
                     SpriteType::Turnip => self.turnip(gp.at(x, y).color(RED)),
                     SpriteType::Skull => self.skull(gp.at(x, y)),
+                    SpriteType::Cursor => self.cursor(gp.at(x, y)),
                     _ => (),
                 }
             }
