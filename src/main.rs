@@ -2,7 +2,7 @@
 use ggez;
 use ggez::event;
 use ggez::graphics;
-use ggez::graphics::DrawParam;
+use ggez::graphics::{Color, DrawParam};
 use ggez::graphics::spritebatch::SpriteBatch;
 use ggez::nalgebra as na;
 use ggez::{Context, GameResult};
@@ -13,6 +13,13 @@ const SPRITE_SCALE: f32 = 4.0;
 const SPRITE_SIZE: f32 = 8.0 * SPRITE_SCALE;
 const GRID_WIDTH: f32 = 8.0;
 const GRID_HEIGHT: f32 = 8.0;
+
+const RED: Color = Color {
+    r: 1.0,
+    g: 0.0,
+    b: 0.0,
+    a: 1.0,
+};
 
 const D0: f32 = 0.0;
 const D90: f32 = PI / 2.0;
@@ -74,6 +81,12 @@ impl GridParam {
             ;
 
         GridParam { draw_param }
+    }
+
+    fn color(&self, color: Color) -> Self {
+        GridParam {
+            draw_param: self.draw_param.color(color),
+        }
     }
 }
 
@@ -281,7 +294,7 @@ impl event::EventHandler for MainState {
         self.cross(gp.at(0, 2));
 
         self.altar(gp.at(2, 2).rotated(D0));
-        self.altar(gp.at(2, 2).rotated(D180));
+        self.altar(gp.at(2, 2).rotated(D180).color(RED));
 
         self.draw_all_spritebatches(ctx)?;
 
