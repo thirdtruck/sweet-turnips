@@ -1,3 +1,4 @@
+mod bitter;
 
 use ggez;
 use ggez::event;
@@ -8,34 +9,13 @@ use ggez::graphics::spritebatch::SpriteBatch;
 use ggez::nalgebra as na;
 use ggez::{Context, GameResult};
 
-use rand::{
-    distributions::{Distribution, Standard},
-    Rng,
-};
+use bitter::Direction;
 
 use std::path;
 use std::f32::consts::PI;
 
 type EntityId = usize;
 type Ticks = usize;
-
-enum Direction {
-    Up,
-    Down,
-    Left,
-    Right,
-}
-
-impl Distribution<Direction> for Standard {
-    fn sample<R: Rng + ?Sized>(&self, rng: &mut R) -> Direction {
-        match rng.gen_range(0, 4) {
-            0 => Direction::Up,
-            1 => Direction::Down,
-            2 => Direction::Left,
-            _ => Direction::Right,
-        }
-    }
-}
 
 const SPRITE_SCALE: f32 = 4.0;
 const SPRITE_SIZE: f32 = 8.0 * SPRITE_SCALE;
