@@ -65,6 +65,7 @@ struct Sprites {
     altars: graphics::spritebatch::SpriteBatch,
 }
 
+#[derive(Copy,Clone)]
 struct Cursor {
     x: u8,
     y: u8,
@@ -87,6 +88,7 @@ impl Cursor {
     }
 }
 
+#[derive(Copy,Clone)]
 struct Villager {
     id: EntityId,
     satiation: u8,
@@ -110,7 +112,7 @@ struct MainState {
     sprites: Sprites,
     cursor: Cursor,
     villagers: Vec<Villager>,
-    selected_villager: Option<EntityId>,
+    selected_villager_id: Option<EntityId>,
     ticks: usize,
 }
 
@@ -225,10 +227,21 @@ impl MainState {
             sprites,
             cursor: Cursor::new(),
             villagers: vec![Villager::new(starting_id)],
-            selected_villager: None,
+            selected_villager_id: None,
             ticks: 0,
         };
         Ok(s)
+    }
+
+    // TODO: Fix whatever borrow issues made it necessary to make possible_id into an Option
+    fn find_villager(&mut self, id: EntityId) -> Option<Villager> {
+        for villager in self.villagers.iter() {
+            if villager.id == id {
+                return Some(villager.clone());
+            }
+        }
+
+        None
     }
 
     fn draw_all_spritebatches(&mut self, ctx: &mut Context) -> GameResult {
@@ -399,11 +412,11 @@ impl event::EventHandler for MainState {
         }
         */
 
-        self.selected_villager = None;
+        self.selected_villager_id = None;
 
         for villager in self.villagers.iter() {
             if self.cursor.selects(villager.x, villager.y) {
-                self.selected_villager = Some(villager.id);
+                self.selected_villager_id = Some(villager.id);
             }
         }
 
@@ -432,6 +445,10 @@ impl event::EventHandler for MainState {
 
         let gp = GridParam::new();
 
+        let selected_villager = match self.selected_villager_id {
+            Some(id) => self.find_villager(id),
+            None => None,
+        };
 
         self.big_circle(gp.at(0, 0));
 
@@ -451,9 +468,17 @@ impl event::EventHandler for MainState {
             self.big_circle(gp.at(7, 7));
         }
 
-        for x in 1..7 {
-            if ! self.cursor.overlaps(x, 7) {
-                self.big_circle(gp.at(x, 7));
+        if let Some(villager) = selected_villager {
+            for x in 1..7 {
+                if villager.satiation >= x {
+                    self.turnip(gp.at(x, 7));
+                }
+            }
+        } else {
+            for x in 1..7 {
+                if ! self.cursor.overlaps(x, 7) {
+                    self.big_circle(gp.at(x, 7));
+                }
             }
         }
 
