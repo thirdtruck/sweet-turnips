@@ -11,7 +11,6 @@ use ggez::nalgebra as na;
 use ggez::{Context, GameResult};
 
 use bitter::{
-    DeathMarker,
     Direction,
     EntityId,
     GRID_WIDTH,
@@ -57,10 +56,6 @@ impl Cursor {
             x: 2,
             y: 2,
         }
-    }
-
-    fn selects(&self, x: u8, y: u8) -> bool {
-        self.x == x && self.y == y
     }
 
     fn overlaps(&self, x: u8, y: u8) -> bool {
@@ -180,7 +175,6 @@ impl MainState {
             altars: prep_sprites(ctx, 21)?,
         };
 
-        let starting_id: EntityId = 0;
         let ticks: Ticks = 0;
 
         let s = MainState {
@@ -362,15 +356,11 @@ impl MainState {
 
 impl event::EventHandler for MainState {
     fn update(&mut self, _ctx: &mut Context) -> GameResult {
+        self.ticks += 1;
+
         self.world.tick();
 
-        self.selected_villager_id = None;
-
-        for villager in self.world.villagers.iter() {
-            if self.cursor.selects(villager.x, villager.y) {
-                self.selected_villager_id = Some(villager.id);
-            }
-        }
+        self.selected_villager_id = self.world.villager_id_at(self.cursor.x, self.cursor.y);
 
         Ok(())
     }

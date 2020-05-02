@@ -75,6 +75,17 @@ impl World {
 
         self.villagers.retain(|v| v.satiation > 0);
     }
+
+    pub fn villager_id_at(&self, x: u8, y: u8) -> Option<EntityId> {
+        for v in self.villagers.iter() {
+            if v.x == x && v.y == y {
+                return Some(v.id);
+            }
+        }
+
+        None
+    }
+
 }
 
 pub struct DeathMarker {
