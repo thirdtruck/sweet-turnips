@@ -7,6 +7,7 @@ use ggez::graphics::spritebatch::SpriteBatch;
 use ggez::nalgebra as na;
 use ggez::{Context, GameResult};
 use std::path;
+use std::f32::consts::PI;
 
 const SPRITE_SCALE: f32 = 4.0;
 const SPRITE_SIZE: f32 = 8.0 * SPRITE_SCALE;
@@ -40,6 +41,25 @@ struct Sprites {
 struct MainState {
     sprites: Sprites,
     default_sprite_param: DrawParam,
+}
+
+struct GridParam {
+    draw_param: DrawParam,
+}
+
+impl GridParam {
+    fn new() -> Self {
+        let draw_param = graphics::DrawParam::new()
+            .scale(na::Vector2::new(SPRITE_SCALE, SPRITE_SCALE));
+
+        GridParam { draw_param }
+    }
+
+    fn at(&self, x: u8, y: u8) -> Self {
+        GridParam {
+            draw_param: self.draw_param.dest(grid_point(x, y)),
+        }
+    }
 }
 
 fn grid_point(x: u8, y: u8) -> na::Point2<f32> {
@@ -142,6 +162,10 @@ impl MainState {
         Ok(())
     }
 
+    fn curve(&mut self, gp: GridParam) {
+        self.sprites.curves.add(gp.draw_param);
+    }
+
     fn curve_at(&mut self, x: u8, y: u8) {
         self.sprites.curves.add(self.default_sprite_param.dest(grid_point(x, y)));
     }
@@ -230,6 +254,10 @@ impl event::EventHandler for MainState {
 
     fn draw(&mut self, ctx: &mut Context) -> GameResult {
         graphics::clear(ctx, [0.0, 0.0, 0.0, 1.0].into());
+
+        let gp = GridParam::new();
+
+        self.curve(gp.at(1, 0));
 
         self.curve_at(0, 0);
 
