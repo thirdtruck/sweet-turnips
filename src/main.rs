@@ -2,6 +2,8 @@
 use ggez;
 use ggez::event;
 use ggez::graphics;
+use ggez::graphics::Image;
+use ggez::graphics::spritebatch::SpriteBatch;
 use ggez::nalgebra as na;
 use ggez::{Context, GameResult};
 use std::path;
@@ -51,19 +53,25 @@ fn invert(ctx: &mut Context, image: &graphics::Image) -> GameResult<graphics::Im
     graphics::Image::from_rgba8(ctx, 8, 8, &image_u8_i)
 }
 
+fn prep_sprites(ctx: &mut Context, sprite_number: usize) -> GameResult<(SpriteBatch, SpriteBatch)> {
+    let filepath = format!("/separate/{}.png", sprite_number);
+
+    let original = graphics::Image::new(ctx, filepath).unwrap();
+    let inverted = invert(ctx, &original)?;
+
+    let mut original_batch = graphics::spritebatch::SpriteBatch::new(original);
+    original_batch.set_filter(ggez::graphics::FilterMode::Nearest);
+
+    let mut inverted_batch = graphics::spritebatch::SpriteBatch::new(inverted);
+    inverted_batch.set_filter(ggez::graphics::FilterMode::Nearest);
+
+    // Source images are "inverted" by our standard, hence the reverse positioning
+    Ok((inverted_batch, original_batch))
+}
+
 impl MainState {
     fn new(ctx: &mut Context) -> GameResult<MainState> {
-        // We want white-on-black but the original sprites are
-        // black-on-white, hence names like "curve_i" for initial imports
-
-        let curve_i = graphics::Image::new(ctx, "/separate/1.png").unwrap();
-        let curve = invert(ctx, &curve_i)?;
-
-        let mut curves = graphics::spritebatch::SpriteBatch::new(curve);
-        curves.set_filter(ggez::graphics::FilterMode::Nearest);
-
-        let mut curves_i = graphics::spritebatch::SpriteBatch::new(curve_i);
-        curves_i.set_filter(ggez::graphics::FilterMode::Nearest);
+        let (curves, curves_i) = prep_sprites(ctx, 1)?;
 
         let sprites: Sprites = Sprites {
             curves,
