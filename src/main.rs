@@ -61,6 +61,11 @@ impl SpriteGrid {
         let index = (y * GRID_WIDTH + x) as usize;
         self.sprite_types[index] = SpriteType::BigCircle;
     }
+
+    fn sprite_type_at(&self, x: u8, y: u8) -> SpriteType {
+        let index = (y * GRID_WIDTH + x) as usize;
+        self.sprite_types[index]
+    }
 }
 
 #[derive(Copy,Clone)]
@@ -415,7 +420,14 @@ impl event::EventHandler for MainState {
 
         sprite_grid.big_circle_at(0, 0);
 
-        self.big_circle(gp.at(0, 0));
+        for x in 0..GRID_WIDTH {
+            for y in 0..GRID_HEIGHT {
+                match sprite_grid.sprite_type_at(x, y) {
+                    SpriteType::BigCircle => self.big_circle(gp.at(x, y)),
+                    _ => (),
+                }
+            }
+        }
 
         for x in 1..7 {
             self.big_circle(gp.at(x, 0));
