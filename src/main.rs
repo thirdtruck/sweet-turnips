@@ -62,6 +62,11 @@ impl SpriteGrid {
         self.sprite_types[index] = SpriteType::BigCircle;
     }
 
+    fn lizard_at(&mut self, x: u8, y: u8) {
+        let index = (y * GRID_WIDTH + x) as usize;
+        self.sprite_types[index] = SpriteType::Lizard;
+    }
+
     fn sprite_type_at(&self, x: u8, y: u8) -> SpriteType {
         let index = (y * GRID_WIDTH + x) as usize;
         self.sprite_types[index]
@@ -418,32 +423,23 @@ impl event::EventHandler for MainState {
             None => None,
         };
 
-        sprite_grid.big_circle_at(0, 0);
-
-        for x in 0..GRID_WIDTH {
-            for y in 0..GRID_HEIGHT {
-                match sprite_grid.sprite_type_at(x, y) {
-                    SpriteType::BigCircle => self.big_circle(gp.at(x, y)),
-                    _ => (),
-                }
-            }
+        for x in 0..8 {
+            sprite_grid.big_circle_at(x, 0);
+            sprite_grid.big_circle_at(x, 7);
         }
 
-        for x in 1..7 {
-            self.big_circle(gp.at(x, 0));
+        for y in 0..8 {
+            sprite_grid.big_circle_at(0, y);
+            sprite_grid.big_circle_at(7, y);
         }
 
-        self.big_circle(gp.at(0, 7));
+        let villager_coords: Vec<(u8, u8)> = self.world.villagers.iter().map(|v| (v.x, v.y)).collect();
 
-        for y in 1..7 {
-            if ! self.cursor.overlaps(7, y) {
-                self.big_circle(gp.at(7, y));
-            }
+        for (x, y) in villager_coords {
+            sprite_grid.lizard_at(x, y);
         }
 
-        if ! self.cursor.overlaps(7, 7) {
-            self.big_circle(gp.at(7, 7));
-        }
+        // ---
 
         if let Some(villager) = selected_villager {
             for x in 1..7 {
@@ -451,18 +447,6 @@ impl event::EventHandler for MainState {
                     self.turnip(gp.at(x, 7).color(RED));
                 }
             }
-        } else {
-            for x in 1..7 {
-                if ! self.cursor.overlaps(x, 7) {
-                    self.big_circle(gp.at(x, 7));
-                }
-            }
-        }
-
-        self.big_circle(gp.at(7, 0));
-
-        for y in 1..7 {
-            self.big_circle(gp.at(0, y));
         }
 
         let death_marker_coords: Vec<(u8, u8)> = self.world.death_markers.iter().map(|dm| (dm.x, dm.y)).collect();
@@ -471,13 +455,20 @@ impl event::EventHandler for MainState {
             self.skull(gp.at(x, y));
         }
 
-        let villager_coords: Vec<(u8, u8)> = self.world.villagers.iter().map(|v| (v.x, v.y)).collect();
-
-        for (x, y) in villager_coords {
-            self.lizard(gp.at(x, y));
-        }
-
         self.cursor(gp.at(self.cursor.x + 1, self.cursor.y + 1));
+
+        // ---
+
+        for x in 0..GRID_WIDTH {
+            for y in 0..GRID_HEIGHT {
+                match sprite_grid.sprite_type_at(x, y) {
+                    SpriteType::BigCircle => self.big_circle(gp.at(x, y)),
+                    //SpriteType::Cursor => self.cursor(gp.at(x, y)),
+                    SpriteType::Lizard => self.lizard(gp.at(x, y)),
+                    _ => (),
+                }
+            }
+        }
 
         self.draw_all_spritebatches(ctx)?;
 
