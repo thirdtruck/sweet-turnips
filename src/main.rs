@@ -377,11 +377,13 @@ impl event::EventHandler for MainState {
     fn update(&mut self, _ctx: &mut Context) -> GameResult {
         self.ticks += 1;
 
+        /*
         if (self.ticks + 1) % 20 == 0 {
             for villager in self.villagers.iter_mut() {
                 villager.x += 1;
             }
         }
+        */
 
         Ok(())
     }
