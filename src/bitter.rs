@@ -20,3 +20,8 @@ impl Distribution<Direction> for Standard {
         }
     }
 }
+
+pub struct DeathMarker {
+    pub x: u8,
+    pub y: u8,
+}

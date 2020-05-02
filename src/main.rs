@@ -9,7 +9,7 @@ use ggez::graphics::spritebatch::SpriteBatch;
 use ggez::nalgebra as na;
 use ggez::{Context, GameResult};
 
-use bitter::Direction;
+use bitter::{DeathMarker, Direction};
 
 use std::path;
 use std::f32::consts::PI;
@@ -129,11 +129,6 @@ impl Villager {
             },
         }
     }
-}
-
-struct DeathMarker {
-    x: u8,
-    y: u8,
 }
 
 struct MainState {
