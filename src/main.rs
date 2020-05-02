@@ -35,6 +35,10 @@ struct MainState {
     sprites: Sprites,
 }
 
+fn grid_point(x: u8, y: u8) -> na::Point2<f32> {
+    na::Point2::new((30 * x) as f32, (30 * y) as f32)
+}
+
 fn invert(ctx: &mut Context, image: &graphics::Image) -> GameResult<graphics::Image> {
     let image_u8 = image.to_rgba8(ctx)?;
 
@@ -107,7 +111,7 @@ impl event::EventHandler for MainState {
 
         self.sprites.curves.add(graphics::DrawParam::new()
                                .scale(na::Vector2::new(4.0, 4.0))
-                               .dest(na::Point2::new(0.0, 0.0))
+                               .dest(grid_point(0, 0))
                                );
 
         self.sprites.lines.add(graphics::DrawParam::new()
@@ -132,7 +136,7 @@ impl event::EventHandler for MainState {
 
         self.sprites.big_circles.add(graphics::DrawParam::new()
                                .scale(na::Vector2::new(4.0, 4.0))
-                               .dest(na::Point2::new(30.0, 0.0))
+                               .dest(grid_point(1, 0))
                                );
 
         self.sprites.diamonds.add(graphics::DrawParam::new()
