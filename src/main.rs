@@ -11,6 +11,8 @@ use ggez::{Context, GameResult};
 use std::path;
 use std::f32::consts::PI;
 
+type EntityId = usize;
+
 enum Direction {
     Up,
     Down,
@@ -76,12 +78,17 @@ impl Cursor {
         }
     }
 
+    fn selects(&self, x: u8, y: u8) -> bool {
+        self.x == x && self.y == y
+    }
+
     fn overlaps(&self, x: u8, y: u8) -> bool {
         self.x + 1 == x && self.y + 1 == y
     }
 }
 
 struct Villager {
+    id: EntityId,
     satiation: u8,
     x: u8,
     y: u8,
@@ -90,6 +97,7 @@ struct Villager {
 impl Villager {
     fn new() -> Self {
         Villager {
+            id: 0,
             satiation: 5,
             x: 4,
             y: 4,
@@ -101,6 +109,7 @@ struct MainState {
     sprites: Sprites,
     cursor: Cursor,
     villagers: Vec<Villager>,
+    selected_villager: Option<EntityId>,
     ticks: usize,
 }
 
@@ -212,6 +221,7 @@ impl MainState {
             sprites,
             cursor: Cursor::new(),
             villagers: vec![Villager::new()],
+            selected_villager: None,
             ticks: 0,
         };
         Ok(s)
@@ -384,6 +394,14 @@ impl event::EventHandler for MainState {
             }
         }
         */
+
+        self.selected_villager = None;
+
+        for villager in self.villagers.iter() {
+            if self.cursor.selects(villager.x, villager.y) {
+                self.selected_villager = Some(villager.id);
+            }
+        }
 
         Ok(())
     }
