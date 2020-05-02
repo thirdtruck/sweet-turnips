@@ -109,6 +109,34 @@ impl MainState {
         Ok(s)
     }
 
+    fn draw_all_spritebatches(&mut self, ctx: &mut Context) -> GameResult {
+        let origin_param = graphics::DrawParam::new().dest(na::Point2::new(0.0, 0.0));
+
+        graphics::draw(ctx, &self.sprites.lines, origin_param)?;
+        graphics::draw(ctx, &self.sprites.curves, origin_param)?;
+        graphics::draw(ctx, &self.sprites.crosses, origin_param)?;
+        graphics::draw(ctx, &self.sprites.corner_triangles, origin_param)?;
+        graphics::draw(ctx, &self.sprites.small_circles, origin_param)?;
+        graphics::draw(ctx, &self.sprites.big_circles, origin_param)?;
+        graphics::draw(ctx, &self.sprites.diamonds, origin_param)?;
+        graphics::draw(ctx, &self.sprites.dashes, origin_param)?;
+        graphics::draw(ctx, &self.sprites.dots, origin_param)?;
+        graphics::draw(ctx, &self.sprites.booms, origin_param)?;
+        graphics::draw(ctx, &self.sprites.skulls, origin_param)?;
+        graphics::draw(ctx, &self.sprites.side_triangles, origin_param)?;
+        graphics::draw(ctx, &self.sprites.ships, origin_param)?;
+        graphics::draw(ctx, &self.sprites.hearts, origin_param)?;
+        graphics::draw(ctx, &self.sprites.cursors, origin_param)?;
+        graphics::draw(ctx, &self.sprites.turnips, origin_param)?;
+        graphics::draw(ctx, &self.sprites.squids, origin_param)?;
+        graphics::draw(ctx, &self.sprites.lizards, origin_param)?;
+        graphics::draw(ctx, &self.sprites.balls, origin_param)?;
+        graphics::draw(ctx, &self.sprites.crabs, origin_param)?;
+        graphics::draw(ctx, &self.sprites.altars, origin_param)?;
+
+        Ok(())
+    }
+
     fn curve_at(&mut self, x: u8, y: u8) {
         self.sprites.curves.add(self.default_sprite_param.dest(grid_point(x, y)));
     }
@@ -204,31 +232,10 @@ impl event::EventHandler for MainState {
 
         self.cross_at(0, 2);
 
-        let origin_param = graphics::DrawParam::new().dest(na::Point2::new(0.0, 0.0));
-
-        graphics::draw(ctx, &self.sprites.lines, origin_param)?;
-        graphics::draw(ctx, &self.sprites.curves, origin_param)?;
-        graphics::draw(ctx, &self.sprites.crosses, origin_param)?;
-        graphics::draw(ctx, &self.sprites.corner_triangles, origin_param)?;
-        graphics::draw(ctx, &self.sprites.small_circles, origin_param)?;
-        graphics::draw(ctx, &self.sprites.big_circles, origin_param)?;
-        graphics::draw(ctx, &self.sprites.diamonds, origin_param)?;
-        graphics::draw(ctx, &self.sprites.dashes, origin_param)?;
-        graphics::draw(ctx, &self.sprites.dots, origin_param)?;
-        graphics::draw(ctx, &self.sprites.booms, origin_param)?;
-        graphics::draw(ctx, &self.sprites.skulls, origin_param)?;
-        graphics::draw(ctx, &self.sprites.side_triangles, origin_param)?;
-        graphics::draw(ctx, &self.sprites.ships, origin_param)?;
-        graphics::draw(ctx, &self.sprites.hearts, origin_param)?;
-        graphics::draw(ctx, &self.sprites.cursors, origin_param)?;
-        graphics::draw(ctx, &self.sprites.turnips, origin_param)?;
-        graphics::draw(ctx, &self.sprites.squids, origin_param)?;
-        graphics::draw(ctx, &self.sprites.lizards, origin_param)?;
-        graphics::draw(ctx, &self.sprites.balls, origin_param)?;
-        graphics::draw(ctx, &self.sprites.crabs, origin_param)?;
-        graphics::draw(ctx, &self.sprites.altars, origin_param)?;
+        self.draw_all_spritebatches(ctx)?;
 
         graphics::present(ctx)?;
+
         Ok(())
     }
 }
