@@ -11,9 +11,11 @@ use std::path;
 struct Sprites {
     curves: graphics::spritebatch::SpriteBatch,
     curves_i: graphics::spritebatch::SpriteBatch,
-    /*
     lines: graphics::spritebatch::SpriteBatch,
+    lines_i: graphics::spritebatch::SpriteBatch,
     crosses: graphics::spritebatch::SpriteBatch,
+    crosses_i: graphics::spritebatch::SpriteBatch,
+    /*
     corner_triangles: graphics::spritebatch::SpriteBatch,
     small_circles: graphics::spritebatch::SpriteBatch,
     big_circles: graphics::spritebatch::SpriteBatch,
@@ -44,7 +46,11 @@ fn invert(ctx: &mut Context, image: &graphics::Image) -> GameResult<graphics::Im
 
     let image_u8_i: Vec<u8> = image_u8.iter().enumerate().map(|(i, p)| {
         if (i + 1) % 4 == 0 {
-            *p
+            if image_u8[i - 1] == 255 {
+                0 // transparent if the pixel is white)
+            } else {
+                255
+            }
         } else {
             if *p == 0 { 255 } else { 0 }
         }
@@ -72,10 +78,13 @@ fn prep_sprites(ctx: &mut Context, sprite_number: usize) -> GameResult<(SpriteBa
 impl MainState {
     fn new(ctx: &mut Context) -> GameResult<MainState> {
         let (curves, curves_i) = prep_sprites(ctx, 1)?;
+        let (lines, lines_i) = prep_sprites(ctx, 2)?;
+        let (crosses, crosses_i) = prep_sprites(ctx, 3)?;
 
         let sprites: Sprites = Sprites {
-            curves,
-            curves_i,
+            curves, curves_i,
+            lines, lines_i,
+            crosses, crosses_i,
         };
 
         let s = MainState { sprites };
@@ -92,11 +101,19 @@ impl event::EventHandler for MainState {
         graphics::clear(ctx, [0.0, 0.0, 0.0, 1.0].into());
 
         self.sprites.curves.add(graphics::DrawParam::new()
-                               .scale(na::Vector2::new(4.0, 4.0)));
+                               .scale(na::Vector2::new(4.0, 4.0))
+                               .dest(na::Point2::new(0.0, 0.0))
+                               );
+
+        self.sprites.lines.add(graphics::DrawParam::new()
+                               .scale(na::Vector2::new(4.0, 4.0))
+                               .dest(na::Point2::new(0.0, 20.0))
+                               );
 
         let param = graphics::DrawParam::new()
             .dest(na::Point2::new(0.0, 0.0));
 
+        graphics::draw(ctx, &self.sprites.lines, param)?;
         graphics::draw(ctx, &self.sprites.curves, param)?;
 
         graphics::present(ctx)?;
