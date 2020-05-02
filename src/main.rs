@@ -54,8 +54,25 @@ struct Sprites {
     altars: graphics::spritebatch::SpriteBatch,
 }
 
+struct Villager {
+    satiation: u8,
+    x: u8,
+    y: u8,
+}
+
+impl Villager {
+    fn new() -> Self {
+        Villager {
+            satiation: 5,
+            x: 4,
+            y: 4,
+        }
+    }
+}
+
 struct MainState {
     sprites: Sprites,
+    villagers: Vec<Villager>,
 }
 
 struct GridParam {
@@ -164,6 +181,7 @@ impl MainState {
 
         let s = MainState {
             sprites,
+            villagers: vec![Villager::new()],
         };
         Ok(s)
     }
@@ -312,9 +330,11 @@ impl event::EventHandler for MainState {
             self.big_circle(gp.at(0, y));
         }
 
+        let villager_coords: Vec<(u8, u8)> = self.villagers.iter().map(|v| (v.x, v.y)).collect();
 
-        self.altar(gp.at(2, 2));
-        self.altar(gp.at(3, 2).color(RED));
+        for (x, y) in villager_coords {
+            self.lizard(gp.at(x, y));
+        }
 
         self.draw_all_spritebatches(ctx)?;
 
