@@ -76,7 +76,7 @@ impl GridParam {
 
     fn rotated(&self, radians: f32) -> Self {
         let draw_param = self.draw_param
-            .offset(na::Point2::new(0.5, 0.5))
+            .offset(na::Point2::new(0.0, 0.0))
             .rotation(radians)
             ;
 
@@ -281,13 +281,31 @@ impl event::EventHandler for MainState {
 
         let gp = GridParam::new();
 
-        self.curve(gp.at(0, 0).rotated(D0));
 
-        self.curve(gp.at(0, 7).rotated(D90));
+        self.curve(gp.at(0, 0));
 
-        self.curve(gp.at(7, 7).rotated(D180));
+        for x in 1..7 {
+            self.line(gp.at(x, 0));
+        }
 
-        self.curve(gp.at(7, 0).rotated(D270));
+        self.curve(gp.at(0, 7));
+
+        for y in 1..7 {
+            self.line(gp.at(7, y).rotated(D90));
+        }
+
+        self.curve(gp.at(7, 7));
+
+        for x in 1..7 {
+            self.line(gp.at(x, 7));
+        }
+
+        self.curve(gp.at(7, 0));
+
+        for y in 1..7 {
+            self.line(gp.at(0, y).rotated(D90));
+        }
+
 
         self.line(gp.at(0, 1));
 
