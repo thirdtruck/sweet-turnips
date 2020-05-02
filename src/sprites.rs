@@ -1,5 +1,32 @@
 use ggez::graphics::spritebatch::SpriteBatch;
 
+#[derive(Copy, Clone)]
+#[allow(dead_code)]
+pub enum SpriteType {
+    Curve,
+    Line,
+    Cross,
+    CornerTriangle,
+    SmallCircle,
+    BigCircle,
+    Diamond,
+    Dash,
+    Dot,
+    Boom,
+    Skull,
+    SideTriangle,
+    Ship,
+    Heart,
+    Cursor,
+    Turnip,
+    Squid,
+    Lizard,
+    Ball,
+    Crab,
+    Altar,
+    Empty,
+}
+
 pub struct Sprites {
     pub curves: SpriteBatch,
     pub lines: SpriteBatch,
