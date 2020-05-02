@@ -73,6 +73,7 @@ impl Villager {
 struct MainState {
     sprites: Sprites,
     villagers: Vec<Villager>,
+    ticks: usize,
 }
 
 struct GridParam {
@@ -182,6 +183,7 @@ impl MainState {
         let s = MainState {
             sprites,
             villagers: vec![Villager::new()],
+            ticks: 0,
         };
         Ok(s)
     }
@@ -210,6 +212,28 @@ impl MainState {
         graphics::draw(ctx, &self.sprites.balls, origin_param)?;
         graphics::draw(ctx, &self.sprites.crabs, origin_param)?;
         graphics::draw(ctx, &self.sprites.altars, origin_param)?;
+
+        self.sprites.lines.clear();
+        self.sprites.curves.clear();
+        self.sprites.crosses.clear();
+        self.sprites.corner_triangles.clear();
+        self.sprites.small_circles.clear();
+        self.sprites.big_circles.clear();
+        self.sprites.diamonds.clear();
+        self.sprites.dashes.clear();
+        self.sprites.dots.clear();
+        self.sprites.booms.clear();
+        self.sprites.skulls.clear();
+        self.sprites.side_triangles.clear();
+        self.sprites.ships.clear();
+        self.sprites.hearts.clear();
+        self.sprites.cursors.clear();
+        self.sprites.turnips.clear();
+        self.sprites.squids.clear();
+        self.sprites.lizards.clear();
+        self.sprites.balls.clear();
+        self.sprites.crabs.clear();
+        self.sprites.altars.clear();
 
         Ok(())
     }
@@ -297,6 +321,14 @@ impl MainState {
 
 impl event::EventHandler for MainState {
     fn update(&mut self, _ctx: &mut Context) -> GameResult {
+        self.ticks += 1;
+
+        if (self.ticks + 1) % 10 == 0 {
+            for villager in self.villagers.iter_mut() {
+                villager.x += 1;
+            }
+        }
+
         Ok(())
     }
 
