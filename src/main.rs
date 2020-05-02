@@ -9,18 +9,21 @@ use ggez::graphics::spritebatch::SpriteBatch;
 use ggez::nalgebra as na;
 use ggez::{Context, GameResult};
 
-use bitter::{DeathMarker, Direction};
+use bitter::{
+    DeathMarker,
+    Direction,
+    EntityId,
+    Ticks,
+    Villager,
+    GRID_WIDTH,
+    GRID_HEIGHT,
+};
 
 use std::path;
 use std::f32::consts::PI;
 
-type EntityId = usize;
-type Ticks = usize;
-
 const SPRITE_SCALE: f32 = 4.0;
 const SPRITE_SIZE: f32 = 8.0 * SPRITE_SCALE;
-const GRID_WIDTH: u8 = 8;
-const GRID_HEIGHT: u8 = 8;
 
 const RED: Color = Color {
     r: 1.0,
@@ -82,52 +85,6 @@ impl Cursor {
 
     fn overlaps(&self, x: u8, y: u8) -> bool {
         self.x + 1 == x && self.y + 1 == y
-    }
-}
-
-#[derive(Copy,Clone)]
-struct Villager {
-    id: EntityId,
-    satiation: u8,
-    last_ate: Ticks,
-    x: u8,
-    y: u8,
-}
-
-impl Villager {
-    fn new(id: EntityId, now: Ticks) -> Self {
-        Villager {
-            id: id,
-            satiation: 3,
-            last_ate: now,
-            x: 4,
-            y: 4,
-        }
-    }
-
-    fn step(&mut self, direction: Direction) {
-        match direction {
-            Direction::Up => {
-                if self.y > 0 {
-                    self.y -= 1;
-                }
-            },
-            Direction::Down => {
-                if self.y < GRID_HEIGHT {
-                    self.y += 1;
-                }
-            },
-            Direction::Left => {
-                if self.x > 0 {
-                    self.x -= 1;
-                }
-            },
-            Direction::Right => {
-                if self.x < GRID_WIDTH {
-                    self.x += 1;
-                }
-            },
-        }
     }
 }
 
