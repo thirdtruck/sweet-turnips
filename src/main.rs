@@ -109,15 +109,17 @@ impl Cursor {
 struct Villager {
     id: EntityId,
     satiation: u8,
+    last_ate: Ticks,
     x: u8,
     y: u8,
 }
 
 impl Villager {
-    fn new(id: EntityId) -> Self {
+    fn new(id: EntityId, now: Ticks) -> Self {
         Villager {
             id: id,
             satiation: 3,
+            last_ate: now,
             x: 4,
             y: 4,
         }
@@ -263,14 +265,15 @@ impl MainState {
         };
 
         let starting_id: EntityId = 0;
+        let ticks: Ticks = 0;
 
         let s = MainState {
             last_id: starting_id,
             sprites,
             cursor: Cursor::new(),
-            villagers: vec![Villager::new(starting_id)],
+            villagers: vec![Villager::new(starting_id, ticks)],
             selected_villager_id: None,
-            ticks: 0,
+            ticks,
         };
         Ok(s)
     }
@@ -448,10 +451,20 @@ impl event::EventHandler for MainState {
 
         if (self.ticks + 1) % 80 == 0 {
             for villager in self.villagers.iter_mut() {
+                if self.ticks - villager.last_ate > 40 && villager.satiation > 0 {
+                    villager.satiation -= 1;
+                }
+
+                if villager.satiation == 0 {
+                    continue;
+                }
+
                 let direction: Direction = rand::random();
                 villager.step(direction);
             }
         }
+
+        self.villagers.retain(|v| v.satiation > 0);
 
         self.selected_villager_id = None;
 
