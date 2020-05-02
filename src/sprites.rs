@@ -4,7 +4,7 @@ use crate::bitter::{GRID_HEIGHT, GRID_WIDTH};
 
 const SPRITE_GRID_LENGTH: usize = (GRID_WIDTH * GRID_HEIGHT) as usize;
 
-#[derive(Copy, Clone)]
+#[derive(Copy, Clone, Debug, PartialEq)]
 #[allow(dead_code)]
 pub enum SpriteType {
     Curve,

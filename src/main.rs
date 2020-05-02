@@ -353,21 +353,29 @@ impl MainState {
     }
 
     fn render_sprite_grid(&mut self, sprite_grid: SpriteGrid) {
-        let gp = GridParam::new();
-
         for x in 0..GRID_WIDTH {
             for y in 0..GRID_HEIGHT {
-                match sprite_grid.sprite_type_at(x, y) {
-                    SpriteType::BigCircle => self.big_circle(gp.at(x, y)),
-                    //SpriteType::Cursor => self.cursor(gp.at(x, y)),
-                    SpriteType::Lizard => self.lizard(gp.at(x, y)),
-                    SpriteType::Turnip => self.turnip(gp.at(x, y).color(RED)),
-                    SpriteType::Skull => self.skull(gp.at(x, y)),
-                    SpriteType::Cursor => self.cursor(gp.at(x, y)),
-                    _ => (),
-                }
+                let sprite_type =  sprite_grid.sprite_type_at(x, y);
+                self.render_sprite_at(sprite_type, x, y);
             }
         }
+    }
+
+    fn render_sprite_at(&mut self, sprite_type: SpriteType, x: u8, y: u8) {
+        let gp = GridParam::new().at(x, y);
+
+        if sprite_type == SpriteType::Empty {
+            return;
+        }
+
+        match sprite_type {
+            SpriteType::BigCircle => self.sprites.big_circles.add(gp.draw_param),
+            SpriteType::Lizard => self.sprites.lizards.add(gp.draw_param),
+            SpriteType::Turnip => self.sprites.turnips.add(gp.color(RED).draw_param),
+            SpriteType::Skull => self.sprites.skulls.add(gp.draw_param),
+            SpriteType::Cursor => self.sprites.cursors.add(gp.draw_param),
+            _ => unimplemented!("Unimplemented sprite type: {:?}", sprite_type),
+        };
     }
 }
 
