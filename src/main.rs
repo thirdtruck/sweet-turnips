@@ -17,6 +17,7 @@ use std::path;
 use std::f32::consts::PI;
 
 type EntityId = usize;
+type Ticks = usize;
 
 enum Direction {
     Up,
@@ -154,7 +155,7 @@ struct MainState {
     cursor: Cursor,
     villagers: Vec<Villager>,
     selected_villager_id: Option<EntityId>,
-    ticks: usize,
+    ticks: Ticks,
 }
 
 struct GridParam {
