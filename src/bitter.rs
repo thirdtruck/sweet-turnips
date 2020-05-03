@@ -338,9 +338,9 @@ fn can_move_in_dir(coords: Coords, dir: Direction) -> bool {
 
     match dir {
         Dir::Up => y > 1,
-        Dir::Down => y < GRID_HEIGHT + 1,
+        Dir::Down => y < GRID_HEIGHT - 1,
         Dir::Left => x > 1,
-        Dir::Right => x < GRID_HEIGHT + 1,
+        Dir::Right => x < GRID_WIDTH - 1,
     }
 }
 
