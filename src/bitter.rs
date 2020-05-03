@@ -98,9 +98,9 @@ impl World {
     }
 
     fn process_events(&mut self) {
-        let mut new_events: Vec<WorldEvent> = vec![];
+        while let Some(evt) = self.events.pop() {
+            let mut new_events: Vec<WorldEvent> = vec![];
 
-        for evt in self.events.drain(..) {
             match evt {
                 WE::VillagerMoved(key, dir) => {
                     let c = self.coords[key];
@@ -234,12 +234,8 @@ impl World {
                     }
                 }
             }
-        }
 
-        self.events = new_events;
-
-        if self.events.len() > 0 {
-            self.process_events();
+            self.events.extend(new_events);
         }
     }
 
@@ -287,17 +283,13 @@ impl World {
     }
 
     fn advance_world(&mut self) {
-        let recurring_events = [
-            WE::GravesCleared,
-            WE::FarmsCultivated,
-            WE::VillagersFarmed,
-            WE::VillagersMoved,
-        ];
+        // self.events is a LIFO stack
+        self.events.push(WE::VillagersMoved);
+        self.events.push(WE::VillagersFarmed);
+        self.events.push(WE::FarmsCultivated);
+        self.events.push(WE::GravesCleared);
 
-        for evt in recurring_events.iter() {
-            self.events.push(*evt);
-            self.process_events();
-        }
+        self.process_events();
     }
 
     pub fn villager_id_at(&self, x: u8, y: u8) -> Option<EntityId> {
