@@ -83,7 +83,8 @@ impl World {
         for evt in self.events.drain(..) {
             match evt {
                 WE::VillagerMoved(key, dir) => {
-                    self.villagers[key].step(dir);
+                    let c = self.coords[key];
+                    self.coords[key] = coords_after_move(c, dir);
                 },
                 WE::VillagerAte(key) => {
                     self.satiation[key] += 1;
@@ -122,7 +123,7 @@ impl World {
         let villager = Villager::new(new_id, key, x, y, self.ticks);
 
         self.villagers.insert(key, villager);
-
+        self.coords.insert(key, (x, y));
         self.satiation.insert(key, 1);
 
         self.last_id = new_id;
@@ -216,7 +217,8 @@ impl World {
 
     pub fn villager_id_at(&self, x: u8, y: u8) -> Option<EntityId> {
         for v in self.villagers.values() {
-            if v.x == x && v.y == y {
+            let (vx, vy) = self.coords[v.key];
+            if vx == x && vy == y {
                 return Some(v.id);
             }
         }
@@ -233,6 +235,37 @@ impl World {
 
         None
     }
+}
+
+fn coords_after_move(coords: Coords, dir: Direction) -> Coords {
+    let (mut x, mut y) = (coords.0, coords.1);
+
+    match dir {
+        // Remember to account for the border
+
+        Direction::Up => {
+            if y > 1 {
+                y -= 1;
+            }
+        },
+        Direction::Down => {
+            if y < GRID_HEIGHT - 1 {
+                y += 1;
+            }
+        },
+        Direction::Left => {
+            if x > 1 {
+                x -= 1;
+            }
+        },
+        Direction::Right => {
+            if x < GRID_WIDTH - 1 {
+                x += 1;
+            }
+        },
+    }
+
+    (x, y)
 }
 
 pub struct DeathMarker {
@@ -257,31 +290,6 @@ impl Villager {
             last_ate: now,
             x,
             y,
-        }
-    }
-
-    pub fn step(&mut self, direction: Direction) {
-        match direction {
-            Direction::Up => {
-                if self.y > 0 {
-                    self.y -= 1;
-                }
-            },
-            Direction::Down => {
-                if self.y < GRID_HEIGHT {
-                    self.y += 1;
-                }
-            },
-            Direction::Left => {
-                if self.x > 0 {
-                    self.x -= 1;
-                }
-            },
-            Direction::Right => {
-                if self.x < GRID_WIDTH {
-                    self.x += 1;
-                }
-            },
         }
     }
 }
