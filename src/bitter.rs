@@ -34,7 +34,7 @@ impl Distribution<Direction> for Standard {
 pub struct World {
     events: Vec<WorldEvent>,
     last_id: EntityId,
-    pub villagers: Vec<Villager>,
+    villagers: Vec<Villager>,
     pub death_markers: Vec<DeathMarker>,
     pub farms: Vec<Farm>,
     ticks: Ticks,
@@ -43,6 +43,7 @@ pub struct World {
 }
 
 enum WorldEvent {
+    VillagerMoves(EntityKey, Direction),
     VillagerEats(EntityKey),
     VillagerHungers(EntityKey),
     HarvestFarm(EntityId),
@@ -74,6 +75,9 @@ impl World {
     fn process_events(&mut self) {
         for evt in self.events.drain(..) {
             match evt {
+                WE::VillagerMoves(key, dir) => {
+                    self.villagers_map[key].step(dir);
+                },
                 WE::VillagerEats(key) => {
                     self.satiation[key] += 1;
                     //villager.last_ate = self.ticks;
@@ -191,10 +195,13 @@ impl World {
 
             self.process_events();
 
-            for villager in self.villagers.iter_mut() {
+            for key in self.villagers_map.keys() {
                 let direction: Direction = rand::random();
-                villager.step(direction);
+
+                self.events.push(WE::VillagerMoves(key, direction));
             }
+
+            self.process_events();
         }
 
         self.villagers.retain(|v| v.satiation > 0);

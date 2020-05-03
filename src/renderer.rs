@@ -25,7 +25,7 @@ pub fn sprite_grid_from_world(world: &World, selected_villager_id: Option<Entity
         sprite_grid.turnip_at(x, y);
     }
 
-    let villager_coords: Vec<(u8, u8)> = world.villagers.iter().map(|v| (v.x, v.y)).collect();
+    let villager_coords: Vec<(u8, u8)> = world.villagers_map.values().map(|v| (v.x, v.y)).collect();
 
     for (x, y) in villager_coords {
         sprite_grid.lizard_at(x, y);
