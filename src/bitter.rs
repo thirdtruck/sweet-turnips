@@ -102,13 +102,19 @@ impl World {
                 },
                 WE::VillagerAte(key) => {
                     self.satiation[key] += 1;
-                    //villager.last_ate = self.ticks;
+
+                    let mut villager = self.villagers[key];
+                    villager.last_ate = self.ticks;
+                    self.villagers[key] = villager;
                 },
                 WE::VillagerHungered(key) => {
                     if self.satiation[key] > 0 {
                         self.satiation[key] -= 1;
                     }
-                    //villager.last_ate = self.ticks;
+
+                    let mut villager = self.villagers[key];
+                    villager.last_ate = self.ticks;
+                    self.villagers[key] = villager;
                 },
                 WE::FarmGrew(key) => {
                     let mut farm = self.farms[key];
