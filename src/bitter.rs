@@ -3,8 +3,12 @@ use rand::{
     Rng,
 };
 
+use slotmap::{new_key_type, SlotMap, SecondaryMap};
+
 pub const GRID_WIDTH: u8 = 8;
 pub const GRID_HEIGHT: u8 = 8;
+
+new_key_type! { pub struct EntityKey; }
 
 pub type EntityId = usize;
 pub type Ticks = usize;
@@ -33,6 +37,8 @@ pub struct World {
     pub death_markers: Vec<DeathMarker>,
     pub farms: Vec<Farm>,
     ticks: Ticks,
+    pub satiation: SecondaryMap<EntityKey, u8>,
+    pub villagers_map: SlotMap<EntityKey, Villager>,
 }
 
 impl World {
@@ -43,6 +49,8 @@ impl World {
             villagers: vec![],
             death_markers: vec![],
             farms: vec![],
+            satiation: SecondaryMap::new(),
+            villagers_map: SlotMap::with_key(),
         };
 
         world.add_villager_at(4, 4);
@@ -60,6 +68,9 @@ impl World {
         self.last_id = new_id;
 
         self.villagers.push(villager);
+
+        let key = self.villagers_map.insert(villager);
+        self.satiation.insert(key, 3);
 
         new_id
     }
