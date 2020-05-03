@@ -31,6 +31,7 @@ pub struct World {
     last_id: EntityId,
     pub villagers: Vec<Villager>,
     pub death_markers: Vec<DeathMarker>,
+    pub farms: Vec<Farm>,
     ticks: Ticks,
 }
 
@@ -44,6 +45,7 @@ impl World {
             ticks,
             villagers: vec![Villager::new(starting_id, ticks)],
             death_markers: vec![],
+            farms: vec![Farm::new(starting_id, ticks)],
         }
     }
 
@@ -144,6 +146,23 @@ impl Villager {
                     self.x += 1;
                 }
             },
+        }
+    }
+}
+
+pub struct Farm {
+    pub id: EntityId,
+    //pub last_grew: Ticks,
+    pub x: u8,
+    pub y: u8,
+}
+
+impl Farm {
+    pub fn new(id: EntityId, _now: Ticks) -> Self {
+        Farm {
+            id,
+            x: 5,
+            y: 5,
         }
     }
 }

@@ -19,6 +19,12 @@ pub fn sprite_grid_from_world(world: &World, selected_villager_id: Option<Entity
         sprite_grid.big_circle_at(7, y);
     }
 
+    let farm_coords: Vec<(u8, u8)> = world.farms.iter().map(|v| (v.x, v.y)).collect();
+
+    for (x, y) in farm_coords {
+        sprite_grid.turnip_at(x, y);
+    }
+
     let villager_coords: Vec<(u8, u8)> = world.villagers.iter().map(|v| (v.x, v.y)).collect();
 
     for (x, y) in villager_coords {
