@@ -85,6 +85,7 @@ impl World {
             for villager in self.villagers.iter_mut() {
                 if self.ticks - villager.last_ate > 40 && villager.satiation > 0 {
                     villager.satiation -= 1;
+                    villager.last_ate = self.ticks;
                 }
 
                 if villager.satiation == 0 {
