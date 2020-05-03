@@ -60,6 +60,7 @@ pub struct World {
 
 enum WorldEvent {
     GravesCleared,
+    FarmsCultivated,
     AddFarm(Coords),
     VillagerMoved(EntityKey, Direction),
     VillagerAte(EntityKey),
@@ -208,6 +209,13 @@ impl World {
                 WE::GravesCleared => {
                     self.death_markers.clear();
                 }
+                WE::FarmsCultivated => {
+                    for farm in self.farms.values() {
+                        if self.ticks - farm.last_grew > 20 {
+                            new_events.push(WE::FarmGrew(farm.key));
+                        }
+                    }
+                }
             }
         }
 
@@ -263,8 +271,7 @@ impl World {
 
     fn advance_world(&mut self) {
         self.events.push(WE::GravesCleared);
-
-        self.grow_farms();
+        self.events.push(WE::FarmsCultivated);
 
         self.process_events();
 
@@ -279,14 +286,6 @@ impl World {
         self.villagers_move();
 
         self.process_events();
-    }
-
-    fn grow_farms(&mut self) {
-        for farm in self.farms.values() {
-            if self.ticks - farm.last_grew > 20 {
-                self.events.push(WE::FarmGrew(farm.key));
-            }
-        }
     }
 
     fn villagers_harvest(&mut self) {
