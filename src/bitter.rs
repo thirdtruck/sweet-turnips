@@ -39,6 +39,7 @@ pub type Coords = (u8, u8);
 pub struct World {
     events: Vec<WorldEvent>,
     entities: SlotMap<EntityKey, GameEntity>,
+    pub coords: SecondaryMap<EntityKey, Coords>,
     last_id: EntityId,
     pub death_markers: Vec<DeathMarker>,
     pub farms: Vec<Farm>,
@@ -61,6 +62,7 @@ impl World {
     pub fn new() -> Self {
         let mut world = World {
             entities: SlotMap::with_key(),
+            coords: SecondaryMap::new(),
             events: vec![],
             last_id: 0,
             ticks: 0,
