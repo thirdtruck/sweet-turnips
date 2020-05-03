@@ -186,6 +186,10 @@ impl World {
         }
 
         self.events = new_events;
+
+        if self.events.len() > 0 {
+            self.process_events();
+        }
     }
 
     pub fn add_villager_at(&mut self, x: u8, y: u8) -> EntityId {
