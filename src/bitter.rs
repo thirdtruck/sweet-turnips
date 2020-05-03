@@ -99,13 +99,17 @@ impl World {
                 WE::FarmHarvested(id) => {
                     self.farms.retain(|f| !f.id == id);
                 }
-                WE::VillagerDied(key) => {
-                    let villager = self.villagers[key];
-                    let (x, y) = self.coords[villager.key];
+                WE::VillagerDied(vk) => {
+                    let coords = self.coords[vk];
 
-                    self.death_markers.insert(key, DeathMarker { x, y });
+                    let dmk = self.entities.insert(GameEntity);
 
-                    self.villagers.remove(key);
+                    let dm = DeathMarker { key: dmk };
+
+                    self.death_markers.insert(dmk, dm);
+                    self.coords.insert(dmk, coords);
+
+                    self.villagers.remove(vk);
                 }
             }
         }
@@ -266,8 +270,7 @@ fn coords_after_move(coords: Coords, dir: Direction) -> Coords {
 }
 
 pub struct DeathMarker {
-    pub x: u8,
-    pub y: u8,
+    pub key: EntityKey,
 }
 
 #[derive(Copy,Clone,Debug)]
