@@ -68,6 +68,16 @@ impl World {
         world
     }
 
+    fn process_events(&mut self) {
+        for evt in self.events.drain(..) {
+            match evt {
+                WE::HarvestFarm(id) => {
+                    self.farms.retain(|f| !f.id == id);
+                }
+            }
+        }
+    }
+
     pub fn add_villager_at(&mut self, x: u8, y: u8) -> EntityId {
         let new_id = self.last_id + 1;
 
@@ -150,13 +160,7 @@ impl World {
                 }
             }
 
-            for evt in self.events.drain(..) {
-                match evt {
-                    WE::HarvestFarm(id) => {
-                        self.farms.retain(|f| !f.id == id);
-                    }
-                }
-            }
+            self.process_events();
 
             for villager in self.villagers.iter_mut() {
                 if villager.satiation == 0 {
