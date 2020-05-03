@@ -40,13 +40,29 @@ impl World {
         let starting_id = 0;
         let ticks = 0;
 
-        World {
+        let mut world = World {
             last_id: 0,
             ticks,
-            villagers: vec![Villager::new(starting_id, ticks)],
+            villagers: vec![],
             death_markers: vec![],
             farms: vec![Farm::new(starting_id, ticks)],
-        }
+        };
+
+        world.add_villager_at(4, 4);
+
+        world
+    }
+
+    pub fn add_villager_at(&mut self, x: u8, y: u8) -> EntityId {
+        let new_id = self.last_id + 1;
+
+        let villager = Villager::new(new_id, x, y, self.ticks);
+
+        self.last_id = new_id;
+
+        self.villagers.push(villager);
+
+        new_id
     }
 
     pub fn tick(&mut self) {
@@ -114,13 +130,13 @@ pub struct Villager {
 }
 
 impl Villager {
-    pub fn new(id: EntityId, now: Ticks) -> Self {
+    pub fn new(id: EntityId, x: u8, y: u8, now: Ticks) -> Self {
         Villager {
-            id: id,
+            id,
             satiation: 3,
             last_ate: now,
-            x: 4,
-            y: 4,
+            x,
+            y,
         }
     }
 
