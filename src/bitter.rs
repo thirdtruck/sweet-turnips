@@ -258,7 +258,7 @@ impl World {
     }
 
     fn advance_world(&mut self) {
-        self.death_markers.clear();
+        self.clear_graves();
 
         for farm in self.farms.values() {
             if self.ticks - farm.last_grew > 20 {
@@ -289,6 +289,10 @@ impl World {
         }
 
         self.process_events();
+    }
+
+    fn clear_graves(&mut self) {
+        self.death_markers.clear();
     }
 
     pub fn villager_id_at(&self, x: u8, y: u8) -> Option<EntityId> {
