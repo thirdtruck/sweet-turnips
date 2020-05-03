@@ -226,55 +226,58 @@ impl World {
     pub fn tick(&mut self) {
         self.ticks += 1;
 
-        let mut rng = rand::thread_rng();
-
         if (self.ticks + 1) % 80 == 0 {
-            self.death_markers.clear();
-
-            for farm in self.farms.values() {
-                if self.ticks - farm.last_grew > 20 {
-                    self.events.push(WE::FarmGrew(farm.key));
-                }
-            }
-
-            self.process_events();
-
-            for (vk, villager) in self.villagers.iter() {
-                let satiation = self.satiation[vk];
-                let mut unharvested_farms: Vec<&Farm> = self.farms.values().collect();
-
-                if self.ticks - villager.last_ate > 40 && satiation > 0 {
-                    if unharvested_farms.len() > 0 && satiation < 5 {
-                        let farm_to_eat_index = rng.gen_range(0, unharvested_farms.len());
-                        let farm = unharvested_farms.remove(farm_to_eat_index);
-
-                        self.events.push(WE::FarmHarvested(farm.key));
-                        self.events.push(WE::VillagerAte(vk));
-                    } else {
-                        self.events.push(WE::VillagerHungered(vk));
-                    }
-
-                }
-            }
-
-            self.process_events();
-
-            for key in self.villagers.keys() {
-                if self.satiation[key] == 0 {
-                    self.events.push(WE::VillagerDied(key));
-                }
-            }
-
-            self.process_events();
-
-            for key in self.villagers.keys() {
-                let direction: Direction = rand::random();
-
-                self.events.push(WE::VillagerMoved(key, direction));
-            }
-
-            self.process_events();
+            self.advance_world();
         }
+    }
+
+    fn advance_world(&mut self) {
+        let mut rng = rand::thread_rng();
+        self.death_markers.clear();
+
+        for farm in self.farms.values() {
+            if self.ticks - farm.last_grew > 20 {
+                self.events.push(WE::FarmGrew(farm.key));
+            }
+        }
+
+        self.process_events();
+
+        for (vk, villager) in self.villagers.iter() {
+            let satiation = self.satiation[vk];
+            let mut unharvested_farms: Vec<&Farm> = self.farms.values().collect();
+
+            if self.ticks - villager.last_ate > 40 && satiation > 0 {
+                if unharvested_farms.len() > 0 && satiation < 5 {
+                    let farm_to_eat_index = rng.gen_range(0, unharvested_farms.len());
+                    let farm = unharvested_farms.remove(farm_to_eat_index);
+
+                    self.events.push(WE::FarmHarvested(farm.key));
+                    self.events.push(WE::VillagerAte(vk));
+                } else {
+                    self.events.push(WE::VillagerHungered(vk));
+                }
+
+            }
+        }
+
+        self.process_events();
+
+        for key in self.villagers.keys() {
+            if self.satiation[key] == 0 {
+                self.events.push(WE::VillagerDied(key));
+            }
+        }
+
+        self.process_events();
+
+        for key in self.villagers.keys() {
+            let direction: Direction = rand::random();
+
+            self.events.push(WE::VillagerMoved(key, direction));
+        }
+
+        self.process_events();
     }
 
     pub fn villager_id_at(&self, x: u8, y: u8) -> Option<EntityId> {
