@@ -46,6 +46,8 @@ enum WorldEvent {
     HarvestFarm(EntityId),
 }
 
+type WE = WorldEvent;
+
 impl World {
     pub fn new() -> Self {
         let mut world = World {
@@ -129,34 +131,34 @@ impl World {
             }
 
             for (key, villager) in self.villagers_map.iter() {
-                let mut satiation = self.satiation[key];
+                let satiation = self.satiation[key];
 
                 if self.ticks - villager.last_ate > 40 && satiation > 0 {
                     if self.farms.len() > 0 && satiation < 5 {
-                        satiation += 1;
+                        let farm_to_eat_index = rng.gen_range(0, self.farms.len());
+                        let farm = &self.farms[farm_to_eat_index];
+                        self.events.push(WE::HarvestFarm(farm.id));
+
+                        self.satiation[key] = satiation + 1;
                     } else {
-                        satiation -= 2;
+                        self.satiation[key] = satiation - 1;
                     }
 
-                    self.satiation[key] = satiation;
+                    //villager.last_ate = self.ticks;
 
                     println!("Ate. Now: {}", satiation);
                 }
             }
 
-            for villager in self.villagers.iter_mut() {
-                if self.ticks - villager.last_ate > 40 && villager.satiation > 0 {
-                    if self.farms.len() > 0 && villager.satiation < 5 {
-                        let farm_to_eat_index = rng.gen_range(0, self.farms.len());
-                        self.farms.remove(farm_to_eat_index);
-                        villager.satiation += 1;
-                    } else {
-                        villager.satiation -= 1;
+            for evt in self.events.drain(..) {
+                match evt {
+                    WE::HarvestFarm(id) => {
+                        self.farms.retain(|f| !f.id == id);
                     }
-
-                    villager.last_ate = self.ticks;
                 }
+            }
 
+            for villager in self.villagers.iter_mut() {
                 if villager.satiation == 0 {
                     let death_marker = DeathMarker {
                         x: villager.x,
