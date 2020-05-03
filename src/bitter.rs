@@ -63,6 +63,7 @@ enum WorldEvent {
     VillagerMoved(EntityKey, Direction),
     VillagerAte(EntityKey),
     VillagerHungered(EntityKey),
+    VillagerHarvested(EntityKey),
     FarmGrew(EntityKey),
     FarmHarvested(EntityKey),
     VillagerDied(EntityKey),
@@ -182,6 +183,27 @@ impl World {
 
                     self.last_id = new_id;
                 }
+                WE::VillagerHarvested(vk) => {
+                    let mut rng = rand::thread_rng();
+
+                    let villager = self.villagers[vk];
+                    let satiation = self.satiation[vk];
+
+                    let mut unharvested_farms: Vec<&Farm> = self.farms.values().collect();
+
+                    if self.ticks - villager.last_ate > 40 && satiation > 0 {
+                        if unharvested_farms.len() > 0 && satiation < 5 {
+                            let farm_to_eat_index = rng.gen_range(0, unharvested_farms.len());
+                            let farm = unharvested_farms.remove(farm_to_eat_index);
+
+                            new_events.push(WE::FarmHarvested(farm.key));
+                            new_events.push(WE::VillagerAte(vk));
+                        } else {
+                            new_events.push(WE::VillagerHungered(vk));
+                        }
+
+                    }
+                }
             }
         }
 
@@ -236,7 +258,6 @@ impl World {
     }
 
     fn advance_world(&mut self) {
-        let mut rng = rand::thread_rng();
         self.death_markers.clear();
 
         for farm in self.farms.values() {
@@ -247,22 +268,8 @@ impl World {
 
         self.process_events();
 
-        for (vk, villager) in self.villagers.iter() {
-            let satiation = self.satiation[vk];
-            let mut unharvested_farms: Vec<&Farm> = self.farms.values().collect();
-
-            if self.ticks - villager.last_ate > 40 && satiation > 0 {
-                if unharvested_farms.len() > 0 && satiation < 5 {
-                    let farm_to_eat_index = rng.gen_range(0, unharvested_farms.len());
-                    let farm = unharvested_farms.remove(farm_to_eat_index);
-
-                    self.events.push(WE::FarmHarvested(farm.key));
-                    self.events.push(WE::VillagerAte(vk));
-                } else {
-                    self.events.push(WE::VillagerHungered(vk));
-                }
-
-            }
+        for vk in self.villagers.keys() {
+            self.events.push(WE::VillagerHarvested(vk));
         }
 
         self.process_events();
