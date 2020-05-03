@@ -34,6 +34,8 @@ impl Distribution<Direction> for Standard {
 #[derive(Copy,Clone,Debug)]
 struct GameEntity;
 
+pub type Coords = (u8, u8);
+
 pub struct World {
     events: Vec<WorldEvent>,
     entities: SlotMap<EntityKey, GameEntity>,
