@@ -43,7 +43,10 @@ pub struct World {
 }
 
 enum WorldEvent {
+    VillagerEats(EntityKey),
+    VillagerHungers(EntityKey),
     HarvestFarm(EntityId),
+    VillagerDies(EntityKey),
 }
 
 type WE = WorldEvent;
@@ -71,8 +74,29 @@ impl World {
     fn process_events(&mut self) {
         for evt in self.events.drain(..) {
             match evt {
+                WE::VillagerEats(key) => {
+                    self.satiation[key] += 1;
+                    //villager.last_ate = self.ticks;
+                },
+                WE::VillagerHungers(key) => {
+                    if self.satiation[key] > 0 {
+                        self.satiation[key] -= 1;
+                    }
+                    //villager.last_ate = self.ticks;
+                },
                 WE::HarvestFarm(id) => {
                     self.farms.retain(|f| !f.id == id);
+                }
+                WE::VillagerDies(key) => {
+                    let villager = self.villagers_map[key];
+
+                    let death_marker = DeathMarker {
+                        x: villager.x,
+                        y: villager.y,
+                    };
+                    self.death_markers.push(death_marker);
+
+                    self.villagers_map.remove(key);
                 }
             }
         }
@@ -88,7 +112,7 @@ impl World {
         self.villagers.push(villager);
 
         let key = self.villagers_map.insert(villager);
-        self.satiation.insert(key, 3);
+        self.satiation.insert(key, 1);
 
         new_id
     }
@@ -147,32 +171,27 @@ impl World {
                     if self.farms.len() > 0 && satiation < 5 {
                         let farm_to_eat_index = rng.gen_range(0, self.farms.len());
                         let farm = &self.farms[farm_to_eat_index];
-                        self.events.push(WE::HarvestFarm(farm.id));
 
-                        self.satiation[key] = satiation + 1;
+                        self.events.push(WE::HarvestFarm(farm.id));
+                        self.events.push(WE::VillagerEats(key));
                     } else {
-                        self.satiation[key] = satiation - 1;
+                        self.events.push(WE::VillagerHungers(key));
                     }
 
-                    //villager.last_ate = self.ticks;
+                }
+            }
 
-                    println!("Ate. Now: {}", satiation);
+            self.process_events();
+
+            for key in self.villagers_map.keys() {
+                if self.satiation[key] == 0 {
+                    self.events.push(WE::VillagerDies(key));
                 }
             }
 
             self.process_events();
 
             for villager in self.villagers.iter_mut() {
-                if villager.satiation == 0 {
-                    let death_marker = DeathMarker {
-                        x: villager.x,
-                        y: villager.y,
-                    };
-                    self.death_markers.push(death_marker);
-
-                    continue;
-                }
-
                 let direction: Direction = rand::random();
                 villager.step(direction);
             }
@@ -207,7 +226,7 @@ pub struct DeathMarker {
     pub y: u8,
 }
 
-#[derive(Copy,Clone)]
+#[derive(Copy,Clone,Debug)]
 pub struct Villager {
     pub id: EntityId,
     pub satiation: u8,
