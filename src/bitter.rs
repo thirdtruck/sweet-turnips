@@ -226,6 +226,8 @@ impl World {
     pub fn tick(&mut self) {
         self.ticks += 1;
 
+        let mut rng = rand::thread_rng();
+
         if (self.ticks + 1) % 80 == 0 {
             self.death_markers.clear();
 
@@ -237,24 +239,23 @@ impl World {
 
             self.process_events();
 
-            /*
-            for (key, villager) in self.villagers.iter() {
-                let satiation = self.satiation[key];
+            for (vk, villager) in self.villagers.iter() {
+                let satiation = self.satiation[vk];
+                let mut unharvested_farms: Vec<&Farm> = self.farms.values().collect();
 
                 if self.ticks - villager.last_ate > 40 && satiation > 0 {
-                    if self.farms.len() > 0 && satiation < 5 {
-                        let farm_to_eat_index = rng.gen_range(0, self.farms.len());
-                        let farm = &self.farms[farm_to_eat_index];
+                    if unharvested_farms.len() > 0 && satiation < 5 {
+                        let farm_to_eat_index = rng.gen_range(0, unharvested_farms.len());
+                        let farm = unharvested_farms.remove(farm_to_eat_index);
 
-                        self.events.push(WE::FarmHarvested(farm.id));
-                        self.events.push(WE::VillagerAte(key));
+                        self.events.push(WE::FarmHarvested(farm.key));
+                        self.events.push(WE::VillagerAte(vk));
                     } else {
-                        self.events.push(WE::VillagerHungered(key));
+                        self.events.push(WE::VillagerHungered(vk));
                     }
 
                 }
             }
-            */
 
             self.process_events();
 
