@@ -59,6 +59,7 @@ pub struct World {
 }
 
 enum WorldEvent {
+    GravesCleared,
     AddFarm(Coords),
     VillagerMoved(EntityKey, Direction),
     VillagerAte(EntityKey),
@@ -204,6 +205,9 @@ impl World {
 
                     }
                 }
+                WE::GravesCleared => {
+                    self.death_markers.clear();
+                }
             }
         }
 
@@ -258,7 +262,7 @@ impl World {
     }
 
     fn advance_world(&mut self) {
-        self.clear_graves();
+        self.events.push(WE::GravesCleared);
 
         self.grow_farms();
 
@@ -275,10 +279,6 @@ impl World {
         self.villagers_move();
 
         self.process_events();
-    }
-
-    fn clear_graves(&mut self) {
-        self.death_markers.clear();
     }
 
     fn grow_farms(&mut self) {
