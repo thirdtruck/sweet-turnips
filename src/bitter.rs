@@ -42,11 +42,11 @@ pub struct World {
 }
 
 enum WorldEvent {
-    VillagerMoves(EntityKey, Direction),
-    VillagerEats(EntityKey),
-    VillagerHungers(EntityKey),
-    HarvestFarm(EntityId),
-    VillagerDies(EntityKey),
+    VillagerMoved(EntityKey, Direction),
+    VillagerAte(EntityKey),
+    VillagerHungered(EntityKey),
+    FarmHarvested(EntityId),
+    VillagerDied(EntityKey),
 }
 
 type WE = WorldEvent;
@@ -73,23 +73,23 @@ impl World {
     fn process_events(&mut self) {
         for evt in self.events.drain(..) {
             match evt {
-                WE::VillagerMoves(key, dir) => {
+                WE::VillagerMoved(key, dir) => {
                     self.villagers[key].step(dir);
                 },
-                WE::VillagerEats(key) => {
+                WE::VillagerAte(key) => {
                     self.satiation[key] += 1;
                     //villager.last_ate = self.ticks;
                 },
-                WE::VillagerHungers(key) => {
+                WE::VillagerHungered(key) => {
                     if self.satiation[key] > 0 {
                         self.satiation[key] -= 1;
                     }
                     //villager.last_ate = self.ticks;
                 },
-                WE::HarvestFarm(id) => {
+                WE::FarmHarvested(id) => {
                     self.farms.retain(|f| !f.id == id);
                 }
-                WE::VillagerDies(key) => {
+                WE::VillagerDied(key) => {
                     let villager = self.villagers[key];
 
                     let death_marker = DeathMarker {
@@ -172,10 +172,10 @@ impl World {
                         let farm_to_eat_index = rng.gen_range(0, self.farms.len());
                         let farm = &self.farms[farm_to_eat_index];
 
-                        self.events.push(WE::HarvestFarm(farm.id));
-                        self.events.push(WE::VillagerEats(key));
+                        self.events.push(WE::FarmHarvested(farm.id));
+                        self.events.push(WE::VillagerAte(key));
                     } else {
-                        self.events.push(WE::VillagerHungers(key));
+                        self.events.push(WE::VillagerHungered(key));
                     }
 
                 }
@@ -185,7 +185,7 @@ impl World {
 
             for key in self.villagers.keys() {
                 if self.satiation[key] == 0 {
-                    self.events.push(WE::VillagerDies(key));
+                    self.events.push(WE::VillagerDied(key));
                 }
             }
 
@@ -194,7 +194,7 @@ impl World {
             for key in self.villagers.keys() {
                 let direction: Direction = rand::random();
 
-                self.events.push(WE::VillagerMoves(key, direction));
+                self.events.push(WE::VillagerMoved(key, direction));
             }
 
             self.process_events();
