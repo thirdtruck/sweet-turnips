@@ -101,12 +101,9 @@ impl World {
                 }
                 WE::VillagerDied(key) => {
                     let villager = self.villagers[key];
+                    let (x, y) = self.coords[villager.key];
 
-                    let death_marker = DeathMarker {
-                        x: villager.x,
-                        y: villager.y,
-                    };
-                    self.death_markers.push(death_marker);
+                    self.death_markers.push(DeathMarker { x, y });
 
                     self.villagers.remove(key);
                 }
@@ -120,7 +117,7 @@ impl World {
         let entity = GameEntity;
         let key = self.entities.insert(entity);
 
-        let villager = Villager::new(new_id, key, x, y, self.ticks);
+        let villager = Villager::new(new_id, key, self.ticks);
 
         self.villagers.insert(key, villager);
         self.coords.insert(key, (x, y));
@@ -278,18 +275,14 @@ pub struct Villager {
     pub id: EntityId,
     pub key: EntityKey,
     pub last_ate: Ticks,
-    pub x: u8,
-    pub y: u8,
 }
 
 impl Villager {
-    pub fn new(id: EntityId, key: EntityKey, x: u8, y: u8, now: Ticks) -> Self {
+    pub fn new(id: EntityId, key: EntityKey, now: Ticks) -> Self {
         Villager {
             id,
             key,
             last_ate: now,
-            x,
-            y,
         }
     }
 }
