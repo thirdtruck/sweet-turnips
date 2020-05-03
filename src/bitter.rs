@@ -41,7 +41,7 @@ pub struct World {
     entities: SlotMap<EntityKey, GameEntity>,
     pub coords: SecondaryMap<EntityKey, Coords>,
     last_id: EntityId,
-    pub death_markers: Vec<DeathMarker>,
+    pub death_markers: SecondaryMap<EntityKey, DeathMarker>,
     pub farms: Vec<Farm>,
     ticks: Ticks,
     pub satiation: SecondaryMap<EntityKey, u8>,
@@ -66,7 +66,7 @@ impl World {
             events: vec![],
             last_id: 0,
             ticks: 0,
-            death_markers: vec![],
+            death_markers: SecondaryMap::new(),
             farms: vec![],
             satiation: SecondaryMap::new(),
             villagers: SecondaryMap::new(),
@@ -103,7 +103,7 @@ impl World {
                     let villager = self.villagers[key];
                     let (x, y) = self.coords[villager.key];
 
-                    self.death_markers.push(DeathMarker { x, y });
+                    self.death_markers.insert(key, DeathMarker { x, y });
 
                     self.villagers.remove(key);
                 }

@@ -41,7 +41,7 @@ pub fn sprite_grid_from_world(world: &World, selected_villager_id: Option<Entity
         }
     }
 
-    let death_marker_coords: Vec<(u8, u8)> = world.death_markers.iter().map(|dm| (dm.x, dm.y)).collect();
+    let death_marker_coords: Vec<(u8, u8)> = world.death_markers.values().map(|dm| (dm.x, dm.y)).collect();
 
     for (x, y) in death_marker_coords {
         sprite_grid.skull_at(x, y);
