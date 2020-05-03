@@ -38,7 +38,7 @@ pub struct World {
     pub farms: Vec<Farm>,
     ticks: Ticks,
     pub satiation: SecondaryMap<EntityKey, u8>,
-    pub villagers_map: SlotMap<EntityKey, Villager>,
+    pub villagers: SlotMap<EntityKey, Villager>,
 }
 
 enum WorldEvent {
@@ -60,7 +60,7 @@ impl World {
             death_markers: vec![],
             farms: vec![],
             satiation: SecondaryMap::new(),
-            villagers_map: SlotMap::with_key(),
+            villagers: SlotMap::with_key(),
         };
 
         world.add_villager_at(4, 4);
@@ -74,7 +74,7 @@ impl World {
         for evt in self.events.drain(..) {
             match evt {
                 WE::VillagerMoves(key, dir) => {
-                    self.villagers_map[key].step(dir);
+                    self.villagers[key].step(dir);
                 },
                 WE::VillagerEats(key) => {
                     self.satiation[key] += 1;
@@ -90,7 +90,7 @@ impl World {
                     self.farms.retain(|f| !f.id == id);
                 }
                 WE::VillagerDies(key) => {
-                    let villager = self.villagers_map[key];
+                    let villager = self.villagers[key];
 
                     let death_marker = DeathMarker {
                         x: villager.x,
@@ -98,7 +98,7 @@ impl World {
                     };
                     self.death_markers.push(death_marker);
 
-                    self.villagers_map.remove(key);
+                    self.villagers.remove(key);
                 }
             }
         }
@@ -111,7 +111,7 @@ impl World {
 
         self.last_id = new_id;
 
-        let key = self.villagers_map.insert(villager);
+        let key = self.villagers.insert(villager);
         self.satiation.insert(key, 1);
 
         new_id
@@ -164,7 +164,7 @@ impl World {
                 }
             }
 
-            for (key, villager) in self.villagers_map.iter() {
+            for (key, villager) in self.villagers.iter() {
                 let satiation = self.satiation[key];
 
                 if self.ticks - villager.last_ate > 40 && satiation > 0 {
@@ -183,7 +183,7 @@ impl World {
 
             self.process_events();
 
-            for key in self.villagers_map.keys() {
+            for key in self.villagers.keys() {
                 if self.satiation[key] == 0 {
                     self.events.push(WE::VillagerDies(key));
                 }
@@ -191,7 +191,7 @@ impl World {
 
             self.process_events();
 
-            for key in self.villagers_map.keys() {
+            for key in self.villagers.keys() {
                 let direction: Direction = rand::random();
 
                 self.events.push(WE::VillagerMoves(key, direction));
@@ -202,7 +202,7 @@ impl World {
     }
 
     pub fn villager_id_at(&self, x: u8, y: u8) -> Option<EntityId> {
-        for v in self.villagers_map.values() {
+        for v in self.villagers.values() {
             if v.x == x && v.y == y {
                 return Some(v.id);
             }
@@ -212,7 +212,7 @@ impl World {
     }
 
     pub fn villager(&self, id: EntityId) -> Option<Villager> {
-        for v in self.villagers_map.values() {
+        for v in self.villagers.values() {
             if v.id == id {
                 return Some(v.clone());
             }
