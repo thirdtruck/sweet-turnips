@@ -122,6 +122,22 @@ impl World {
                 }
             }
 
+            for (key, villager) in self.villagers_map.iter() {
+                let mut satiation = self.satiation[key];
+
+                if self.ticks - villager.last_ate > 40 && satiation > 0 {
+                    if self.farms.len() > 0 && satiation < 5 {
+                        satiation += 1;
+                    } else {
+                        satiation -= 2;
+                    }
+
+                    self.satiation[key] = satiation;
+
+                    println!("Ate. Now: {}", satiation);
+                }
+            }
+
             for villager in self.villagers.iter_mut() {
                 if self.ticks - villager.last_ate > 40 && villager.satiation > 0 {
                     if self.farms.len() > 0 && villager.satiation < 5 {
