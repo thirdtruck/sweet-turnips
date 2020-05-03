@@ -58,9 +58,12 @@ pub struct World {
     pub villagers: SecondaryMap<EntityKey, Villager>,
 }
 
+#[derive(Copy,Clone,Debug)]
 enum WorldEvent {
     GravesCleared,
     FarmsCultivated,
+    VillagersFarmed,
+    VillagersMoved,
     AddFarm(Coords),
     VillagerMoved(EntityKey, Direction),
     VillagerAte(EntityKey),
@@ -113,6 +116,8 @@ impl World {
                 WE::VillagerHungered(key) => {
                     if self.satiation[key] > 0 {
                         self.satiation[key] -= 1;
+                    } else {
+                        new_events.push(WE::VillagerDied(key));
                     }
 
                     let mut villager = self.villagers[key];
@@ -216,6 +221,18 @@ impl World {
                         }
                     }
                 }
+                WE::VillagersFarmed => {
+                    for vk in self.villagers.keys() {
+                        new_events.push(WE::VillagerHarvested(vk));
+                    }
+                }
+                WE::VillagersMoved => {
+                    for key in self.villagers.keys() {
+                        let direction: Direction = rand::random();
+
+                        new_events.push(WE::VillagerMoved(key, direction));
+                    }
+                }
             }
         }
 
@@ -270,43 +287,16 @@ impl World {
     }
 
     fn advance_world(&mut self) {
-        self.events.push(WE::GravesCleared);
-        self.events.push(WE::FarmsCultivated);
+        let recurring_events = [
+            WE::GravesCleared,
+            WE::FarmsCultivated,
+            WE::VillagersFarmed,
+            WE::VillagersMoved,
+        ];
 
-        self.process_events();
-
-        self.villagers_harvest();
-
-        self.process_events();
-
-        self.villagers_starve();
-
-        self.process_events();
-
-        self.villagers_move();
-
-        self.process_events();
-    }
-
-    fn villagers_harvest(&mut self) {
-        for vk in self.villagers.keys() {
-            self.events.push(WE::VillagerHarvested(vk));
-        }
-    }
-
-    fn villagers_starve(&mut self) {
-        for key in self.villagers.keys() {
-            if self.satiation[key] == 0 {
-                self.events.push(WE::VillagerDied(key));
-            }
-        }
-    }
-
-    fn villagers_move(&mut self) {
-        for key in self.villagers.keys() {
-            let direction: Direction = rand::random();
-
-            self.events.push(WE::VillagerMoved(key, direction));
+        for evt in recurring_events.iter() {
+            self.events.push(*evt);
+            self.process_events();
         }
     }
 
