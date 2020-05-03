@@ -42,7 +42,7 @@ pub struct World {
     pub farms: Vec<Farm>,
     ticks: Ticks,
     pub satiation: SecondaryMap<EntityKey, u8>,
-    pub villagers: SlotMap<EntityKey, Villager>,
+    pub villagers: SecondaryMap<EntityKey, Villager>,
 }
 
 enum WorldEvent {
@@ -65,7 +65,7 @@ impl World {
             death_markers: vec![],
             farms: vec![],
             satiation: SecondaryMap::new(),
-            villagers: SlotMap::with_key(),
+            villagers: SecondaryMap::new(),
         };
 
         world.add_villager_at(4, 4);
@@ -112,12 +112,16 @@ impl World {
     pub fn add_villager_at(&mut self, x: u8, y: u8) -> EntityId {
         let new_id = self.last_id + 1;
 
+        let entity = GameEntity;
+        let key = self.entities.insert(entity);
+
         let villager = Villager::new(new_id, x, y, self.ticks);
 
-        self.last_id = new_id;
+        self.villagers.insert(key, villager);
 
-        let key = self.villagers.insert(villager);
         self.satiation.insert(key, 1);
+
+        self.last_id = new_id;
 
         new_id
     }
