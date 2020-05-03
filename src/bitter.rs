@@ -82,6 +82,33 @@ impl World {
         if (self.ticks + 1) % 80 == 0 {
             self.death_markers.clear();
 
+            let mut new_farm_coords: Vec<(u8, u8)> = vec![];
+
+            for farm in self.farms.iter_mut() {
+                if self.ticks - farm.last_grew > 20 {
+                    farm.last_grew = self.ticks;
+
+                    let direction: Direction = rand::random();
+                    let coords = match direction {
+                        Direction::Up if farm.y > 0 => Some((farm.x, farm.y - 1)),
+                        Direction::Down if farm.y < GRID_HEIGHT => Some((farm.x, farm.y + 1)),
+                        Direction::Left if farm.x > 0 => Some((farm.x - 1, farm.y)),
+                        Direction::Right if farm.x < GRID_WIDTH => Some((farm.x + 1, farm.y)),
+                        _ => None
+                    };
+
+                    if let Some(c) = coords {
+                        new_farm_coords.push(c);
+                    }
+                }
+            }
+
+            for (x, y) in new_farm_coords {
+                if !(x >= GRID_WIDTH || y >= GRID_HEIGHT) { 
+                    self.add_farm_at(x, y);
+                }
+            }
+
             for villager in self.villagers.iter_mut() {
                 if self.ticks - villager.last_ate > 40 && villager.satiation > 0 {
                     villager.satiation -= 1;
@@ -180,15 +207,16 @@ impl Villager {
 
 pub struct Farm {
     pub id: EntityId,
-    //pub last_grew: Ticks,
+    pub last_grew: Ticks,
     pub x: u8,
     pub y: u8,
 }
 
 impl Farm {
-    pub fn new(id: EntityId, x: u8, y: u8, _now: Ticks) -> Self {
+    pub fn new(id: EntityId, x: u8, y: u8, now: Ticks) -> Self {
         Farm {
             id,
+            last_grew: now,
             x,
             y,
         }
