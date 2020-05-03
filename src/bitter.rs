@@ -34,7 +34,6 @@ impl Distribution<Direction> for Standard {
 pub struct World {
     events: Vec<WorldEvent>,
     last_id: EntityId,
-    villagers: Vec<Villager>,
     pub death_markers: Vec<DeathMarker>,
     pub farms: Vec<Farm>,
     ticks: Ticks,
@@ -58,7 +57,6 @@ impl World {
             events: vec![],
             last_id: 0,
             ticks: 0,
-            villagers: vec![],
             death_markers: vec![],
             farms: vec![],
             satiation: SecondaryMap::new(),
@@ -112,8 +110,6 @@ impl World {
         let villager = Villager::new(new_id, x, y, self.ticks);
 
         self.last_id = new_id;
-
-        self.villagers.push(villager);
 
         let key = self.villagers_map.insert(villager);
         self.satiation.insert(key, 1);
@@ -203,12 +199,10 @@ impl World {
 
             self.process_events();
         }
-
-        self.villagers.retain(|v| v.satiation > 0);
     }
 
     pub fn villager_id_at(&self, x: u8, y: u8) -> Option<EntityId> {
-        for v in self.villagers.iter() {
+        for v in self.villagers_map.values() {
             if v.x == x && v.y == y {
                 return Some(v.id);
             }
@@ -218,7 +212,7 @@ impl World {
     }
 
     pub fn villager(&self, id: EntityId) -> Option<Villager> {
-        for v in self.villagers.iter() {
+        for v in self.villagers_map.values() {
             if v.id == id {
                 return Some(v.clone());
             }
