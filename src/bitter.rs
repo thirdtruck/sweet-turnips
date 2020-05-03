@@ -32,6 +32,7 @@ impl Distribution<Direction> for Standard {
 }
 
 pub struct World {
+    events: Vec<WorldEvent>,
     last_id: EntityId,
     pub villagers: Vec<Villager>,
     pub death_markers: Vec<DeathMarker>,
@@ -41,9 +42,14 @@ pub struct World {
     pub villagers_map: SlotMap<EntityKey, Villager>,
 }
 
+enum WorldEvent {
+    HarvestFarm(EntityId),
+}
+
 impl World {
     pub fn new() -> Self {
         let mut world = World {
+            events: vec![],
             last_id: 0,
             ticks: 0,
             villagers: vec![],
