@@ -13,12 +13,22 @@ new_key_type! { pub struct EntityKey; }
 pub type EntityId = usize;
 pub type Ticks = usize;
 
+#[derive(Copy,Clone,Debug)]
 pub enum Direction {
     Up,
     Down,
     Left,
     Right,
 }
+
+type Dir = Direction;
+
+const CARDINAL_DIRECTIONS: [Direction; 4] = [
+    Dir::Up,
+    Dir::Down,
+    Dir::Left,
+    Dir::Right,
+];
 
 impl Distribution<Direction> for Standard {
     fn sample<R: Rng + ?Sized>(&self, rng: &mut R) -> Direction {
@@ -42,17 +52,19 @@ pub struct World {
     pub coords: SecondaryMap<EntityKey, Coords>,
     last_id: EntityId,
     pub death_markers: SecondaryMap<EntityKey, DeathMarker>,
-    pub farms: Vec<Farm>,
+    pub farms: SecondaryMap<EntityKey, Farm>,
     ticks: Ticks,
     pub satiation: SecondaryMap<EntityKey, u8>,
     pub villagers: SecondaryMap<EntityKey, Villager>,
 }
 
 enum WorldEvent {
+    AddFarm(Coords),
     VillagerMoved(EntityKey, Direction),
     VillagerAte(EntityKey),
     VillagerHungered(EntityKey),
-    FarmHarvested(EntityId),
+    FarmGrew(EntityKey),
+    FarmHarvested(EntityKey),
     VillagerDied(EntityKey),
 }
 
@@ -67,7 +79,7 @@ impl World {
             last_id: 0,
             ticks: 0,
             death_markers: SecondaryMap::new(),
-            farms: vec![],
+            farms: SecondaryMap::new(),
             satiation: SecondaryMap::new(),
             villagers: SecondaryMap::new(),
         };
@@ -80,6 +92,8 @@ impl World {
     }
 
     fn process_events(&mut self) {
+        let mut new_events: Vec<WorldEvent> = vec![];
+
         for evt in self.events.drain(..) {
             match evt {
                 WE::VillagerMoved(key, dir) => {
@@ -96,8 +110,42 @@ impl World {
                     }
                     //villager.last_ate = self.ticks;
                 },
-                WE::FarmHarvested(id) => {
-                    self.farms.retain(|f| !f.id == id);
+                WE::FarmGrew(key) => {
+                    let mut farm = self.farms[key];
+                    farm.last_grew = self.ticks;
+                    self.farms[key] = farm;
+
+                    let farm_coords = self.coords[key];
+
+                    let mut all_possible_coords: Vec<Coords> = vec![];
+
+                    for dir in CARDINAL_DIRECTIONS.iter() {
+                        if can_move_in_dir(farm_coords, *dir) {
+                            let new_coords = coords_after_move(farm_coords, *dir);
+                            all_possible_coords.push(new_coords);
+                        }
+                    }
+
+                    for key in self.farms.keys() {
+                        let occupied_coords = self.coords[key];
+
+                        all_possible_coords.retain(|c| *c != occupied_coords);
+
+                        if all_possible_coords.is_empty() {
+                            return;
+                        }
+                    }
+
+                    let mut rng = rand::thread_rng();
+
+                    let ci = rng.gen_range(0, all_possible_coords.len());
+
+                    let new_coords = all_possible_coords[ci];
+
+                    new_events.push(WE::AddFarm(new_coords));
+                }
+                WE::FarmHarvested(key) => {
+                    self.farms.remove(key);
                 }
                 WE::VillagerDied(vk) => {
                     let coords = self.coords[vk];
@@ -111,8 +159,27 @@ impl World {
 
                     self.villagers.remove(vk);
                 }
+                WE::AddFarm(coords) => {
+                    let (x, y) = (coords.0, coords.1);
+
+                    let new_id = self.last_id + 1;
+
+                    let entity = GameEntity;
+                    let key = self.entities.insert(entity);
+
+                    let farm = Farm::new(new_id, key, x, y, self.ticks);
+
+                    self.last_id = new_id;
+
+                    self.farms.insert(key, farm);
+                    self.coords.insert(key, (x, y));
+
+                    self.last_id = new_id;
+                }
             }
         }
+
+        self.events = new_events;
     }
 
     pub fn add_villager_at(&mut self, x: u8, y: u8) -> EntityId {
@@ -135,50 +202,36 @@ impl World {
     pub fn add_farm_at(&mut self, x: u8, y: u8) -> EntityId {
         let new_id = self.last_id + 1;
 
-        let farm = Farm::new(new_id, x, y, self.ticks);
+        let entity = GameEntity;
+        let key = self.entities.insert(entity);
+
+        let farm = Farm::new(new_id, key, x, y, self.ticks);
 
         self.last_id = new_id;
 
-        self.farms.push(farm);
+        self.farms.insert(key, farm);
+        self.coords.insert(key, (x, y));
+
+        self.last_id = new_id;
 
         new_id
     }
 
     pub fn tick(&mut self) {
-        let mut rng = rand::thread_rng();
-
         self.ticks += 1;
 
         if (self.ticks + 1) % 80 == 0 {
             self.death_markers.clear();
 
-            let mut new_farm_coords: Vec<(u8, u8)> = vec![];
-
-            for farm in self.farms.iter_mut() {
+            for farm in self.farms.values() {
                 if self.ticks - farm.last_grew > 20 {
-                    farm.last_grew = self.ticks;
-
-                    let direction: Direction = rand::random();
-                    let coords = match direction {
-                        Direction::Up if farm.y > 0 => Some((farm.x, farm.y - 1)),
-                        Direction::Down if farm.y < GRID_HEIGHT => Some((farm.x, farm.y + 1)),
-                        Direction::Left if farm.x > 0 => Some((farm.x - 1, farm.y)),
-                        Direction::Right if farm.x < GRID_WIDTH => Some((farm.x + 1, farm.y)),
-                        _ => None
-                    };
-
-                    if let Some(c) = coords {
-                        new_farm_coords.push(c);
-                    }
+                    self.events.push(WE::FarmGrew(farm.key));
                 }
             }
 
-            for (x, y) in new_farm_coords {
-                if !(x >= GRID_WIDTH || y >= GRID_HEIGHT) { 
-                    self.add_farm_at(x, y);
-                }
-            }
+            self.process_events();
 
+            /*
             for (key, villager) in self.villagers.iter() {
                 let satiation = self.satiation[key];
 
@@ -195,6 +248,7 @@ impl World {
 
                 }
             }
+            */
 
             self.process_events();
 
@@ -269,6 +323,18 @@ fn coords_after_move(coords: Coords, dir: Direction) -> Coords {
     (x, y)
 }
 
+fn can_move_in_dir(coords: Coords, dir: Direction) -> bool {
+    let (x, y) = (coords.0, coords.1);
+
+    match dir {
+        Dir::Up => y > 1,
+        Dir::Down => y < GRID_HEIGHT + 1,
+        Dir::Left => x > 1,
+        Dir::Right => x < GRID_HEIGHT + 1,
+    }
+}
+
+#[derive(Copy,Clone,Debug)]
 pub struct DeathMarker {
     pub key: EntityKey,
 }
@@ -290,17 +356,20 @@ impl Villager {
     }
 }
 
+#[derive(Copy,Clone,Debug)]
 pub struct Farm {
     pub id: EntityId,
+    pub key: EntityKey,
     pub last_grew: Ticks,
     pub x: u8,
     pub y: u8,
 }
 
 impl Farm {
-    pub fn new(id: EntityId, x: u8, y: u8, now: Ticks) -> Self {
+    pub fn new(id: EntityId, key: EntityKey, x: u8, y: u8, now: Ticks) -> Self {
         Farm {
             id,
+            key,
             last_grew: now,
             x,
             y,
