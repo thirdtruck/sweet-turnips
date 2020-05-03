@@ -31,8 +31,12 @@ impl Distribution<Direction> for Standard {
     }
 }
 
+#[derive(Copy,Clone,Debug)]
+struct GameEntity;
+
 pub struct World {
     events: Vec<WorldEvent>,
+    entities: SlotMap<EntityKey, GameEntity>,
     last_id: EntityId,
     pub death_markers: Vec<DeathMarker>,
     pub farms: Vec<Farm>,
@@ -54,6 +58,7 @@ type WE = WorldEvent;
 impl World {
     pub fn new() -> Self {
         let mut world = World {
+            entities: SlotMap::with_key(),
             events: vec![],
             last_id: 0,
             ticks: 0,
