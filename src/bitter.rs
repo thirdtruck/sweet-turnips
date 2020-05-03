@@ -77,6 +77,8 @@ impl World {
     }
 
     pub fn tick(&mut self) {
+        let mut rng = rand::thread_rng();
+
         self.ticks += 1;
 
         if (self.ticks + 1) % 80 == 0 {
@@ -111,7 +113,14 @@ impl World {
 
             for villager in self.villagers.iter_mut() {
                 if self.ticks - villager.last_ate > 40 && villager.satiation > 0 {
-                    villager.satiation -= 1;
+                    if self.farms.len() > 0 && villager.satiation < 5 {
+                        let farm_to_eat_index = rng.gen_range(0, self.farms.len());
+                        self.farms.remove(farm_to_eat_index);
+                        villager.satiation += 1;
+                    } else {
+                        villager.satiation -= 1;
+                    }
+
                     villager.last_ate = self.ticks;
                 }
 
