@@ -115,7 +115,7 @@ impl World {
         let entity = GameEntity;
         let key = self.entities.insert(entity);
 
-        let villager = Villager::new(new_id, x, y, self.ticks);
+        let villager = Villager::new(new_id, key, x, y, self.ticks);
 
         self.villagers.insert(key, villager);
 
@@ -239,17 +239,17 @@ pub struct DeathMarker {
 #[derive(Copy,Clone,Debug)]
 pub struct Villager {
     pub id: EntityId,
-    pub satiation: u8,
+    pub key: EntityKey,
     pub last_ate: Ticks,
     pub x: u8,
     pub y: u8,
 }
 
 impl Villager {
-    pub fn new(id: EntityId, x: u8, y: u8, now: Ticks) -> Self {
+    pub fn new(id: EntityId, key: EntityKey, x: u8, y: u8, now: Ticks) -> Self {
         Villager {
             id,
-            satiation: 3,
+            key,
             last_ate: now,
             x,
             y,

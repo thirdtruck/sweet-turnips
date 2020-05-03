@@ -32,8 +32,10 @@ pub fn sprite_grid_from_world(world: &World, selected_villager_id: Option<Entity
     }
 
     if let Some(villager) = selected_villager {
+        let satiation = world.satiation[villager.key];
+
         for x in 1..7 {
-            if villager.satiation >= x {
+            if satiation >= x {
                 sprite_grid.turnip_at(x, 7);
             }
         }
