@@ -226,7 +226,7 @@ impl World {
     pub fn tick(&mut self) {
         self.ticks += 1;
 
-        if (self.ticks + 1) % 80 == 0 {
+        if (self.ticks + 1) % 20 == 0 {
             self.advance_world();
         }
     }
@@ -305,16 +305,15 @@ impl World {
 fn coords_after_move(coords: Coords, dir: Direction) -> Coords {
     let (mut x, mut y) = (coords.0, coords.1);
 
+    // Remember to account for the border
     match dir {
-        // Remember to account for the border
-
         Direction::Up => {
             if y > 1 {
                 y -= 1;
             }
         },
         Direction::Down => {
-            if y < GRID_HEIGHT - 1 {
+            if y < GRID_HEIGHT - 2 {
                 y += 1;
             }
         },
@@ -324,7 +323,7 @@ fn coords_after_move(coords: Coords, dir: Direction) -> Coords {
             }
         },
         Direction::Right => {
-            if x < GRID_WIDTH - 1 {
+            if x < GRID_WIDTH - 2 {
                 x += 1;
             }
         },
@@ -336,11 +335,12 @@ fn coords_after_move(coords: Coords, dir: Direction) -> Coords {
 fn can_move_in_dir(coords: Coords, dir: Direction) -> bool {
     let (x, y) = (coords.0, coords.1);
 
+    // Remember to account for the border
     match dir {
         Dir::Up => y > 1,
-        Dir::Down => y < GRID_HEIGHT - 1,
+        Dir::Down => y < GRID_HEIGHT - 2,
         Dir::Left => x > 1,
-        Dir::Right => x < GRID_WIDTH - 1,
+        Dir::Right => x < GRID_WIDTH - 2,
     }
 }
 
