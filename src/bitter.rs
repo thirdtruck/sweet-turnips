@@ -81,6 +81,13 @@ impl World {
         world
     }
 
+    pub fn ticked(self) -> Self {
+        Self {
+            ticks: self.ticks + 1,
+            ..self
+        }
+    }
+
     pub fn with_event(self, evt: WorldEvent) -> Self {
         let mut events = self.events.clone();
         events.push(evt);
@@ -404,7 +411,7 @@ fn process_events(world: &World) -> World {
 pub fn tick(world: &World) -> World {
     let mut world = world.clone();
 
-    world.ticks += 1;
+    world = world.ticked();
 
     // world.events is a LIFO stack
     world = world
