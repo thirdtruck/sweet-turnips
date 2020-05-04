@@ -8,7 +8,12 @@ use rand::{
 
 use slotmap::{new_key_type, SlotMap, SecondaryMap};
 
-use entities::{GameEntity};
+use entities::{
+    DeathMarker,
+    Farm,
+    GameEntity,
+    Villager,
+};
 use events::{WE,WorldEvent};
 
 pub const GRID_WIDTH: u8 = 8;
@@ -344,48 +349,5 @@ fn can_move_in_dir(coords: Coords, dir: Direction) -> bool {
         Dir::Down => y < GRID_HEIGHT - 2,
         Dir::Left => x > 1,
         Dir::Right => x < GRID_WIDTH - 2,
-    }
-}
-
-#[derive(Copy,Clone,Debug)]
-pub struct DeathMarker {
-    pub key: EntityKey,
-}
-
-#[derive(Copy,Clone,Debug)]
-pub struct Villager {
-    pub id: EntityId,
-    pub key: EntityKey,
-    pub last_ate: Ticks,
-}
-
-impl Villager {
-    pub fn new(id: EntityId, key: EntityKey, now: Ticks) -> Self {
-        Villager {
-            id,
-            key,
-            last_ate: now,
-        }
-    }
-}
-
-#[derive(Copy,Clone,Debug)]
-pub struct Farm {
-    pub id: EntityId,
-    pub key: EntityKey,
-    pub last_grew: Ticks,
-    pub x: u8,
-    pub y: u8,
-}
-
-impl Farm {
-    pub fn new(id: EntityId, key: EntityKey, x: u8, y: u8, now: Ticks) -> Self {
-        Farm {
-            id,
-            key,
-            last_grew: now,
-            x,
-            y,
-        }
     }
 }
