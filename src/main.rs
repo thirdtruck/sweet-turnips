@@ -159,7 +159,7 @@ impl MainState {
         let ticks: Ticks = 0;
 
         let s = MainState {
-            world: World::new(),
+            world: build_example_world(),
             sprites,
             cursor: Cursor::new(),
             selected_villager_key: None,
@@ -323,6 +323,19 @@ impl event::EventHandler for MainState {
 
         Ok(())
     }
+}
+
+fn build_example_world() -> World {
+    let mut world = World::new();
+
+    world.add_villager_at(4, 4);
+    world.add_villager_at(4, 5);
+
+    world.add_farm_at(5, 4);
+    world.add_farm_at(5, 5);
+    world.add_farm_at(5, 6);
+
+    world
 }
 
 pub fn main() -> GameResult {

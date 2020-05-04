@@ -67,7 +67,7 @@ pub struct World {
 
 impl World {
     pub fn new() -> Self {
-        let mut world = World {
+        let world = World {
             entities: SlotMap::with_key(),
             coords: SecondaryMap::new(),
             events: vec![],
@@ -77,13 +77,6 @@ impl World {
             satiation: SecondaryMap::new(),
             villagers: SecondaryMap::new(),
         };
-
-        world.add_villager_at(4, 4);
-        world.add_villager_at(4, 5);
-
-        world.add_farm_at(5, 4);
-        world.add_farm_at(5, 5);
-        world.add_farm_at(5, 6);
 
         world
     }
