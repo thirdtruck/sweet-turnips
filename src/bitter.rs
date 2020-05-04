@@ -81,6 +81,16 @@ impl World {
         world
     }
 
+    pub fn with_event(self, evt: WorldEvent) -> Self {
+        let mut events = self.events.clone();
+        events.push(evt);
+
+        Self {
+            events,
+            ..self
+        }
+    }
+
     fn villager_moved(&mut self, key: EntityKey, dir: Direction) -> Vec<WorldEvent>{
         let c = self.coords[key];
         self.coords[key] = coords_after_move(c, dir);
@@ -397,10 +407,11 @@ pub fn tick(world: &World) -> World {
     world.ticks += 1;
 
     // world.events is a LIFO stack
-    world.events.push(WE::VillagersMoved);
-    world.events.push(WE::VillagersHungered);
-    world.events.push(WE::FarmsCultivated);
-    world.events.push(WE::GravesCleared);
+    world = world
+        .with_event(WE::VillagersMoved)
+        .with_event(WE::VillagersHungered)
+        .with_event(WE::FarmsCultivated)
+        .with_event(WE::GravesCleared);
 
     let world = process_events(&world);
 
