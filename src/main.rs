@@ -26,7 +26,6 @@ use renderer::sprite_grid_from_world;
 use sprites::{SpriteGrid, Sprites, SpriteType};
 
 use std::path;
-use std::f32::consts::PI;
 
 const SPRITE_SCALE: f32 = 4.0;
 const SPRITE_SIZE: f32 = 8.0 * SPRITE_SCALE;
@@ -37,15 +36,6 @@ const RED: Color = Color {
     b: 0.0,
     a: 1.0,
 };
-
-#[allow(dead_code)]
-const D0: f32 = 0.0;
-#[allow(dead_code)]
-const D90: f32 = PI / 2.0;
-#[allow(dead_code)]
-const D180: f32 = (PI / 2.0) * 2.0;
-#[allow(dead_code)]
-const D270: f32 = (PI / 2.0) * 3.0;
 
 #[derive(Copy,Clone)]
 struct Cursor {
@@ -92,17 +82,6 @@ impl GridParam {
         GridParam {
             draw_param: self.draw_param.dest(grid_point(x, y)),
         }
-    }
-
-    // TODO: Figure out why this is broken
-    #[allow(dead_code)]
-    fn rotated(&self, radians: f32) -> Self {
-        let draw_param = self.draw_param
-            .offset(na::Point2::new(0.5, 0.5))
-            .rotation(radians)
-            ;
-
-        GridParam { draw_param }
     }
 
     fn color(&self, color: Color) -> Self {
