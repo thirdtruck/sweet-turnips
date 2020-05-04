@@ -25,3 +25,7 @@ I'm learning more about `serde` and error handling today than I expected to. Mig
 Nope! I take it back. The time difference in loading a file vs. compiling is huge! Would have saved me of time _and_ **morale** during the jam. At least now I know how to do it next time!
 
 I _did_ go down a rabbit hole on custom error creation but at least I dug myself back up out of that and found a much simpler solution for now.
+
+So that's one takeaway: Build configurability into your game project early and often! (Unity gives you this out of the box but it's imperative for tools like Rust if you want to reduce how often you rebuild the game, which will be _often_ in a game jam.)
+
+Now let's do refactor this to use `From`! This should make things more idiomatic and easier to read.
