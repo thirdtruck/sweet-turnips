@@ -139,6 +139,11 @@ impl World {
 
     fn farm_grew(&mut self, key: EntityKey, new_events: &mut Vec<WorldEvent>) {
         let mut farm = self.farms[key];
+
+        if self.ticks - farm.last_grew < 20 {
+            return;
+        }
+
         farm.last_grew = self.ticks;
         self.farms[key] = farm;
 
@@ -162,6 +167,10 @@ impl World {
 
             all_possible_coords.retain(|c| *c != occupied_coords);
 
+        }
+
+        if all_possible_coords.len() == 0 {
+            return;
         }
 
         let mut rng = rand::thread_rng();
@@ -217,7 +226,7 @@ impl World {
         let mut unharvested_farms: Vec<&Farm> = self.farms.values().collect();
 
         let time_since_last_ate = self.ticks - villager.last_ate;
-        let need_to_eat = satiation < 5 || time_since_last_ate < 40;
+        let need_to_eat = satiation < 5 && time_since_last_ate < 40;
         let food_left_to_eat = unharvested_farms.len() > 0;
 
         if need_to_eat {
@@ -239,9 +248,7 @@ impl World {
 
     fn farms_cultivated(&mut self, new_events: &mut Vec<WorldEvent>) {
         for farm in self.farms.values() {
-            if self.ticks - farm.last_grew > 20 {
-                new_events.push(WE::FarmGrew(farm.key));
-            }
+            new_events.push(WE::FarmGrew(farm.key));
         }
     }
 
