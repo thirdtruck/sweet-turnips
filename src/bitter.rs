@@ -116,13 +116,13 @@ impl World {
                 WE::VillagerHungered(key) => {
                     if self.satiation[key] > 0 {
                         self.satiation[key] -= 1;
+
+                        let mut villager = self.villagers[key];
+                        villager.last_ate = self.ticks;
+                        self.villagers[key] = villager;
                     } else {
                         new_events.push(WE::VillagerDied(key));
                     }
-
-                    let mut villager = self.villagers[key];
-                    villager.last_ate = self.ticks;
-                    self.villagers[key] = villager;
                 },
                 WE::FarmGrew(key) => {
                     let mut farm = self.farms[key];
@@ -141,13 +141,14 @@ impl World {
                     }
 
                     for key in self.farms.keys() {
+                        if all_possible_coords.is_empty() {
+                            continue;
+                        }
+
                         let occupied_coords = self.coords[key];
 
                         all_possible_coords.retain(|c| *c != occupied_coords);
 
-                        if all_possible_coords.is_empty() {
-                            return;
-                        }
                     }
 
                     let mut rng = rand::thread_rng();
@@ -198,8 +199,12 @@ impl World {
 
                     let mut unharvested_farms: Vec<&Farm> = self.farms.values().collect();
 
-                    if self.ticks - villager.last_ate > 40 && satiation > 0 {
-                        if unharvested_farms.len() > 0 && satiation < 5 {
+                    let time_since_last_ate = self.ticks - villager.last_ate;
+                    let need_to_eat = satiation > 4 || time_since_last_ate < 40;
+                    let food_left_to_eat = unharvested_farms.len() > 0;
+
+                    if need_to_eat {
+                        if food_left_to_eat {
                             let farm_to_eat_index = rng.gen_range(0, unharvested_farms.len());
                             let farm = unharvested_farms.remove(farm_to_eat_index);
 
@@ -208,7 +213,6 @@ impl World {
                         } else {
                             new_events.push(WE::VillagerHungered(vk));
                         }
-
                     }
                 }
                 WE::GravesCleared => {
