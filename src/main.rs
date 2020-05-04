@@ -286,7 +286,9 @@ impl MainState {
 
         match sprite_type {
             SpriteType::BigCircle => self.sprites.big_circles.add(gp.draw_param),
-            SpriteType::Lizard => self.sprites.lizards.add(gp.draw_param),
+            SpriteType::Lizard(color) => {
+                self.sprites.lizards.add(gp.draw_param.color(color))
+            },
             SpriteType::Turnip => self.sprites.turnips.add(gp.color(RED).draw_param),
             SpriteType::Skull => self.sprites.skulls.add(gp.draw_param),
             SpriteType::Cursor => self.sprites.cursors.add(gp.draw_param),

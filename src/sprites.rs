@@ -1,3 +1,4 @@
+use ggez::graphics::Color;
 use ggez::graphics::spritebatch::SpriteBatch;
 
 use crate::bitter::{GRID_HEIGHT, GRID_WIDTH};
@@ -24,7 +25,7 @@ pub enum SpriteType {
     Cursor,
     Turnip,
     Squid,
-    Lizard,
+    Lizard(Color),
     Ball,
     Crab,
     Altar,
@@ -71,9 +72,9 @@ impl SpriteGrid {
         self.sprite_types[index] = SpriteType::BigCircle;
     }
 
-    pub fn lizard_at(&mut self, x: u8, y: u8) {
+    pub fn lizard_at(&mut self, x: u8, y: u8, color: Color) {
         let index = (y * GRID_WIDTH + x) as usize;
-        self.sprite_types[index] = SpriteType::Lizard;
+        self.sprite_types[index] = SpriteType::Lizard(color);
     }
 
     pub fn turnip_at(&mut self, x: u8, y: u8) {

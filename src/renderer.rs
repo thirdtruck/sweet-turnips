@@ -1,6 +1,8 @@
 use crate::bitter::{EntityKey, World};
 use crate::sprites::SpriteGrid;
 
+use ggez::graphics::Color;
+
 pub fn sprite_grid_from_world(world: &World, selected_villager_key: Option<EntityKey>) -> SpriteGrid {
     let selected_villager = match selected_villager_key {
         Some(key) => world.villager(key),
@@ -25,10 +27,15 @@ pub fn sprite_grid_from_world(world: &World, selected_villager_key: Option<Entit
         sprite_grid.turnip_at(x, y);
     }
 
-    let villager_coords: Vec<(u8, u8)> = world.villagers.values().map(|v| world.coords[v.key]).collect();
+    for key in world.villagers.keys() {
+        let (x, y) = world.coords[key];
+        let satiation = world.satiation[key];
 
-    for (x, y) in villager_coords {
-        sprite_grid.lizard_at(x, y);
+        let r = satiation as f32 / 5.0;
+
+        let color = Color { r, g: 0.2, b: 0.2, a: 1.0 }; 
+
+        sprite_grid.lizard_at(x, y, color);
     }
 
     if let Some(villager) = selected_villager {
