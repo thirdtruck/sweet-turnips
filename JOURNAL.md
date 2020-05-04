@@ -29,3 +29,5 @@ I _did_ go down a rabbit hole on custom error creation but at least I dug myself
 So that's one takeaway: Build configurability into your game project early and often! (Unity gives you this out of the box but it's imperative for tools like Rust if you want to reduce how often you rebuild the game, which will be _often_ in a game jam.)
 
 Now let's do refactor this to use `From`! This should make things more idiomatic and easier to read.
+
+What's next? Let's keep making the game state more immutable!
