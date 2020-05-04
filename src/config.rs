@@ -7,34 +7,37 @@ use std::path::PathBuf;
 
 #[derive(Debug, PartialEq, Serialize, Deserialize)]
 pub struct VillagerConfig {
-    x: u8,
-    y: u8,
+    pub x: u8,
+    pub y: u8,
 }
 
 #[derive(Debug, PartialEq, Serialize, Deserialize)]
 pub struct FarmConfig {
-    x: u8,
-    y: u8,
+    pub x: u8,
+    pub y: u8,
 }
 
 #[derive(Debug, PartialEq, Serialize, Deserialize)]
 pub struct WorldConfig {
-    starting_villagers: Vec<VillagerConfig>,
-    starting_farms: Vec<FarmConfig>,
+    pub starting_villagers: Vec<VillagerConfig>,
+    pub starting_farms: Vec<FarmConfig>,
 }
 
 #[derive(Debug, PartialEq, Serialize, Deserialize)]
 pub struct GameConfig {
-    world: WorldConfig,
+    pub world: WorldConfig,
 }
 
 fn example_game_config() -> GameConfig {
     let world_config = WorldConfig {
         starting_villagers: vec![
-            VillagerConfig { x: 2, y: 2 },
+            VillagerConfig { x: 4, y: 4 },
+            VillagerConfig { x: 4, y: 5 },
         ],
         starting_farms: vec![
-            FarmConfig { x: 3, y: 3 },
+            FarmConfig { x: 5, y: 4 },
+            FarmConfig { x: 5, y: 5 },
+            FarmConfig { x: 5, y: 6 },
         ],
     };
 

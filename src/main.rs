@@ -22,6 +22,8 @@ use bitter::{
     World,
 };
 
+use config::{GameConfig, WorldConfig};
+
 use renderer::sprite_grid_from_world;
 
 use sprites::{SpriteGrid, Sprites, SpriteType};
@@ -132,7 +134,7 @@ fn prep_sprites(ctx: &mut Context, sprite_number: usize) -> GameResult<SpriteBat
 }
 
 impl MainState {
-    fn new(ctx: &mut Context) -> GameResult<MainState> {
+    fn new(ctx: &mut Context, game_config: GameConfig) -> GameResult<MainState> {
         let sprites: Sprites = Sprites {
             curves: prep_sprites(ctx, 1)?,
             lines: prep_sprites(ctx, 2)?,
@@ -159,8 +161,10 @@ impl MainState {
 
         let ticks: Ticks = 0;
 
+        let world = world_from_world_config(game_config.world);
+
         let s = MainState {
-            world: build_example_world(),
+            world,
             sprites,
             cursor: Cursor::new(),
             selected_villager_key: None,
@@ -326,15 +330,16 @@ impl event::EventHandler for MainState {
     }
 }
 
-fn build_example_world() -> World {
+fn world_from_world_config(world_config: WorldConfig) -> World {
     let mut world = World::new();
 
-    world.add_villager_at(4, 4);
-    world.add_villager_at(4, 5);
+    for v in world_config.starting_villagers {
+        world.add_villager_at(v.x, v.y);
+    }
 
-    world.add_farm_at(5, 4);
-    world.add_farm_at(5, 5);
-    world.add_farm_at(5, 6);
+    for f in world_config.starting_farms {
+        world.add_farm_at(f.x, f.y);
+    }
 
     world
 }
@@ -344,7 +349,7 @@ pub fn main() -> GameResult {
 
     let config_path = resource_dir.join("config.yaml");
 
-    let _game_config = config::setup_game_config(config_path);
+    let game_config = config::setup_game_config(config_path);
 
     let cb = ggez::ContextBuilder::new("bitter-jam-entry", "ggez")
         .add_resource_path(resource_dir)
@@ -353,7 +358,7 @@ pub fn main() -> GameResult {
 
     let (ctx, event_loop) = &mut cb.build()?;
 
-    let state = &mut MainState::new(ctx)?;
+    let state = &mut MainState::new(ctx, game_config)?;
 
     event::run(ctx, event_loop, state)
 }
