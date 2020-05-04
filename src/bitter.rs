@@ -78,6 +78,7 @@ impl World {
         };
 
         world.add_villager_at(4, 4);
+        world.add_villager_at(4, 5);
 
         world.add_farm_at(5, 4);
         world.add_farm_at(5, 5);
@@ -145,7 +146,7 @@ impl World {
     fn farm_grew(&mut self, key: EntityKey, new_events: &mut Vec<WorldEvent>) {
         let mut farm = self.farms[key];
 
-        let ready_to_grow = self.ticks - farm.last_grew > 80;
+        let ready_to_grow = self.ticks - farm.last_grew > 40;
 
         if ! ready_to_grow {
             return;
