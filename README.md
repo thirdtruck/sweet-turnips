@@ -4,6 +4,8 @@ An entry for Bitter Jam 2020.
 
 An experiment in learning `ggez`, ECS (entity component systems), and event-driven architecture.
 
+Created by JC Holder (jc@thirdtruck.org).
+
 ## Gameplay
 
 Villagers move around every turn (sometimes overlapping).
