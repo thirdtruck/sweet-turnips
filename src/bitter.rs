@@ -94,144 +94,168 @@ impl World {
             let mut new_events: Vec<WorldEvent> = vec![];
 
             match evt {
-                WE::VillagerMoved(key, dir) => {
-                    let c = self.coords[key];
-                    self.coords[key] = coords_after_move(c, dir);
-                },
-                WE::VillagerAte(key) => {
-                    self.satiation[key] += 1;
-
-                    let mut villager = self.villagers[key];
-                    villager.last_ate = self.ticks;
-                    self.villagers[key] = villager;
-                },
-                WE::VillagerHungered(key) => {
-                    if self.satiation[key] > 0 {
-                        self.satiation[key] -= 1;
-
-                        let mut villager = self.villagers[key];
-                        villager.last_ate = self.ticks;
-                        self.villagers[key] = villager;
-                    } else {
-                        new_events.push(WE::VillagerDied(key));
-                    }
-                },
-                WE::FarmGrew(key) => {
-                    let mut farm = self.farms[key];
-                    farm.last_grew = self.ticks;
-                    self.farms[key] = farm;
-
-                    let farm_coords = self.coords[key];
-
-                    let mut all_possible_coords: Vec<Coords> = vec![];
-
-                    for dir in CARDINAL_DIRECTIONS.iter() {
-                        if can_move_in_dir(farm_coords, *dir) {
-                            let new_coords = coords_after_move(farm_coords, *dir);
-                            all_possible_coords.push(new_coords);
-                        }
-                    }
-
-                    for key in self.farms.keys() {
-                        if all_possible_coords.is_empty() {
-                            continue;
-                        }
-
-                        let occupied_coords = self.coords[key];
-
-                        all_possible_coords.retain(|c| *c != occupied_coords);
-
-                    }
-
-                    let mut rng = rand::thread_rng();
-
-                    let ci = rng.gen_range(0, all_possible_coords.len());
-
-                    let new_coords = all_possible_coords[ci];
-
-                    new_events.push(WE::AddFarm(new_coords));
-                }
-                WE::FarmHarvested(key) => {
-                    self.farms.remove(key);
-                }
-                WE::VillagerDied(vk) => {
-                    let coords = self.coords[vk];
-
-                    let dmk = self.entities.insert(GameEntity);
-
-                    let dm = DeathMarker { key: dmk };
-
-                    self.death_markers.insert(dmk, dm);
-                    self.coords.insert(dmk, coords);
-
-                    self.villagers.remove(vk);
-                }
-                WE::AddFarm(coords) => {
-                    let (x, y) = (coords.0, coords.1);
-
-                    let new_id = self.last_id + 1;
-
-                    let entity = GameEntity;
-                    let key = self.entities.insert(entity);
-
-                    let farm = Farm::new(new_id, key, x, y, self.ticks);
-
-                    self.last_id = new_id;
-
-                    self.farms.insert(key, farm);
-                    self.coords.insert(key, (x, y));
-
-                    self.last_id = new_id;
-                }
-                WE::VillagerHarvested(vk) => {
-                    let mut rng = rand::thread_rng();
-
-                    let villager = self.villagers[vk];
-                    let satiation = self.satiation[vk];
-
-                    let mut unharvested_farms: Vec<&Farm> = self.farms.values().collect();
-
-                    let time_since_last_ate = self.ticks - villager.last_ate;
-                    let need_to_eat = satiation > 4 || time_since_last_ate < 40;
-                    let food_left_to_eat = unharvested_farms.len() > 0;
-
-                    if need_to_eat {
-                        if food_left_to_eat {
-                            let farm_to_eat_index = rng.gen_range(0, unharvested_farms.len());
-                            let farm = unharvested_farms.remove(farm_to_eat_index);
-
-                            new_events.push(WE::FarmHarvested(farm.key));
-                            new_events.push(WE::VillagerAte(vk));
-                        } else {
-                            new_events.push(WE::VillagerHungered(vk));
-                        }
-                    }
-                }
-                WE::GravesCleared => {
-                    self.death_markers.clear();
-                }
-                WE::FarmsCultivated => {
-                    for farm in self.farms.values() {
-                        if self.ticks - farm.last_grew > 20 {
-                            new_events.push(WE::FarmGrew(farm.key));
-                        }
-                    }
-                }
-                WE::VillagersFarmed => {
-                    for vk in self.villagers.keys() {
-                        new_events.push(WE::VillagerHarvested(vk));
-                    }
-                }
-                WE::VillagersMoved => {
-                    for key in self.villagers.keys() {
-                        let direction: Direction = rand::random();
-
-                        new_events.push(WE::VillagerMoved(key, direction));
-                    }
-                }
+                WE::VillagerMoved(key, dir) => self.villager_moved(key, dir),
+                WE::VillagerAte(key) => self.villager_ate(key),
+                WE::VillagerHungered(key) => self.villager_hungered(key, &mut new_events),
+                WE::FarmGrew(key) => self.farm_grew(key, &mut new_events),
+                WE::FarmHarvested(key) => self.farm_harvested(key),
+                WE::VillagerDied(vk) => self.villager_died(vk),
+                WE::FarmAdded(coords) => self.farm_added(coords),
+                WE::VillagerHarvested(vk) => self.villager_harvested(vk, &mut new_events),
+                WE::GravesCleared => self.graves_cleared(),
+                WE::FarmsCultivated => self.farms_cultivated(&mut new_events),
+                WE::VillagersFarmed => self.villagers_farmed(&mut new_events),
+                WE::VillagersMoved => self.villagers_moved(&mut new_events),
             }
 
             self.events.extend(new_events);
+        }
+    }
+
+    fn villager_moved(&mut self, key: EntityKey, dir: Direction) {
+        let c = self.coords[key];
+        self.coords[key] = coords_after_move(c, dir);
+    }
+
+    fn villager_ate(&mut self, key: EntityKey) {
+        self.satiation[key] += 1;
+
+        let mut villager = self.villagers[key];
+        villager.last_ate = self.ticks;
+        self.villagers[key] = villager;
+    }
+
+    fn villager_hungered(&mut self, key: EntityKey, new_events: &mut Vec<WorldEvent>) {
+        if self.satiation[key] > 0 {
+            self.satiation[key] -= 1;
+
+            let mut villager = self.villagers[key];
+            villager.last_ate = self.ticks;
+            self.villagers[key] = villager;
+        } else {
+            new_events.push(WE::VillagerDied(key));
+        }
+    }
+
+    fn farm_grew(&mut self, key: EntityKey, new_events: &mut Vec<WorldEvent>) {
+        let mut farm = self.farms[key];
+        farm.last_grew = self.ticks;
+        self.farms[key] = farm;
+
+        let farm_coords = self.coords[key];
+
+        let mut all_possible_coords: Vec<Coords> = vec![];
+
+        for dir in CARDINAL_DIRECTIONS.iter() {
+            if can_move_in_dir(farm_coords, *dir) {
+                let new_coords = coords_after_move(farm_coords, *dir);
+                all_possible_coords.push(new_coords);
+            }
+        }
+
+        for key in self.farms.keys() {
+            if all_possible_coords.is_empty() {
+                continue;
+            }
+
+            let occupied_coords = self.coords[key];
+
+            all_possible_coords.retain(|c| *c != occupied_coords);
+
+        }
+
+        let mut rng = rand::thread_rng();
+
+        let ci = rng.gen_range(0, all_possible_coords.len());
+
+        let new_coords = all_possible_coords[ci];
+
+        new_events.push(WE::FarmAdded(new_coords));
+    }
+
+    fn farm_harvested(&mut self, key: EntityKey) {
+        self.farms.remove(key);
+    }
+
+    fn villager_died(&mut self, vk: EntityKey) {
+        let coords = self.coords[vk];
+
+        let dmk = self.entities.insert(GameEntity);
+
+        let dm = DeathMarker { key: dmk };
+
+        self.death_markers.insert(dmk, dm);
+        self.coords.insert(dmk, coords);
+
+        self.villagers.remove(vk);
+    }
+
+    fn farm_added(&mut self, coords: Coords) {
+        let (x, y) = (coords.0, coords.1);
+
+        let new_id = self.last_id + 1;
+
+        let entity = GameEntity;
+        let key = self.entities.insert(entity);
+
+        let farm = Farm::new(new_id, key, x, y, self.ticks);
+
+        self.last_id = new_id;
+
+        self.farms.insert(key, farm);
+        self.coords.insert(key, (x, y));
+
+        self.last_id = new_id;
+    }
+
+    fn villager_harvested(&mut self, vk: EntityKey, new_events: &mut Vec<WorldEvent>) {
+        let mut rng = rand::thread_rng();
+
+        let villager = self.villagers[vk];
+        let satiation = self.satiation[vk];
+
+        let mut unharvested_farms: Vec<&Farm> = self.farms.values().collect();
+
+        let time_since_last_ate = self.ticks - villager.last_ate;
+        let need_to_eat = satiation > 4 || time_since_last_ate < 40;
+        let food_left_to_eat = unharvested_farms.len() > 0;
+
+        if need_to_eat {
+            if food_left_to_eat {
+                let farm_to_eat_index = rng.gen_range(0, unharvested_farms.len());
+                let farm = unharvested_farms.remove(farm_to_eat_index);
+
+                new_events.push(WE::FarmHarvested(farm.key));
+                new_events.push(WE::VillagerAte(vk));
+            } else {
+                new_events.push(WE::VillagerHungered(vk));
+            }
+        }
+    }
+
+    fn graves_cleared(&mut self) {
+        self.death_markers.clear();
+    }
+
+    fn farms_cultivated(&mut self, new_events: &mut Vec<WorldEvent>) {
+        for farm in self.farms.values() {
+            if self.ticks - farm.last_grew > 20 {
+                new_events.push(WE::FarmGrew(farm.key));
+            }
+        }
+    }
+
+    fn villagers_farmed(&mut self, new_events: &mut Vec<WorldEvent>) {
+        for vk in self.villagers.keys() {
+            new_events.push(WE::VillagerHarvested(vk));
+        }
+    }
+
+    fn villagers_moved(&mut self, new_events: &mut Vec<WorldEvent>) {
+        for key in self.villagers.keys() {
+            let direction: Direction = rand::random();
+
+            new_events.push(WE::VillagerMoved(key, direction));
         }
     }
 

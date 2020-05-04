@@ -6,7 +6,7 @@ pub enum WorldEvent {
     FarmsCultivated,
     VillagersFarmed,
     VillagersMoved,
-    AddFarm(Coords),
+    FarmAdded(Coords),
     VillagerMoved(EntityKey, Direction),
     VillagerAte(EntityKey),
     VillagerHungered(EntityKey),
