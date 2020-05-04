@@ -145,7 +145,9 @@ impl World {
     fn farm_grew(&mut self, key: EntityKey, new_events: &mut Vec<WorldEvent>) {
         let mut farm = self.farms[key];
 
-        if self.ticks - farm.last_grew > 20 {
+        let ready_to_grow = self.ticks - farm.last_grew > 80;
+
+        if ! ready_to_grow {
             return;
         }
 
