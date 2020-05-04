@@ -88,17 +88,6 @@ impl World {
         world
     }
 
-    fn copy_from_previous_world(&mut self, new_world: Self) {
-        self.entities = new_world.entities.clone();
-        self.coords = new_world.coords.clone();
-        self.events = new_world.events.clone();
-        self.ticks = new_world.ticks.clone();
-        self.death_markers = new_world.death_markers.clone();
-        self.farms = new_world.farms.clone();
-        self.satiation = new_world.satiation.clone();
-        self.villagers = new_world.villagers.clone();
-    }
-
     fn process_events(&self) -> World {
         let mut new_world = self.clone();
 
