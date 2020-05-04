@@ -31,3 +31,5 @@ So that's one takeaway: Build configurability into your game project early and o
 Now let's do refactor this to use `From`! This should make things more idiomatic and easier to read.
 
 What's next? Let's keep making the game state more immutable!
+
+Well! That refactoring is coming along nicely. Dinner time, though, so I have to shift gears for the rest of the night!
