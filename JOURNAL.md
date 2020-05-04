@@ -9,3 +9,5 @@ Never mind! All the maps I have right now actually need the same key. I'll revis
 Let's try making inline event generation more functional (as opposed to mutable) instead.
 
 That wasn't too bad! At least not the groundwork of refactoring the event resolution methods to return new events instead of modifying the new event stack in place.
+
+Glad I practiced building purely functional event systems in a previous game jam project. The more instances of `mut` we can remove from arguments, the better.

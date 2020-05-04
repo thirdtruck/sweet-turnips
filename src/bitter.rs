@@ -53,6 +53,7 @@ impl Distribution<Direction> for Standard {
 
 pub type Coords = (u8, u8);
 
+#[derive(Clone,Debug)]
 pub struct World {
     events: Vec<WorldEvent>,
     entities: SlotMap<EntityKey, GameEntity>,
@@ -87,26 +88,41 @@ impl World {
         world
     }
 
-    fn process_events(&mut self) {
-        while let Some(evt) = self.events.pop() {
+    fn copy_from_previous_world(&mut self, new_world: Self) {
+        self.entities = new_world.entities.clone();
+        self.coords = new_world.coords.clone();
+        self.events = new_world.events.clone();
+        self.ticks = new_world.ticks.clone();
+        self.death_markers = new_world.death_markers.clone();
+        self.farms = new_world.farms.clone();
+        self.satiation = new_world.satiation.clone();
+        self.villagers = new_world.villagers.clone();
+    }
+
+    fn process_events(&self) -> World {
+        let mut new_world = self.clone();
+
+        while let Some(evt) = new_world.events.pop() {
             let new_events = match evt {
-                WE::VillagerMoved(key, dir) => self.villager_moved(key, dir),
-                WE::VillagerAte(key) => self.villager_ate(key),
-                WE::VillagersHungered => self.villagers_hungered(),
-                WE::VillagerHungered(key) => self.villager_hungered(key),
-                WE::FarmGrew(key) => self.farm_grew(key),
-                WE::FarmHarvested(key) => self.farm_harvested(key),
-                WE::VillagerDied(vk) => self.villager_died(vk),
-                WE::FarmAdded(coords) => self.farm_added(coords),
-                WE::VillagerHarvested(vk) => self.villager_harvested(vk),
-                WE::GravesCleared => self.graves_cleared(),
-                WE::FarmsCultivated => self.farms_cultivated(),
-                WE::VillagersMoved => self.villagers_moved(),
-                WE::EggLaid(coords) => self.egg_laid(coords),
+                WE::VillagerMoved(key, dir) => new_world.villager_moved(key, dir),
+                WE::VillagerAte(key) => new_world.villager_ate(key),
+                WE::VillagersHungered => new_world.villagers_hungered(),
+                WE::VillagerHungered(key) => new_world.villager_hungered(key),
+                WE::FarmGrew(key) => new_world.farm_grew(key),
+                WE::FarmHarvested(key) => new_world.farm_harvested(key),
+                WE::VillagerDied(vk) => new_world.villager_died(vk),
+                WE::FarmAdded(coords) => new_world.farm_added(coords),
+                WE::VillagerHarvested(vk) => new_world.villager_harvested(vk),
+                WE::GravesCleared => new_world.graves_cleared(),
+                WE::FarmsCultivated => new_world.farms_cultivated(),
+                WE::VillagersMoved => new_world.villagers_moved(),
+                WE::EggLaid(coords) => new_world.egg_laid(coords),
             };
 
-            self.events.extend(new_events);
+            new_world.events.extend(new_events);
         }
+
+        new_world
     }
 
     fn villager_moved(&mut self, key: EntityKey, dir: Direction) -> Vec<WorldEvent>{
@@ -344,7 +360,9 @@ impl World {
         self.events.push(WE::FarmsCultivated);
         self.events.push(WE::GravesCleared);
 
-        self.process_events();
+        let new_world = self.process_events();
+
+        self.copy_from_previous_world(new_world);
     }
 
     pub fn request_egg_spawn(&mut self, coords: Coords) {
