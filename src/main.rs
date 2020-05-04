@@ -12,6 +12,7 @@ use ggez::nalgebra as na;
 use ggez::{Context, GameResult};
 
 use bitter::{
+    Coords,
     Direction,
     EntityId,
     GRID_WIDTH,
@@ -58,6 +59,10 @@ impl Cursor {
             x: 2,
             y: 2,
         }
+    }
+
+    fn coords(&self) -> Coords {
+        (self.x, self.y)
     }
 }
 
@@ -259,6 +264,10 @@ impl MainState {
         }
     }
 
+    fn spawn_egg(&mut self, coords: Coords) {
+
+    }
+
     fn render_sprite_grid(&mut self, sprite_grid: SpriteGrid) {
         for x in 0..GRID_WIDTH {
             for y in 0..GRID_HEIGHT {
@@ -310,6 +319,7 @@ impl event::EventHandler for MainState {
             KeyCode::A => self.move_cursor(Direction::Left),
             KeyCode::S => self.move_cursor(Direction::Down),
             KeyCode::D => self.move_cursor(Direction::Right),
+            KeyCode::Space => self.spawn_egg(self.cursor.coords()),
             _ => (),
         }
     }
