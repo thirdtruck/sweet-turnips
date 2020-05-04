@@ -259,9 +259,6 @@ impl World {
     }
 
     fn egg_laid(&mut self, coords: Coords) {
-        println!("WIP");
-        return;
-
         let (x, y) = (coords.0, coords.1);
 
         let entity = GameEntity;
@@ -271,6 +268,7 @@ impl World {
 
         self.villagers.insert(key, villager);
         self.coords.insert(key, (x, y));
+        self.satiation.insert(key, 1);
     }
 
     pub fn add_villager_at(&mut self, x: u8, y: u8) {
