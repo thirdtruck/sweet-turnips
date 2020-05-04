@@ -342,6 +342,8 @@ fn build_example_world() -> World {
 pub fn main() -> GameResult {
     let resource_dir = path::PathBuf::from("./resources");
 
+    config::initialize_config_file().unwrap();
+
     let cb = ggez::ContextBuilder::new("bitter-jam-entry", "ggez")
         .add_resource_path(resource_dir)
         .window_mode(ggez::conf::WindowMode::default()

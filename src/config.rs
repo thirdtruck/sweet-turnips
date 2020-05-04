@@ -19,6 +19,11 @@ struct WorldConfig {
     starting_farms: Vec<FarmConfig>,
 }
 
+#[derive(Debug, PartialEq, Serialize, Deserialize)]
+struct GameConfig {
+    world: WorldConfig,
+}
+
 pub fn initialize_config_file() -> Result<(), serde_yaml::Error> {
     let world_config = WorldConfig {
         starting_villagers: vec![
@@ -29,7 +34,9 @@ pub fn initialize_config_file() -> Result<(), serde_yaml::Error> {
         ],
     };
 
-    let output = serde_yaml::to_string(&world_config)?;
+    let game_config = GameConfig { world: world_config };
+
+    let output = serde_yaml::to_string(&game_config)?;
 
     println!("{}", output);
 
