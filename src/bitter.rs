@@ -303,20 +303,6 @@ impl World {
         self.coords.insert(key, (x, y));
     }
 
-    pub fn tick(&mut self) -> World {
-        self.ticks += 1;
-
-        // self.events is a LIFO stack
-        self.events.push(WE::VillagersMoved);
-        self.events.push(WE::VillagersHungered);
-        self.events.push(WE::FarmsCultivated);
-        self.events.push(WE::GravesCleared);
-
-        let new_world = process_events(self);
-
-        new_world
-    }
-
     pub fn request_egg_spawn(&mut self, coords: Coords) {
         self.events.push(WE::EggLaid(coords));
     }
@@ -403,4 +389,20 @@ fn process_events(world: &World) -> World {
     }
 
     new_world
+}
+
+pub fn tick(world: &World) -> World {
+    let mut world = world.clone();
+
+    world.ticks += 1;
+
+    // world.events is a LIFO stack
+    world.events.push(WE::VillagersMoved);
+    world.events.push(WE::VillagersHungered);
+    world.events.push(WE::FarmsCultivated);
+    world.events.push(WE::GravesCleared);
+
+    let world = process_events(&world);
+
+    world
 }

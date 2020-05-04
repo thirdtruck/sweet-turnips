@@ -285,8 +285,7 @@ impl event::EventHandler for MainState {
         self.ticks += 1;
 
         if (self.ticks + 1) % 40 == 0 {
-            let new_world = self.world.tick();
-            self.world = new_world;
+            self.world = bitter::tick(&self.world);
         }
 
         self.selected_villager_key = self.world.villager_key_at(self.cursor.x, self.cursor.y);
