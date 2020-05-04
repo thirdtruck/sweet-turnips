@@ -228,7 +228,7 @@ impl World {
         let mut unharvested_farms: Vec<&Farm> = self.farms.values().collect();
 
         let time_since_last_ate = self.ticks - villager.last_ate;
-        let need_to_eat = satiation < 5 && time_since_last_ate > 5;
+        let need_to_eat = satiation < 5 && time_since_last_ate > 2;
         let food_left_to_eat = unharvested_farms.len() > 0;
 
         if need_to_eat {
@@ -278,7 +278,7 @@ impl World {
 
         self.villagers.insert(key, villager);
         self.coords.insert(key, (x, y));
-        self.satiation.insert(key, 1);
+        self.satiation.insert(key, 4);
     }
 
     pub fn add_villager_at(&mut self, x: u8, y: u8) {
@@ -289,7 +289,7 @@ impl World {
 
         self.villagers.insert(key, villager);
         self.coords.insert(key, (x, y));
-        self.satiation.insert(key, 1);
+        self.satiation.insert(key, 4);
     }
 
     pub fn add_farm_at(&mut self, x: u8, y: u8) {
