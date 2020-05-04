@@ -133,7 +133,7 @@ impl World {
     fn villager_hungered(&mut self, key: EntityKey, new_events: &mut Vec<WorldEvent>) {
         let mut villager = self.villagers[key];
 
-        let feel_hunger = self.ticks - villager.last_ate > 2;
+        let feel_hunger = self.ticks - villager.last_ate > 4;
 
         if !feel_hunger {
             return;
@@ -154,7 +154,7 @@ impl World {
     fn farm_grew(&mut self, key: EntityKey, new_events: &mut Vec<WorldEvent>) {
         let mut farm = self.farms[key];
 
-        let ready_to_grow = self.ticks - farm.last_grew > 40;
+        let ready_to_grow = self.ticks - farm.last_grew > 3;
 
         if ! ready_to_grow {
             return;
