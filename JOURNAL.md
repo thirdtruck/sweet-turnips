@@ -18,4 +18,4 @@ Well, I _thought_ I broke it but I reverted my changes and it's still breaking. 
 
 Disk space issues confirmed. Code compiles just fine now. Hopefully that didn't mangle my git repo ... Glad this issue didn't strike during the jam itself! Mind your development environments!
 
-Yeah, moving the example world configuration out of `bitter.rs` and into `main.rs` was long overdue. Wishing I'd made that externally configurable a while ago, too. That would have saved me a lot of time waiting for builds to finish. In fact, let's do that now!
+Yeah, moving the example world configuration out of `bitter.rs` and into `main.rs` was long overdue. Wishing I'd made that externally configurable a while ago, too. That would have saved me a lot of time waiting for builds to finish. In fact, let's do that now! It's high time I learned `serde` anyway.

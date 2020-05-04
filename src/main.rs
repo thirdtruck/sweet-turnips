@@ -1,6 +1,7 @@
 mod bitter;
 mod renderer;
 mod sprites;
+mod config;
 
 use ggez;
 use ggez::event;
