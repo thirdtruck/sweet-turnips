@@ -106,6 +106,7 @@ impl World {
                 WE::FarmsCultivated => self.farms_cultivated(&mut new_events),
                 WE::VillagersFarmed => self.villagers_farmed(&mut new_events),
                 WE::VillagersMoved => self.villagers_moved(&mut new_events),
+                WE::EggLaid(coords) => self.egg_laid(coords),
             }
 
             self.events.extend(new_events);
@@ -266,6 +267,27 @@ impl World {
         }
     }
 
+    fn egg_laid(&mut self, coords: Coords) {
+        println!("WIP");
+        return;
+
+        let (x, y) = (coords.0, coords.1);
+
+        let new_id = self.last_id + 1;
+
+        let entity = GameEntity;
+        let key = self.entities.insert(entity);
+
+        let villager = Villager::new(new_id, key, self.ticks);
+
+        self.last_id = new_id;
+
+        self.villagers.insert(key, villager);
+        self.coords.insert(key, (x, y));
+
+        self.last_id = new_id;
+    }
+
     pub fn add_villager_at(&mut self, x: u8, y: u8) -> EntityId {
         let new_id = self.last_id + 1;
 
@@ -317,6 +339,10 @@ impl World {
         self.events.push(WE::GravesCleared);
 
         self.process_events();
+    }
+
+    pub fn request_egg_spawn(&mut self, coords: Coords) {
+        self.events.push(WE::EggLaid(coords));
     }
 
     pub fn villager_id_at(&self, x: u8, y: u8) -> Option<EntityId> {

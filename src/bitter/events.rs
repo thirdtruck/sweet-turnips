@@ -14,6 +14,7 @@ pub enum WorldEvent {
     FarmGrew(EntityKey),
     FarmHarvested(EntityKey),
     VillagerDied(EntityKey),
+    EggLaid(Coords),
 }
 
 pub type WE = WorldEvent;
