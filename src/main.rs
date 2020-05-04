@@ -28,6 +28,7 @@ use renderer::sprite_grid_from_world;
 
 use sprites::{SpriteGrid, Sprites, SpriteType};
 
+use std::convert::From;
 use std::path;
 
 const SPRITE_SCALE: f32 = 4.0;
@@ -161,10 +162,8 @@ impl MainState {
 
         let ticks: Ticks = 0;
 
-        let world = world_from_world_config(game_config.world);
-
         let s = MainState {
-            world,
+            world: game_config.world.into(),
             sprites,
             cursor: Cursor::new(),
             selected_villager_key: None,
@@ -330,18 +329,20 @@ impl event::EventHandler for MainState {
     }
 }
 
-fn world_from_world_config(world_config: WorldConfig) -> World {
-    let mut world = World::new();
+impl From<WorldConfig> for World {
+    fn from(config: WorldConfig) -> Self {
+        let mut world = Self::new();
 
-    for v in world_config.starting_villagers {
-        world.add_villager_at(v.x, v.y);
+        for v in config.starting_villagers {
+            world.add_villager_at(v.x, v.y);
+        }
+
+        for f in config.starting_farms {
+            world.add_farm_at(f.x, f.y);
+        }
+
+        world
     }
-
-    for f in world_config.starting_farms {
-        world.add_farm_at(f.x, f.y);
-    }
-
-    world
 }
 
 pub fn main() -> GameResult {
