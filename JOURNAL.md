@@ -11,3 +11,9 @@ Let's try making inline event generation more functional (as opposed to mutable)
 That wasn't too bad! At least not the groundwork of refactoring the event resolution methods to return new events instead of modifying the new event stack in place.
 
 Glad I practiced building purely functional event systems in a previous game jam project. The more instances of `mut` we can remove from arguments, the better.
+
+Oops, I started breaking the compiler! Don't ask me how because I don't know.
+
+Well, I _thought_ I broke it but I reverted my changes and it's still breaking. I'm at a loss. Wondering if my new backup software running in the background broke something. Ooooh, right. Disk space issues.
+
+Disk space issues confirmed. Code compiles just fine now. Hopefully that didn't mangle my git repo ... Glad this issue didn't strike during the jam itself! Mind your development environments!
