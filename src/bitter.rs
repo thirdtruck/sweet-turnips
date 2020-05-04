@@ -88,6 +88,32 @@ impl World {
         }
     }
 
+    fn events_processed(self) -> Self {
+        let mut world = self.clone();
+
+        while let Some(evt) = world.events.pop() {
+            let new_events = match evt {
+                WE::VillagerMoved(key, dir) => world.villager_moved(key, dir),
+                WE::VillagerAte(key) => world.villager_ate(key),
+                WE::VillagersHungered => world.villagers_hungered(),
+                WE::VillagerHungered(key) => world.villager_hungered(key),
+                WE::FarmGrew(key) => world.farm_grew(key),
+                WE::FarmHarvested(key) => world.farm_harvested(key),
+                WE::VillagerDied(vk) => world.villager_died(vk),
+                WE::FarmAdded(coords) => world.farm_added(coords),
+                WE::VillagerHarvested(vk) => world.villager_harvested(vk),
+                WE::GravesCleared => world.graves_cleared(),
+                WE::FarmsCultivated => world.farms_cultivated(),
+                WE::VillagersMoved => world.villagers_moved(),
+                WE::EggLaid(coords) => world.egg_laid(coords),
+            };
+
+            world.events.extend(new_events);
+        }
+
+        world
+    }
+
     pub fn with_event(self, evt: WorldEvent) -> Self {
         let mut events = self.events.clone();
         events.push(evt);
@@ -382,45 +408,14 @@ fn can_move_in_dir(coords: Coords, dir: Direction) -> bool {
     }
 }
 
-fn process_events(world: &World) -> World {
-    let mut new_world = world.clone();
-
-    while let Some(evt) = new_world.events.pop() {
-        let new_events = match evt {
-            WE::VillagerMoved(key, dir) => new_world.villager_moved(key, dir),
-            WE::VillagerAte(key) => new_world.villager_ate(key),
-            WE::VillagersHungered => new_world.villagers_hungered(),
-            WE::VillagerHungered(key) => new_world.villager_hungered(key),
-            WE::FarmGrew(key) => new_world.farm_grew(key),
-            WE::FarmHarvested(key) => new_world.farm_harvested(key),
-            WE::VillagerDied(vk) => new_world.villager_died(vk),
-            WE::FarmAdded(coords) => new_world.farm_added(coords),
-            WE::VillagerHarvested(vk) => new_world.villager_harvested(vk),
-            WE::GravesCleared => new_world.graves_cleared(),
-            WE::FarmsCultivated => new_world.farms_cultivated(),
-            WE::VillagersMoved => new_world.villagers_moved(),
-            WE::EggLaid(coords) => new_world.egg_laid(coords),
-        };
-
-        new_world.events.extend(new_events);
-    }
-
-    new_world
-}
-
 pub fn tick(world: &World) -> World {
-    let mut world = world.clone();
-
-    world = world.ticked();
-
     // world.events is a LIFO stack
-    world = world
+
+    world.clone()
+        .ticked()
         .with_event(WE::VillagersMoved)
         .with_event(WE::VillagersHungered)
         .with_event(WE::FarmsCultivated)
-        .with_event(WE::GravesCleared);
-
-    let world = process_events(&world);
-
-    world
+        .with_event(WE::GravesCleared)
+        .events_processed()
 }
