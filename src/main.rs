@@ -248,7 +248,7 @@ impl MainState {
     }
 
     fn spawn_egg(&mut self, coords: Coords) {
-        self.world.request_egg_spawn(coords);
+        self.world = self.world.with_egg_spawn_requested_at(coords);
     }
 
     fn render_sprite_grid(&mut self, sprite_grid: SpriteGrid) {

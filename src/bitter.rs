@@ -355,8 +355,8 @@ impl World {
         self.coords.insert(key, (x, y));
     }
 
-    pub fn request_egg_spawn(&mut self, coords: Coords) {
-        self.events.push(WE::EggLaid(coords));
+    pub fn with_egg_spawn_requested_at(&self, coords: Coords) -> Self {
+        self.clone().with_event(WE::EggLaid(coords))
     }
 
     pub fn villager_key_at(&self, x: u8, y: u8) -> Option<EntityKey> {
