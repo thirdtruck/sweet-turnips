@@ -1,9 +1,13 @@
+mod events; 
+
 use rand::{
     distributions::{Distribution, Standard},
     Rng,
 };
 
 use slotmap::{new_key_type, SlotMap, SecondaryMap};
+
+use events::{WE,WorldEvent};
 
 pub const GRID_WIDTH: u8 = 8;
 pub const GRID_HEIGHT: u8 = 8;
@@ -58,24 +62,6 @@ pub struct World {
     pub villagers: SecondaryMap<EntityKey, Villager>,
 }
 
-#[derive(Copy,Clone,Debug)]
-enum WorldEvent {
-    GravesCleared,
-    FarmsCultivated,
-    VillagersFarmed,
-    VillagersMoved,
-    AddFarm(Coords),
-    VillagerMoved(EntityKey, Direction),
-    VillagerAte(EntityKey),
-    VillagerHungered(EntityKey),
-    VillagerHarvested(EntityKey),
-    FarmGrew(EntityKey),
-    FarmHarvested(EntityKey),
-    VillagerDied(EntityKey),
-}
-
-type WE = WorldEvent;
-
 impl World {
     pub fn new() -> Self {
         let mut world = World {
@@ -92,7 +78,9 @@ impl World {
 
         world.add_villager_at(4, 4);
 
+        world.add_farm_at(5, 4);
         world.add_farm_at(5, 5);
+        world.add_farm_at(5, 6);
 
         world
     }
