@@ -94,6 +94,7 @@ impl World {
             match evt {
                 WE::VillagerMoved(key, dir) => self.villager_moved(key, dir),
                 WE::VillagerAte(key) => self.villager_ate(key),
+                WE::VillagersHungered => self.villagers_hungered(&mut new_events),
                 WE::VillagerHungered(key) => self.villager_hungered(key, &mut new_events),
                 WE::FarmGrew(key) => self.farm_grew(key, &mut new_events),
                 WE::FarmHarvested(key) => self.farm_harvested(key),
@@ -102,7 +103,6 @@ impl World {
                 WE::VillagerHarvested(vk) => self.villager_harvested(vk, &mut new_events),
                 WE::GravesCleared => self.graves_cleared(),
                 WE::FarmsCultivated => self.farms_cultivated(&mut new_events),
-                WE::VillagersFarmed => self.villagers_farmed(&mut new_events),
                 WE::VillagersMoved => self.villagers_moved(&mut new_events),
                 WE::EggLaid(coords) => self.egg_laid(coords),
             }
@@ -117,27 +117,35 @@ impl World {
     }
 
     fn villager_ate(&mut self, key: EntityKey) {
-        // TODO: Villager shouldn't be eating in the first place if they're full but enforce that
-        // here to be sure
-
         let mut villager = self.villagers[key];
         villager.last_ate = self.ticks;
         self.villagers[key] = villager;
 
-        let satiation = self.satiation[key];
+        self.satiation[key] += 1;
+    }
 
-        if satiation < 5 {
-            self.satiation[key] += 1;
+    fn villagers_hungered(&mut self, new_events: &mut Vec<WorldEvent>) {
+        for key in self.villagers.keys() {
+            new_events.push(WE::VillagerHungered(key));
         }
     }
 
     fn villager_hungered(&mut self, key: EntityKey, new_events: &mut Vec<WorldEvent>) {
+        let mut villager = self.villagers[key];
+
+        let feel_hunger = self.ticks - villager.last_ate > 2;
+
+        if !feel_hunger {
+            return;
+        }
+
         if self.satiation[key] > 0 {
             self.satiation[key] -= 1;
 
-            let mut villager = self.villagers[key];
             villager.last_ate = self.ticks;
             self.villagers[key] = villager;
+
+            new_events.push(WE::VillagerHarvested(key));
         } else {
             new_events.push(WE::VillagerDied(key));
         }
@@ -222,25 +230,16 @@ impl World {
     fn villager_harvested(&mut self, vk: EntityKey, new_events: &mut Vec<WorldEvent>) {
         let mut rng = rand::thread_rng();
 
-        let villager = self.villagers[vk];
-        let satiation = self.satiation[vk];
-
         let mut unharvested_farms: Vec<&Farm> = self.farms.values().collect();
 
-        let time_since_last_ate = self.ticks - villager.last_ate;
-        let need_to_eat = satiation < 5 && time_since_last_ate > 2;
         let food_left_to_eat = unharvested_farms.len() > 0;
 
-        if need_to_eat {
-            if food_left_to_eat {
-                let farm_to_eat_index = rng.gen_range(0, unharvested_farms.len());
-                let farm = unharvested_farms.remove(farm_to_eat_index);
+        if food_left_to_eat {
+            let farm_to_eat_index = rng.gen_range(0, unharvested_farms.len());
+            let farm = unharvested_farms.remove(farm_to_eat_index);
 
-                new_events.push(WE::FarmHarvested(farm.key));
-                new_events.push(WE::VillagerAte(vk));
-            } else {
-                new_events.push(WE::VillagerHungered(vk));
-            }
+            new_events.push(WE::FarmHarvested(farm.key));
+            new_events.push(WE::VillagerAte(vk));
         }
     }
 
@@ -251,12 +250,6 @@ impl World {
     fn farms_cultivated(&mut self, new_events: &mut Vec<WorldEvent>) {
         for farm in self.farms.values() {
             new_events.push(WE::FarmGrew(farm.key));
-        }
-    }
-
-    fn villagers_farmed(&mut self, new_events: &mut Vec<WorldEvent>) {
-        for vk in self.villagers.keys() {
-            new_events.push(WE::VillagerHarvested(vk));
         }
     }
 
@@ -311,7 +304,7 @@ impl World {
     fn advance_world(&mut self) {
         // self.events is a LIFO stack
         self.events.push(WE::VillagersMoved);
-        self.events.push(WE::VillagersFarmed);
+        self.events.push(WE::VillagersHungered);
         self.events.push(WE::FarmsCultivated);
         self.events.push(WE::GravesCleared);
 

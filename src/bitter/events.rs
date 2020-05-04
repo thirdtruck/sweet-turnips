@@ -4,11 +4,11 @@ use crate::bitter::{Coords,Direction,EntityKey};
 pub enum WorldEvent {
     GravesCleared,
     FarmsCultivated,
-    VillagersFarmed,
     VillagersMoved,
     FarmAdded(Coords),
     VillagerMoved(EntityKey, Direction),
     VillagerAte(EntityKey),
+    VillagersHungered,
     VillagerHungered(EntityKey),
     VillagerHarvested(EntityKey),
     FarmGrew(EntityKey),
