@@ -89,54 +89,62 @@ impl World {
 
     fn process_events(&mut self) {
         while let Some(evt) = self.events.pop() {
-            let mut new_events: Vec<WorldEvent> = vec![];
-
-            match evt {
+            let new_events = match evt {
                 WE::VillagerMoved(key, dir) => self.villager_moved(key, dir),
                 WE::VillagerAte(key) => self.villager_ate(key),
-                WE::VillagersHungered => self.villagers_hungered(&mut new_events),
-                WE::VillagerHungered(key) => self.villager_hungered(key, &mut new_events),
-                WE::FarmGrew(key) => self.farm_grew(key, &mut new_events),
+                WE::VillagersHungered => self.villagers_hungered(),
+                WE::VillagerHungered(key) => self.villager_hungered(key),
+                WE::FarmGrew(key) => self.farm_grew(key),
                 WE::FarmHarvested(key) => self.farm_harvested(key),
                 WE::VillagerDied(vk) => self.villager_died(vk),
                 WE::FarmAdded(coords) => self.farm_added(coords),
-                WE::VillagerHarvested(vk) => self.villager_harvested(vk, &mut new_events),
+                WE::VillagerHarvested(vk) => self.villager_harvested(vk),
                 WE::GravesCleared => self.graves_cleared(),
-                WE::FarmsCultivated => self.farms_cultivated(&mut new_events),
-                WE::VillagersMoved => self.villagers_moved(&mut new_events),
+                WE::FarmsCultivated => self.farms_cultivated(),
+                WE::VillagersMoved => self.villagers_moved(),
                 WE::EggLaid(coords) => self.egg_laid(coords),
-            }
+            };
 
             self.events.extend(new_events);
         }
     }
 
-    fn villager_moved(&mut self, key: EntityKey, dir: Direction) {
+    fn villager_moved(&mut self, key: EntityKey, dir: Direction) -> Vec<WorldEvent>{
         let c = self.coords[key];
         self.coords[key] = coords_after_move(c, dir);
+
+        vec![]
     }
 
-    fn villager_ate(&mut self, key: EntityKey) {
+    fn villager_ate(&mut self, key: EntityKey) -> Vec<WorldEvent> {
         let mut villager = self.villagers[key];
         villager.last_ate = self.ticks;
         self.villagers[key] = villager;
 
         self.satiation[key] += 1;
+
+        vec![]
     }
 
-    fn villagers_hungered(&mut self, new_events: &mut Vec<WorldEvent>) {
+    fn villagers_hungered(&mut self) -> Vec<WorldEvent> {
+        let mut new_events = vec![];
+
         for key in self.villagers.keys() {
             new_events.push(WE::VillagerHungered(key));
         }
+
+        new_events
     }
 
-    fn villager_hungered(&mut self, key: EntityKey, new_events: &mut Vec<WorldEvent>) {
+    fn villager_hungered(&mut self, key: EntityKey) -> Vec<WorldEvent> {
+        let mut new_events = vec![];
+
         let mut villager = self.villagers[key];
 
         let feel_hunger = self.ticks - villager.last_ate > 4;
 
         if !feel_hunger {
-            return;
+            return new_events;
         }
 
         if self.satiation[key] > 0 {
@@ -149,15 +157,19 @@ impl World {
         } else {
             new_events.push(WE::VillagerDied(key));
         }
+
+        new_events
     }
 
-    fn farm_grew(&mut self, key: EntityKey, new_events: &mut Vec<WorldEvent>) {
+    fn farm_grew(&mut self, key: EntityKey) -> Vec<WorldEvent> {
+        let mut new_events = vec![];
+
         let mut farm = self.farms[key];
 
         let ready_to_grow = self.ticks - farm.last_grew > 3;
 
         if ! ready_to_grow {
-            return;
+            return new_events;
         }
 
         farm.last_grew = self.ticks;
@@ -186,7 +198,7 @@ impl World {
         }
 
         if all_possible_coords.len() == 0 {
-            return;
+            return new_events;
         }
 
         let mut rng = rand::thread_rng();
@@ -196,13 +208,17 @@ impl World {
         let new_coords = all_possible_coords[ci];
 
         new_events.push(WE::FarmAdded(new_coords));
+
+        new_events
     }
 
-    fn farm_harvested(&mut self, key: EntityKey) {
+    fn farm_harvested(&mut self, key: EntityKey) -> Vec<WorldEvent> {
         self.farms.remove(key);
+
+        vec![]
     }
 
-    fn villager_died(&mut self, vk: EntityKey) {
+    fn villager_died(&mut self, vk: EntityKey) -> Vec<WorldEvent> {
         let coords = self.coords[vk];
 
         let dmk = self.entities.insert(GameEntity);
@@ -213,9 +229,11 @@ impl World {
         self.coords.insert(dmk, coords);
 
         self.villagers.remove(vk);
+
+        vec![]
     }
 
-    fn farm_added(&mut self, coords: Coords) {
+    fn farm_added(&mut self, coords: Coords) -> Vec<WorldEvent> {
         let (x, y) = (coords.0, coords.1);
 
         let entity = GameEntity;
@@ -225,9 +243,13 @@ impl World {
 
         self.farms.insert(key, farm);
         self.coords.insert(key, (x, y));
+
+        vec![]
     }
 
-    fn villager_harvested(&mut self, vk: EntityKey, new_events: &mut Vec<WorldEvent>) {
+    fn villager_harvested(&mut self, vk: EntityKey) -> Vec<WorldEvent> {
+        let mut new_events = vec![];
+
         let mut rng = rand::thread_rng();
 
         let mut unharvested_farms: Vec<&Farm> = self.farms.values().collect();
@@ -241,27 +263,39 @@ impl World {
             new_events.push(WE::FarmHarvested(farm.key));
             new_events.push(WE::VillagerAte(vk));
         }
+
+        new_events
     }
 
-    fn graves_cleared(&mut self) {
+    fn graves_cleared(&mut self) -> Vec<WorldEvent> {
         self.death_markers.clear();
+
+        vec![]
     }
 
-    fn farms_cultivated(&mut self, new_events: &mut Vec<WorldEvent>) {
+    fn farms_cultivated(&mut self) -> Vec<WorldEvent> {
+        let mut new_events = vec![];
+
         for farm in self.farms.values() {
             new_events.push(WE::FarmGrew(farm.key));
         }
+
+        new_events
     }
 
-    fn villagers_moved(&mut self, new_events: &mut Vec<WorldEvent>) {
+    fn villagers_moved(&mut self) -> Vec<WorldEvent> {
+        let mut new_events = vec![];
+
         for key in self.villagers.keys() {
             let direction: Direction = rand::random();
 
             new_events.push(WE::VillagerMoved(key, direction));
         }
+
+        new_events
     }
 
-    fn egg_laid(&mut self, coords: Coords) {
+    fn egg_laid(&mut self, coords: Coords) -> Vec<WorldEvent> {
         let (x, y) = (coords.0, coords.1);
 
         let entity = GameEntity;
@@ -272,6 +306,8 @@ impl World {
         self.villagers.insert(key, villager);
         self.coords.insert(key, (x, y));
         self.satiation.insert(key, 4);
+
+        vec![]
     }
 
     pub fn add_villager_at(&mut self, x: u8, y: u8) {
