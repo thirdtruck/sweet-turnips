@@ -81,32 +81,6 @@ impl World {
         world
     }
 
-    fn process_events(&self) -> World {
-        let mut new_world = self.clone();
-
-        while let Some(evt) = new_world.events.pop() {
-            let new_events = match evt {
-                WE::VillagerMoved(key, dir) => new_world.villager_moved(key, dir),
-                WE::VillagerAte(key) => new_world.villager_ate(key),
-                WE::VillagersHungered => new_world.villagers_hungered(),
-                WE::VillagerHungered(key) => new_world.villager_hungered(key),
-                WE::FarmGrew(key) => new_world.farm_grew(key),
-                WE::FarmHarvested(key) => new_world.farm_harvested(key),
-                WE::VillagerDied(vk) => new_world.villager_died(vk),
-                WE::FarmAdded(coords) => new_world.farm_added(coords),
-                WE::VillagerHarvested(vk) => new_world.villager_harvested(vk),
-                WE::GravesCleared => new_world.graves_cleared(),
-                WE::FarmsCultivated => new_world.farms_cultivated(),
-                WE::VillagersMoved => new_world.villagers_moved(),
-                WE::EggLaid(coords) => new_world.egg_laid(coords),
-            };
-
-            new_world.events.extend(new_events);
-        }
-
-        new_world
-    }
-
     fn villager_moved(&mut self, key: EntityKey, dir: Direction) -> Vec<WorldEvent>{
         let c = self.coords[key];
         self.coords[key] = coords_after_move(c, dir);
@@ -338,7 +312,7 @@ impl World {
         self.events.push(WE::FarmsCultivated);
         self.events.push(WE::GravesCleared);
 
-        let new_world = self.process_events();
+        let new_world = process_events(self);
 
         new_world
     }
@@ -403,4 +377,30 @@ fn can_move_in_dir(coords: Coords, dir: Direction) -> bool {
         Dir::Left => x > 1,
         Dir::Right => x < GRID_WIDTH - 2,
     }
+}
+
+fn process_events(world: &World) -> World {
+    let mut new_world = world.clone();
+
+    while let Some(evt) = new_world.events.pop() {
+        let new_events = match evt {
+            WE::VillagerMoved(key, dir) => new_world.villager_moved(key, dir),
+            WE::VillagerAte(key) => new_world.villager_ate(key),
+            WE::VillagersHungered => new_world.villagers_hungered(),
+            WE::VillagerHungered(key) => new_world.villager_hungered(key),
+            WE::FarmGrew(key) => new_world.farm_grew(key),
+            WE::FarmHarvested(key) => new_world.farm_harvested(key),
+            WE::VillagerDied(vk) => new_world.villager_died(vk),
+            WE::FarmAdded(coords) => new_world.farm_added(coords),
+            WE::VillagerHarvested(vk) => new_world.villager_harvested(vk),
+            WE::GravesCleared => new_world.graves_cleared(),
+            WE::FarmsCultivated => new_world.farms_cultivated(),
+            WE::VillagersMoved => new_world.villagers_moved(),
+            WE::EggLaid(coords) => new_world.egg_laid(coords),
+        };
+
+        new_world.events.extend(new_events);
+    }
+
+    new_world
 }
