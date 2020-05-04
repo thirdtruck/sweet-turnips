@@ -347,7 +347,7 @@ impl World {
         self.coords.insert(key, (x, y));
     }
 
-    pub fn tick(&mut self) {
+    pub fn tick(&mut self) -> World {
         self.ticks += 1;
 
         // self.events is a LIFO stack
@@ -358,7 +358,7 @@ impl World {
 
         let new_world = self.process_events();
 
-        self.copy_from_previous_world(new_world);
+        new_world
     }
 
     pub fn request_egg_spawn(&mut self, coords: Coords) {
