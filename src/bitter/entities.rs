@@ -1,6 +1,5 @@
 use crate::bitter::{
     EntityKey,
-    EntityId,
     Ticks,
 };
 
@@ -14,15 +13,13 @@ pub struct DeathMarker {
 
 #[derive(Copy,Clone,Debug)]
 pub struct Villager {
-    pub id: EntityId,
     pub key: EntityKey,
     pub last_ate: Ticks,
 }
 
 impl Villager {
-    pub fn new(id: EntityId, key: EntityKey, now: Ticks) -> Self {
+    pub fn new(key: EntityKey, now: Ticks) -> Self {
         Villager {
-            id,
             key,
             last_ate: now,
         }

@@ -21,7 +21,6 @@ pub const GRID_HEIGHT: u8 = 8;
 
 new_key_type! { pub struct EntityKey; }
 
-pub type EntityId = usize;
 pub type Ticks = usize;
 
 #[derive(Copy,Clone,Debug)]
@@ -58,7 +57,6 @@ pub struct World {
     events: Vec<WorldEvent>,
     entities: SlotMap<EntityKey, GameEntity>,
     pub coords: SecondaryMap<EntityKey, Coords>,
-    last_id: EntityId,
     pub death_markers: SecondaryMap<EntityKey, DeathMarker>,
     pub farms: SecondaryMap<EntityKey, Farm>,
     ticks: Ticks,
@@ -72,7 +70,6 @@ impl World {
             entities: SlotMap::with_key(),
             coords: SecondaryMap::new(),
             events: vec![],
-            last_id: 0,
             ticks: 0,
             death_markers: SecondaryMap::new(),
             farms: SecondaryMap::new(),
@@ -267,36 +264,24 @@ impl World {
 
         let (x, y) = (coords.0, coords.1);
 
-        let new_id = self.last_id + 1;
-
         let entity = GameEntity;
         let key = self.entities.insert(entity);
 
-        let villager = Villager::new(new_id, key, self.ticks);
-
-        self.last_id = new_id;
+        let villager = Villager::new(key, self.ticks);
 
         self.villagers.insert(key, villager);
         self.coords.insert(key, (x, y));
-
-        self.last_id = new_id;
     }
 
-    pub fn add_villager_at(&mut self, x: u8, y: u8) -> EntityId {
-        let new_id = self.last_id + 1;
-
+    pub fn add_villager_at(&mut self, x: u8, y: u8) {
         let entity = GameEntity;
         let key = self.entities.insert(entity);
 
-        let villager = Villager::new(new_id, key, self.ticks);
+        let villager = Villager::new(key, self.ticks);
 
         self.villagers.insert(key, villager);
         self.coords.insert(key, (x, y));
         self.satiation.insert(key, 1);
-
-        self.last_id = new_id;
-
-        new_id
     }
 
     pub fn add_farm_at(&mut self, x: u8, y: u8) {
@@ -331,25 +316,19 @@ impl World {
         self.events.push(WE::EggLaid(coords));
     }
 
-    pub fn villager_id_at(&self, x: u8, y: u8) -> Option<EntityId> {
+    pub fn villager_key_at(&self, x: u8, y: u8) -> Option<EntityKey> {
         for v in self.villagers.values() {
             let (vx, vy) = self.coords[v.key];
             if vx == x && vy == y {
-                return Some(v.id);
+                return Some(v.key);
             }
         }
 
         None
     }
 
-    pub fn villager(&self, id: EntityId) -> Option<Villager> {
-        for v in self.villagers.values() {
-            if v.id == id {
-                return Some(v.clone());
-            }
-        }
-
-        None
+    pub fn villager(&self, key: EntityKey) -> Option<&Villager> {
+        self.villagers.get(key)
     }
 }
 

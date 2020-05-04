@@ -14,7 +14,7 @@ use ggez::{Context, GameResult};
 use bitter::{
     Coords,
     Direction,
-    EntityId,
+    EntityKey,
     GRID_WIDTH,
     GRID_HEIGHT,
     Ticks,
@@ -70,7 +70,7 @@ struct MainState {
     world: World,
     sprites: Sprites,
     cursor: Cursor,
-    selected_villager_id: Option<EntityId>,
+    selected_villager_key: Option<EntityKey>,
     ticks: Ticks,
 }
 
@@ -183,7 +183,7 @@ impl MainState {
             world: World::new(),
             sprites,
             cursor: Cursor::new(),
-            selected_villager_id: None,
+            selected_villager_key: None,
             ticks,
         };
         Ok(s)
@@ -301,7 +301,7 @@ impl event::EventHandler for MainState {
 
         self.world.tick();
 
-        self.selected_villager_id = self.world.villager_id_at(self.cursor.x, self.cursor.y);
+        self.selected_villager_key = self.world.villager_key_at(self.cursor.x, self.cursor.y);
 
         Ok(())
     }
@@ -327,7 +327,7 @@ impl event::EventHandler for MainState {
     fn draw(&mut self, ctx: &mut Context) -> GameResult {
         graphics::clear(ctx, [0.0, 0.0, 0.0, 1.0].into());
 
-        let mut sprite_grid = sprite_grid_from_world(&self.world, self.selected_villager_id);
+        let mut sprite_grid = sprite_grid_from_world(&self.world, self.selected_villager_key);
 
         sprite_grid.cursor_at(self.cursor.x + 1, self.cursor.y + 1);
 

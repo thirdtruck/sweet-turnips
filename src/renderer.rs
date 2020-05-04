@@ -1,9 +1,9 @@
-use crate::bitter::{EntityId, World};
+use crate::bitter::{EntityKey, World};
 use crate::sprites::SpriteGrid;
 
-pub fn sprite_grid_from_world(world: &World, selected_villager_id: Option<EntityId>) -> SpriteGrid {
-    let selected_villager = match selected_villager_id {
-        Some(id) => world.villager(id),
+pub fn sprite_grid_from_world(world: &World, selected_villager_key: Option<EntityKey>) -> SpriteGrid {
+    let selected_villager = match selected_villager_key {
+        Some(key) => world.villager(key),
         None => None,
     };
 
