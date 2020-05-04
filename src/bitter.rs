@@ -1,3 +1,4 @@
+mod entities;
 mod events; 
 
 use rand::{
@@ -7,6 +8,7 @@ use rand::{
 
 use slotmap::{new_key_type, SlotMap, SecondaryMap};
 
+use entities::{GameEntity};
 use events::{WE,WorldEvent};
 
 pub const GRID_WIDTH: u8 = 8;
@@ -44,9 +46,6 @@ impl Distribution<Direction> for Standard {
         }
     }
 }
-
-#[derive(Copy,Clone,Debug)]
-struct GameEntity;
 
 pub type Coords = (u8, u8);
 
