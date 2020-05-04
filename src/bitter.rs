@@ -350,10 +350,6 @@ impl World {
     pub fn tick(&mut self) {
         self.ticks += 1;
 
-        self.advance_world();
-    }
-
-    fn advance_world(&mut self) {
         // self.events is a LIFO stack
         self.events.push(WE::VillagersMoved);
         self.events.push(WE::VillagersHungered);
