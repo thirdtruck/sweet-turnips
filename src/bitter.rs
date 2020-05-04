@@ -116,11 +116,18 @@ impl World {
     }
 
     fn villager_ate(&mut self, key: EntityKey) {
-        self.satiation[key] += 1;
+        // TODO: Villager shouldn't be eating in the first place if they're full but enforce that
+        // here to be sure
 
         let mut villager = self.villagers[key];
         villager.last_ate = self.ticks;
         self.villagers[key] = villager;
+
+        let satiation = self.satiation[key];
+
+        if satiation < 5 {
+            self.satiation[key] += 1;
+        }
     }
 
     fn villager_hungered(&mut self, key: EntityKey, new_events: &mut Vec<WorldEvent>) {
@@ -138,7 +145,7 @@ impl World {
     fn farm_grew(&mut self, key: EntityKey, new_events: &mut Vec<WorldEvent>) {
         let mut farm = self.farms[key];
 
-        if self.ticks - farm.last_grew < 20 {
+        if self.ticks - farm.last_grew > 20 {
             return;
         }
 
@@ -218,7 +225,7 @@ impl World {
         let mut unharvested_farms: Vec<&Farm> = self.farms.values().collect();
 
         let time_since_last_ate = self.ticks - villager.last_ate;
-        let need_to_eat = satiation < 5 && time_since_last_ate < 40;
+        let need_to_eat = satiation < 5 && time_since_last_ate > 22;
         let food_left_to_eat = unharvested_farms.len() > 0;
 
         if need_to_eat {
@@ -295,9 +302,7 @@ impl World {
     pub fn tick(&mut self) {
         self.ticks += 1;
 
-        if (self.ticks + 1) % 20 == 0 {
-            self.advance_world();
-        }
+        self.advance_world();
     }
 
     fn advance_world(&mut self) {

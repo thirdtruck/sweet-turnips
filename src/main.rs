@@ -299,7 +299,9 @@ impl event::EventHandler for MainState {
     fn update(&mut self, _ctx: &mut Context) -> GameResult {
         self.ticks += 1;
 
-        self.world.tick();
+        if (self.ticks + 1) % 40 == 0 {
+            self.world.tick();
+        }
 
         self.selected_villager_key = self.world.villager_key_at(self.cursor.x, self.cursor.y);
 
