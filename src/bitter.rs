@@ -81,11 +81,20 @@ impl World {
         world
     }
 
-    pub fn ticked(self) -> Self {
-        Self {
-            ticks: self.ticks + 1,
-            ..self
-        }
+    pub fn ticked(&self) -> Self {
+        let world = self.clone();
+
+        let world = Self {
+            ticks: world.ticks + 1,
+            ..world
+        };
+
+        world
+            .with_event(WE::VillagersMoved)
+            .with_event(WE::VillagersHungered)
+            .with_event(WE::FarmsCultivated)
+            .with_event(WE::GravesCleared)
+            .events_processed()
     }
 
     fn events_processed(self) -> Self {
@@ -406,16 +415,4 @@ fn can_move_in_dir(coords: Coords, dir: Direction) -> bool {
         Dir::Left => x > 1,
         Dir::Right => x < GRID_WIDTH - 2,
     }
-}
-
-pub fn tick(world: &World) -> World {
-    // world.events is a LIFO stack
-
-    world.clone()
-        .ticked()
-        .with_event(WE::VillagersMoved)
-        .with_event(WE::VillagersHungered)
-        .with_event(WE::FarmsCultivated)
-        .with_event(WE::GravesCleared)
-        .events_processed()
 }
