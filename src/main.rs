@@ -342,7 +342,9 @@ fn build_example_world() -> World {
 pub fn main() -> GameResult {
     let resource_dir = path::PathBuf::from("./resources");
 
-    config::initialize_config_file().unwrap();
+    let config_path = resource_dir.join("config.yaml");
+
+    let game_config = config::setup_game_config(config_path);
 
     let cb = ggez::ContextBuilder::new("bitter-jam-entry", "ggez")
         .add_resource_path(resource_dir)
