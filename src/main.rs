@@ -344,7 +344,7 @@ pub fn main() -> GameResult {
 
     let config_path = resource_dir.join("config.yaml");
 
-    let game_config = config::setup_game_config(config_path);
+    let _game_config = config::setup_game_config(config_path);
 
     let cb = ggez::ContextBuilder::new("bitter-jam-entry", "ggez")
         .add_resource_path(resource_dir)

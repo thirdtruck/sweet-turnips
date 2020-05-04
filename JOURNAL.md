@@ -21,3 +21,7 @@ Disk space issues confirmed. Code compiles just fine now. Hopefully that didn't 
 Yeah, moving the example world configuration out of `bitter.rs` and into `main.rs` was long overdue. Wishing I'd made that externally configurable a while ago, too. That would have saved me a lot of time waiting for builds to finish. In fact, let's do that now! It's high time I learned `serde` anyway.
 
 I'm learning more about `serde` and error handling today than I expected to. Might have been for the best that I never got around to setting up a config file within the game jam itself.
+
+Nope! I take it back. The time difference in loading a file vs. compiling is huge! Would have saved me of time _and_ **morale** during the jam. At least now I know how to do it next time!
+
+I _did_ go down a rabbit hole on custom error creation but at least I dug myself back up out of that and found a much simpler solution for now.
