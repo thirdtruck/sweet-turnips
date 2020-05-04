@@ -31,7 +31,6 @@ impl Villager {
 
 #[derive(Copy,Clone,Debug)]
 pub struct Farm {
-    pub id: EntityId,
     pub key: EntityKey,
     pub last_grew: Ticks,
     pub x: u8,
@@ -39,9 +38,8 @@ pub struct Farm {
 }
 
 impl Farm {
-    pub fn new(id: EntityId, key: EntityKey, x: u8, y: u8, now: Ticks) -> Self {
+    pub fn new(key: EntityKey, x: u8, y: u8, now: Ticks) -> Self {
         Farm {
-            id,
             key,
             last_grew: now,
             x,

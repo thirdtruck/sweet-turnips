@@ -203,19 +203,13 @@ impl World {
     fn farm_added(&mut self, coords: Coords) {
         let (x, y) = (coords.0, coords.1);
 
-        let new_id = self.last_id + 1;
-
         let entity = GameEntity;
         let key = self.entities.insert(entity);
 
-        let farm = Farm::new(new_id, key, x, y, self.ticks);
-
-        self.last_id = new_id;
+        let farm = Farm::new(key, x, y, self.ticks);
 
         self.farms.insert(key, farm);
         self.coords.insert(key, (x, y));
-
-        self.last_id = new_id;
     }
 
     fn villager_harvested(&mut self, vk: EntityKey, new_events: &mut Vec<WorldEvent>) {
@@ -305,22 +299,14 @@ impl World {
         new_id
     }
 
-    pub fn add_farm_at(&mut self, x: u8, y: u8) -> EntityId {
-        let new_id = self.last_id + 1;
-
+    pub fn add_farm_at(&mut self, x: u8, y: u8) {
         let entity = GameEntity;
         let key = self.entities.insert(entity);
 
-        let farm = Farm::new(new_id, key, x, y, self.ticks);
-
-        self.last_id = new_id;
+        let farm = Farm::new(key, x, y, self.ticks);
 
         self.farms.insert(key, farm);
         self.coords.insert(key, (x, y));
-
-        self.last_id = new_id;
-
-        new_id
     }
 
     pub fn tick(&mut self) {
