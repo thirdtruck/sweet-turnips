@@ -1,5 +1,5 @@
 [package]
-name = "bitter-jam-entry"
+name = "bitter-turnips"
 version = "0.1.0"
 authors = ["JC Holder <jc@thirdtruck.org>"]
 edition = "2018"
@@ -14,5 +14,4 @@ rand = "0.7.3"
 
 slotmap = "0.4.0"
 
-# ggez = { git = "https://github.com/ggez/ggez", rev = "84935d7e762ec43392c354f621b03a5600454d14" }
 ggez = "0.5.1"

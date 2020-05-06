@@ -351,7 +351,7 @@ pub fn main() -> GameResult {
 
     let game_config = config::setup_game_config(config_path);
 
-    let cb = ggez::ContextBuilder::new("bitter-jam-entry", "ggez")
+    let cb = ggez::ContextBuilder::new("bitter-turnips", "ggez")
         .add_resource_path(resource_dir)
         .window_mode(ggez::conf::WindowMode::default()
                      .dimensions(GRID_WIDTH as f32 * SPRITE_SIZE, GRID_HEIGHT as f32 * SPRITE_SIZE));
