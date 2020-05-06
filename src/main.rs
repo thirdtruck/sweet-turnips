@@ -63,10 +63,7 @@ struct GridParam {
 
 impl GridParam {
     fn new() -> Self {
-        let draw_param = graphics::DrawParam::new()
-            //.offset(na::Point2::new(0.0, 0.0))
-            //.scale(na::Vector2::new(SPRITE_SCALE, SPRITE_SCALE))
-            ;
+        let draw_param = graphics::DrawParam::new();
 
         GridParam { draw_param }
     }
@@ -101,7 +98,7 @@ fn invert(ctx: &mut Context, image: &graphics::Image) -> GameResult<graphics::Im
         .map(|(i, p)| {
             if (i + 1) % 4 == 0 {
                 if image_u8[i - 1] == 255 {
-                    0 // transparent if the pixel is white)
+                    0 // transparent if the pixel is white
                 } else {
                     255
                 }
