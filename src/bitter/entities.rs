@@ -1,17 +1,14 @@
-use crate::bitter::{
-    EntityKey,
-    Ticks,
-};
+use crate::bitter::{EntityKey, Ticks};
 
-#[derive(Copy,Clone,Debug)]
+#[derive(Copy, Clone, Debug)]
 pub struct GameEntity;
 
-#[derive(Copy,Clone,Debug)]
+#[derive(Copy, Clone, Debug)]
 pub struct DeathMarker {
     pub key: EntityKey,
 }
 
-#[derive(Copy,Clone,Debug)]
+#[derive(Copy, Clone, Debug)]
 pub struct Villager {
     pub key: EntityKey,
     pub last_ate: Ticks,
@@ -19,14 +16,11 @@ pub struct Villager {
 
 impl Villager {
     pub fn new(key: EntityKey, now: Ticks) -> Self {
-        Villager {
-            key,
-            last_ate: now,
-        }
+        Villager { key, last_ate: now }
     }
 }
 
-#[derive(Copy,Clone,Debug)]
+#[derive(Copy, Clone, Debug)]
 pub struct Farm {
     pub key: EntityKey,
     pub last_grew: Ticks,

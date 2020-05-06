@@ -1,20 +1,15 @@
 mod entities;
-mod events; 
+mod events;
 
 use rand::{
     distributions::{Distribution, Standard},
     Rng,
 };
 
-use slotmap::{new_key_type, SlotMap, SecondaryMap};
+use slotmap::{new_key_type, SecondaryMap, SlotMap};
 
-use entities::{
-    DeathMarker,
-    Farm,
-    GameEntity,
-    Villager,
-};
-use events::{WE,WorldEvent};
+use entities::{DeathMarker, Farm, GameEntity, Villager};
+use events::{WorldEvent, WE};
 
 pub const GRID_WIDTH: u8 = 8;
 pub const GRID_HEIGHT: u8 = 8;
@@ -23,7 +18,7 @@ new_key_type! { pub struct EntityKey; }
 
 pub type Ticks = usize;
 
-#[derive(Copy,Clone,Debug)]
+#[derive(Copy, Clone, Debug)]
 pub enum Direction {
     Up,
     Down,
@@ -33,12 +28,7 @@ pub enum Direction {
 
 type Dir = Direction;
 
-const CARDINAL_DIRECTIONS: [Direction; 4] = [
-    Dir::Up,
-    Dir::Down,
-    Dir::Left,
-    Dir::Right,
-];
+const CARDINAL_DIRECTIONS: [Direction; 4] = [Dir::Up, Dir::Down, Dir::Left, Dir::Right];
 
 impl Distribution<Direction> for Standard {
     fn sample<R: Rng + ?Sized>(&self, rng: &mut R) -> Direction {
@@ -53,7 +43,7 @@ impl Distribution<Direction> for Standard {
 
 pub type Coords = (u8, u8);
 
-#[derive(Clone,Debug)]
+#[derive(Clone, Debug)]
 pub struct World {
     events: Vec<WorldEvent>,
     entities: SlotMap<EntityKey, GameEntity>,
@@ -127,13 +117,10 @@ impl World {
         let mut events = self.events.clone();
         events.push(evt);
 
-        Self {
-            events,
-            ..self
-        }
+        Self { events, ..self }
     }
 
-    fn villager_moved(&mut self, key: EntityKey, dir: Direction) -> Vec<WorldEvent>{
+    fn villager_moved(&mut self, key: EntityKey, dir: Direction) -> Vec<WorldEvent> {
         let c = self.coords[key];
         self.coords[key] = coords_after_move(c, dir);
 
@@ -192,7 +179,7 @@ impl World {
 
         let ready_to_grow = self.ticks - farm.last_grew > 3;
 
-        if ! ready_to_grow {
+        if !ready_to_grow {
             return new_events;
         }
 
@@ -218,7 +205,6 @@ impl World {
             let occupied_coords = self.coords[key];
 
             all_possible_coords.retain(|c| *c != occupied_coords);
-
         }
 
         if all_possible_coords.len() == 0 {
@@ -384,22 +370,22 @@ fn coords_after_move(coords: Coords, dir: Direction) -> Coords {
             if y > 1 {
                 y -= 1;
             }
-        },
+        }
         Direction::Down => {
             if y < GRID_HEIGHT - 2 {
                 y += 1;
             }
-        },
+        }
         Direction::Left => {
             if x > 1 {
                 x -= 1;
             }
-        },
+        }
         Direction::Right => {
             if x < GRID_WIDTH - 2 {
                 x += 1;
             }
-        },
+        }
     }
 
     (x, y)

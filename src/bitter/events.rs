@@ -1,6 +1,6 @@
-use crate::bitter::{Coords,Direction,EntityKey};
+use crate::bitter::{Coords, Direction, EntityKey};
 
-#[derive(Copy,Clone,Debug)]
+#[derive(Copy, Clone, Debug)]
 pub enum WorldEvent {
     GravesCleared,
     FarmsCultivated,

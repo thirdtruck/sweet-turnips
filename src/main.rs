@@ -1,32 +1,24 @@
 mod bitter;
+mod config;
 mod renderer;
 mod sprites;
-mod config;
 
 use ggez;
 use ggez::event;
 use ggez::event::{KeyCode, KeyMods};
 use ggez::graphics;
-use ggez::graphics::{Color, DrawParam};
 use ggez::graphics::spritebatch::SpriteBatch;
+use ggez::graphics::{Color, DrawParam};
 use ggez::nalgebra as na;
 use ggez::{Context, GameResult};
 
-use bitter::{
-    Coords,
-    Direction,
-    EntityKey,
-    GRID_WIDTH,
-    GRID_HEIGHT,
-    Ticks,
-    World,
-};
+use bitter::{Coords, Direction, EntityKey, Ticks, World, GRID_HEIGHT, GRID_WIDTH};
 
 use config::{GameConfig, WorldConfig};
 
 use renderer::sprite_grid_from_world;
 
-use sprites::{SpriteGrid, Sprites, SpriteType};
+use sprites::{SpriteGrid, SpriteType, Sprites};
 
 use std::convert::From;
 use std::path;
@@ -41,7 +33,7 @@ const RED: Color = Color {
     a: 1.0,
 };
 
-#[derive(Copy,Clone)]
+#[derive(Copy, Clone)]
 struct Cursor {
     x: u8,
     y: u8,
@@ -49,10 +41,7 @@ struct Cursor {
 
 impl Cursor {
     fn new() -> Self {
-        Self {
-            x: 2,
-            y: 2,
-        }
+        Self { x: 2, y: 2 }
     }
 
     fn coords(&self) -> Coords {
@@ -106,17 +95,25 @@ fn grid_point(x: u8, y: u8) -> na::Point2<f32> {
 fn invert(ctx: &mut Context, image: &graphics::Image) -> GameResult<graphics::Image> {
     let image_u8 = image.to_rgba8(ctx)?;
 
-    let image_u8_i: Vec<u8> = image_u8.iter().enumerate().map(|(i, p)| {
-        if (i + 1) % 4 == 0 {
-            if image_u8[i - 1] == 255 {
-                0 // transparent if the pixel is white)
+    let image_u8_i: Vec<u8> = image_u8
+        .iter()
+        .enumerate()
+        .map(|(i, p)| {
+            if (i + 1) % 4 == 0 {
+                if image_u8[i - 1] == 255 {
+                    0 // transparent if the pixel is white)
+                } else {
+                    255
+                }
             } else {
-                255
+                if *p == 0 {
+                    255
+                } else {
+                    0
+                }
             }
-        } else {
-            if *p == 0 { 255 } else { 0 }
-        }
-    }).collect();
+        })
+        .collect();
 
     graphics::Image::from_rgba8(ctx, 8, 8, &image_u8_i)
 }
@@ -173,7 +170,9 @@ impl MainState {
     }
 
     fn draw_all_spritebatches(&mut self, ctx: &mut Context) -> GameResult {
-        let origin_param = graphics::DrawParam::new().dest(na::Point2::new(0.0, 0.0)).scale(na::Vector2::new(SPRITE_SCALE, SPRITE_SCALE));
+        let origin_param = graphics::DrawParam::new()
+            .dest(na::Point2::new(0.0, 0.0))
+            .scale(na::Vector2::new(SPRITE_SCALE, SPRITE_SCALE));
 
         graphics::draw(ctx, &self.sprites.lines, origin_param)?;
         graphics::draw(ctx, &self.sprites.curves, origin_param)?;
@@ -228,22 +227,22 @@ impl MainState {
                 if self.cursor.y > 1 {
                     self.cursor.y -= 1
                 }
-            },
+            }
             Direction::Down => {
                 if self.cursor.y < GRID_HEIGHT - 2 {
                     self.cursor.y += 1
                 }
-            },
+            }
             Direction::Left => {
                 if self.cursor.x > 1 {
                     self.cursor.x -= 1
                 }
-            },
+            }
             Direction::Right => {
                 if self.cursor.x < GRID_WIDTH - 2 {
                     self.cursor.x += 1
                 }
-            },
+            }
         }
     }
 
@@ -254,7 +253,7 @@ impl MainState {
     fn render_sprite_grid(&mut self, sprite_grid: SpriteGrid) {
         for x in 0..GRID_WIDTH {
             for y in 0..GRID_HEIGHT {
-                let sprite_type =  sprite_grid.sprite_type_at(x, y);
+                let sprite_type = sprite_grid.sprite_type_at(x, y);
                 self.render_sprite_at(sprite_type, x, y);
             }
         }
@@ -269,9 +268,7 @@ impl MainState {
 
         match sprite_type {
             SpriteType::BigCircle => self.sprites.big_circles.add(gp.draw_param),
-            SpriteType::Lizard(color) => {
-                self.sprites.lizards.add(gp.draw_param.color(color))
-            },
+            SpriteType::Lizard(color) => self.sprites.lizards.add(gp.draw_param.color(color)),
             SpriteType::Turnip => self.sprites.turnips.add(gp.color(RED).draw_param),
             SpriteType::Skull => self.sprites.skulls.add(gp.draw_param),
             SpriteType::Cursor => self.sprites.cursors.add(gp.draw_param),
@@ -353,8 +350,10 @@ pub fn main() -> GameResult {
 
     let cb = ggez::ContextBuilder::new("bitter-turnips", "ggez")
         .add_resource_path(resource_dir)
-        .window_mode(ggez::conf::WindowMode::default()
-                     .dimensions(GRID_WIDTH as f32 * SPRITE_SIZE, GRID_HEIGHT as f32 * SPRITE_SIZE));
+        .window_mode(ggez::conf::WindowMode::default().dimensions(
+            GRID_WIDTH as f32 * SPRITE_SIZE,
+            GRID_HEIGHT as f32 * SPRITE_SIZE,
+        ));
 
     let (ctx, event_loop) = &mut cb.build()?;
 

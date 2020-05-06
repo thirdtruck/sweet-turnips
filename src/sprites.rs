@@ -1,5 +1,5 @@
-use ggez::graphics::Color;
 use ggez::graphics::spritebatch::SpriteBatch;
+use ggez::graphics::Color;
 
 use crate::bitter::{GRID_HEIGHT, GRID_WIDTH};
 

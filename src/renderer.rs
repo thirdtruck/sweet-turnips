@@ -3,7 +3,10 @@ use crate::sprites::SpriteGrid;
 
 use ggez::graphics::Color;
 
-pub fn sprite_grid_from_world(world: &World, selected_villager_key: Option<EntityKey>) -> SpriteGrid {
+pub fn sprite_grid_from_world(
+    world: &World,
+    selected_villager_key: Option<EntityKey>,
+) -> SpriteGrid {
     let selected_villager = match selected_villager_key {
         Some(key) => world.villager(key),
         None => None,
@@ -33,7 +36,12 @@ pub fn sprite_grid_from_world(world: &World, selected_villager_key: Option<Entit
 
         let r = satiation as f32 / 5.0;
 
-        let color = Color { r, g: 0.2, b: 0.2, a: 1.0 }; 
+        let color = Color {
+            r,
+            g: 0.2,
+            b: 0.2,
+            a: 1.0,
+        };
 
         sprite_grid.lizard_at(x, y, color);
     }
