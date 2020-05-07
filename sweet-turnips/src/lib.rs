@@ -1,7 +1,11 @@
-#[cfg(test)]
-mod tests {
-    #[test]
-    fn it_works() {
-        assert_eq!(2 + 2, 4);
+#[derive(Copy, Clone)]
+pub struct Cursor {
+    pub x: u8,
+    pub y: u8,
+}
+
+impl Cursor {
+    pub fn new() -> Self {
+        Self { x: 2, y: 2 }
     }
 }

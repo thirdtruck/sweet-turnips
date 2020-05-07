@@ -33,3 +33,7 @@ Now let's do refactor this to use `From`! This should make things more idiomatic
 What's next? Let's keep making the game state more immutable!
 
 Well! That refactoring is coming along nicely. Dinner time, though, so I have to shift gears for the rest of the night!
+
+# 06May2020
+
+Dabbling in refactoring tonight. Wanted to see how much trouble it would be to extract a library with common functionality, at least on the purely technical part. Wasn't hard at all! I'm hoping that I can speed up build times by moving more code into the crate so that it doesn't have to be recompiled every time.
