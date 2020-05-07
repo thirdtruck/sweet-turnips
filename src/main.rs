@@ -11,9 +11,9 @@ use bitter::{Coords, Direction, EntityKey, Ticks, World, GRID_HEIGHT, GRID_WIDTH
 
 use config::{GameConfig, WorldConfig};
 
-use renderer::sprite_grid_from_world;
+use renderer::WorldRenderer;
 
-use sweet_turnips::sprites::Sprites;
+use sweet_turnips::sprites::{Sprites, SpriteGridRenderer};
 
 use std::convert::From;
 use std::path;
@@ -119,7 +119,11 @@ impl event::EventHandler for MainState {
     }
 
     fn draw(&mut self, ctx: &mut Context) -> GameResult {
-        let mut sprite_grid = sprite_grid_from_world(&self.world, self.selected_villager_key);
+        let renderer = WorldRenderer {
+            world: self.world.clone(),
+            selected_villager_key: self.selected_villager_key,
+        };
+        let mut sprite_grid = renderer.render_grid();
 
         sprite_grid.cursor_at(self.cursor.x + 1, self.cursor.y + 1);
 

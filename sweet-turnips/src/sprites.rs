@@ -22,6 +22,10 @@ const RED: Color = Color {
     a: 1.0,
 };
 
+pub trait SpriteGridRenderer {
+    fn render_grid(&self) -> SpriteGrid;
+}
+
 struct GridParam {
     draw_param: DrawParam,
 }
