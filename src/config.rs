@@ -5,6 +5,8 @@ use std::fs;
 use std::fs::File;
 use std::path::PathBuf;
 
+use sweet_turnips::config::GameConfig;
+
 #[derive(Debug, PartialEq, Serialize, Deserialize)]
 pub struct VillagerConfig {
     pub x: u8,
@@ -27,6 +29,8 @@ pub struct WorldConfig {
 pub struct BitterGameConfig {
     pub world: WorldConfig,
 }
+
+impl GameConfig<'_> for BitterGameConfig {}
 
 fn example_game_config() -> BitterGameConfig {
     let world_config = WorldConfig {

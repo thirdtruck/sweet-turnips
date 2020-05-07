@@ -37,3 +37,5 @@ Well! That refactoring is coming along nicely. Dinner time, though, so I have to
 # 06May2020
 
 Dabbling in refactoring tonight. Wanted to see how much trouble it would be to extract a library with common functionality, at least on the purely technical part. Wasn't hard at all! I'm hoping that I can speed up build times by moving more code into the crate so that it doesn't have to be recompiled every time.
+
+Time to practice my Rust traits, too.
