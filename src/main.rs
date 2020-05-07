@@ -16,7 +16,7 @@ use config::{GameConfig, WorldConfig};
 
 use renderer::sprite_grid_from_world;
 
-use sweet_turnips::sprites::{SpriteGrid, SpriteType, Sprites, SpriteBatch};
+use sweet_turnips::sprites::{SpriteGrid, SpriteType, Sprites};
 
 use std::convert::From;
 use std::path;
@@ -83,70 +83,9 @@ fn grid_point(x: u8, y: u8) -> na::Point2<f32> {
     na::Point2::new(segment_size * x, segment_size * y)
 }
 
-fn invert(ctx: &mut Context, image: &graphics::Image) -> GameResult<graphics::Image> {
-    let image_u8 = image.to_rgba8(ctx)?;
-
-    let image_u8_i: Vec<u8> = image_u8
-        .iter()
-        .enumerate()
-        .map(|(i, p)| {
-            if (i + 1) % 4 == 0 {
-                if image_u8[i - 1] == 255 {
-                    0 // transparent if the pixel is white
-                } else {
-                    255
-                }
-            } else {
-                if *p == 0 {
-                    255
-                } else {
-                    0
-                }
-            }
-        })
-        .collect();
-
-    graphics::Image::from_rgba8(ctx, 8, 8, &image_u8_i)
-}
-
-fn prep_sprites(ctx: &mut Context, sprite_number: usize) -> GameResult<SpriteBatch> {
-    let filepath = format!("/separate/{}.png", sprite_number);
-
-    let original = graphics::Image::new(ctx, filepath).unwrap();
-    let inverted = invert(ctx, &original)?;
-
-    let mut inverted_batch = SpriteBatch::new(inverted);
-    inverted_batch.set_filter(ggez::graphics::FilterMode::Nearest);
-
-    // Source images are "inverted" by our standard, hence the reverse positioning
-    Ok(inverted_batch)
-}
-
 impl MainState {
     fn new(ctx: &mut Context, game_config: GameConfig) -> GameResult<MainState> {
-        let sprites: Sprites = Sprites {
-            curves: prep_sprites(ctx, 1)?,
-            lines: prep_sprites(ctx, 2)?,
-            crosses: prep_sprites(ctx, 3)?,
-            corner_triangles: prep_sprites(ctx, 4)?,
-            small_circles: prep_sprites(ctx, 5)?,
-            big_circles: prep_sprites(ctx, 6)?,
-            diamonds: prep_sprites(ctx, 7)?,
-            dashes: prep_sprites(ctx, 8)?,
-            dots: prep_sprites(ctx, 9)?,
-            booms: prep_sprites(ctx, 10)?,
-            skulls: prep_sprites(ctx, 11)?,
-            side_triangles: prep_sprites(ctx, 12)?,
-            ships: prep_sprites(ctx, 13)?,
-            hearts: prep_sprites(ctx, 14)?,
-            cursors: prep_sprites(ctx, 15)?,
-            turnips: prep_sprites(ctx, 16)?,
-            squids: prep_sprites(ctx, 17)?,
-            lizards: prep_sprites(ctx, 18)?,
-            balls: prep_sprites(ctx, 19)?,
-            crabs: prep_sprites(ctx, 20)?,
-            altars: prep_sprites(ctx, 21)?,
-        };
+        let sprites = Sprites::new(ctx)?;
 
         let ticks: Ticks = 0;
 
