@@ -3,8 +3,6 @@ mod config;
 mod renderer;
 mod sprites;
 
-use sweet_turnips::Cursor;
-
 use ggez;
 use ggez::event;
 use ggez::event::{KeyCode, KeyMods};
@@ -34,6 +32,18 @@ const RED: Color = Color {
     b: 0.0,
     a: 1.0,
 };
+
+#[derive(Copy, Clone)]
+struct Cursor {
+    x: u8,
+    y: u8,
+}
+
+impl Cursor {
+    fn new() -> Self {
+        Self { x: 2, y: 2 }
+    }
+}
 
 struct MainState {
     world: World,
