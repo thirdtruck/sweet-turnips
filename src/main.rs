@@ -5,7 +5,6 @@ mod renderer;
 use ggez;
 use ggez::event;
 use ggez::event::{KeyCode, KeyMods};
-use ggez::graphics;
 use ggez::{Context, GameResult};
 
 use bitter::{Coords, Direction, EntityKey, Ticks, World, GRID_HEIGHT, GRID_WIDTH};
@@ -120,8 +119,6 @@ impl event::EventHandler for MainState {
     }
 
     fn draw(&mut self, ctx: &mut Context) -> GameResult {
-        graphics::clear(ctx, [0.0, 0.0, 0.0, 1.0].into());
-
         let mut sprite_grid = sprite_grid_from_world(&self.world, self.selected_villager_key);
 
         sprite_grid.cursor_at(self.cursor.x + 1, self.cursor.y + 1);
@@ -129,8 +126,6 @@ impl event::EventHandler for MainState {
         self.sprites.render_sprite_grid(sprite_grid);
 
         self.sprites.draw_all_sprites(ctx)?;
-
-        graphics::present(ctx)?;
 
         Ok(())
     }

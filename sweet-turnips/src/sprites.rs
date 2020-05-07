@@ -135,6 +135,8 @@ impl Sprites {
             .dest(na::Point2::new(0.0, 0.0))
             .scale(na::Vector2::new(SPRITE_SCALE, SPRITE_SCALE));
 
+        graphics::clear(ctx, [0.0, 0.0, 0.0, 1.0].into());
+
         graphics::draw(ctx, &self.lines, origin_param)?;
         graphics::draw(ctx, &self.curves, origin_param)?;
         graphics::draw(ctx, &self.crosses, origin_param)?;
@@ -178,6 +180,8 @@ impl Sprites {
         self.balls.clear();
         self.crabs.clear();
         self.altars.clear();
+
+        graphics::present(ctx)?;
 
         Ok(())
     }
