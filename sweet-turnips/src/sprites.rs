@@ -1,6 +1,6 @@
 use ggez;
 use ggez::graphics;
-use ggez::graphics::Color;
+use ggez::graphics::{Color, DrawParam};
 use ggez::{Context, GameResult};
 use ggez::nalgebra as na;
 
@@ -12,6 +12,43 @@ const GRID_HEIGHT: u8 = 8;
 const SPRITE_GRID_LENGTH: usize = (GRID_WIDTH * GRID_HEIGHT) as usize;
 
 const SPRITE_SCALE: f32 = 4.0;
+const SPRITE_SIZE: f32 = 8.0;
+
+const RED: Color = Color {
+    r: 1.0,
+    g: 0.0,
+    b: 0.0,
+    a: 1.0,
+};
+
+struct GridParam {
+    draw_param: DrawParam,
+}
+
+impl GridParam {
+    fn new() -> Self {
+        let draw_param = graphics::DrawParam::new();
+
+        GridParam { draw_param }
+    }
+
+    fn at(&self, x: u8, y: u8) -> Self {
+        let x = x as f32;
+        let y = y as f32;
+
+        let point = na::Point2::new(SPRITE_SIZE * x, SPRITE_SIZE * y);
+
+        GridParam {
+            draw_param: self.draw_param.dest(point),
+        }
+    }
+
+    fn color(&self, color: Color) -> Self {
+        GridParam {
+            draw_param: self.draw_param.color(color),
+        }
+    }
+}
 
 #[derive(Copy, Clone, Debug, PartialEq)]
 #[allow(dead_code)]
@@ -143,6 +180,33 @@ impl Sprites {
         self.altars.clear();
 
         Ok(())
+    }
+
+
+    fn render_sprite_at(&mut self, sprite_type: SpriteType, x: u8, y: u8) {
+        let gp = GridParam::new().at(x, y);
+
+        if sprite_type == SpriteType::Empty {
+            return;
+        }
+
+        match sprite_type {
+            SpriteType::BigCircle => self.big_circles.add(gp.draw_param),
+            SpriteType::Lizard(color) => self.lizards.add(gp.draw_param.color(color)),
+            SpriteType::Turnip => self.turnips.add(gp.color(RED).draw_param),
+            SpriteType::Skull => self.skulls.add(gp.draw_param),
+            SpriteType::Cursor => self.cursors.add(gp.draw_param),
+            _ => unimplemented!("Unimplemented sprite type: {:?}", sprite_type),
+        };
+    }
+
+    pub fn render_sprite_grid(&mut self, sprite_grid: SpriteGrid) {
+        for x in 0..GRID_WIDTH {
+            for y in 0..GRID_HEIGHT {
+                let sprite_type = sprite_grid.sprite_type_at(x, y);
+                self.render_sprite_at(sprite_type, x, y);
+            }
+        }
     }
 }
 

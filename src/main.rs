@@ -6,8 +6,6 @@ use ggez;
 use ggez::event;
 use ggez::event::{KeyCode, KeyMods};
 use ggez::graphics;
-use ggez::graphics::{Color, DrawParam};
-use ggez::nalgebra as na;
 use ggez::{Context, GameResult};
 
 use bitter::{Coords, Direction, EntityKey, Ticks, World, GRID_HEIGHT, GRID_WIDTH};
@@ -16,20 +14,13 @@ use config::{GameConfig, WorldConfig};
 
 use renderer::sprite_grid_from_world;
 
-use sweet_turnips::sprites::{SpriteGrid, SpriteType, Sprites};
+use sweet_turnips::sprites::Sprites;
 
 use std::convert::From;
 use std::path;
 
 const SPRITE_SCALE: f32 = 4.0;
 const SPRITE_SIZE: f32 = 8.0 * SPRITE_SCALE;
-
-const RED: Color = Color {
-    r: 1.0,
-    g: 0.0,
-    b: 0.0,
-    a: 1.0,
-};
 
 #[derive(Copy, Clone)]
 struct Cursor {
@@ -49,38 +40,6 @@ struct MainState {
     cursor: Cursor,
     selected_villager_key: Option<EntityKey>,
     ticks: Ticks,
-}
-
-struct GridParam {
-    draw_param: DrawParam,
-}
-
-impl GridParam {
-    fn new() -> Self {
-        let draw_param = graphics::DrawParam::new();
-
-        GridParam { draw_param }
-    }
-
-    fn at(&self, x: u8, y: u8) -> Self {
-        GridParam {
-            draw_param: self.draw_param.dest(grid_point(x, y)),
-        }
-    }
-
-    fn color(&self, color: Color) -> Self {
-        GridParam {
-            draw_param: self.draw_param.color(color),
-        }
-    }
-}
-
-fn grid_point(x: u8, y: u8) -> na::Point2<f32> {
-    let x = x as f32;
-    let y = y as f32;
-    let segment_size = 8.0;
-
-    na::Point2::new(segment_size * x, segment_size * y)
 }
 
 impl MainState {
@@ -127,32 +86,6 @@ impl MainState {
     fn spawn_egg(&mut self, coords: Coords) {
         self.world = self.world.with_egg_spawn_requested_at(coords);
     }
-
-    fn render_sprite_grid(&mut self, sprite_grid: SpriteGrid) {
-        for x in 0..GRID_WIDTH {
-            for y in 0..GRID_HEIGHT {
-                let sprite_type = sprite_grid.sprite_type_at(x, y);
-                self.render_sprite_at(sprite_type, x, y);
-            }
-        }
-    }
-
-    fn render_sprite_at(&mut self, sprite_type: SpriteType, x: u8, y: u8) {
-        let gp = GridParam::new().at(x, y);
-
-        if sprite_type == SpriteType::Empty {
-            return;
-        }
-
-        match sprite_type {
-            SpriteType::BigCircle => self.sprites.big_circles.add(gp.draw_param),
-            SpriteType::Lizard(color) => self.sprites.lizards.add(gp.draw_param.color(color)),
-            SpriteType::Turnip => self.sprites.turnips.add(gp.color(RED).draw_param),
-            SpriteType::Skull => self.sprites.skulls.add(gp.draw_param),
-            SpriteType::Cursor => self.sprites.cursors.add(gp.draw_param),
-            _ => unimplemented!("Unimplemented sprite type: {:?}", sprite_type),
-        };
-    }
 }
 
 impl event::EventHandler for MainState {
@@ -193,7 +126,7 @@ impl event::EventHandler for MainState {
 
         sprite_grid.cursor_at(self.cursor.x + 1, self.cursor.y + 1);
 
-        self.render_sprite_grid(sprite_grid);
+        self.sprites.render_sprite_grid(sprite_grid);
 
         self.sprites.draw_all_sprites(ctx)?;
 
