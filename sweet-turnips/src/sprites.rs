@@ -6,6 +6,7 @@ use ggez::nalgebra as na;
 
 pub use ggez::graphics::spritebatch::SpriteBatch;
 
+// TODO: Make these constants into parameters wherever practical
 const GRID_WIDTH: u8 = 8;
 const GRID_HEIGHT: u8 = 8;
 

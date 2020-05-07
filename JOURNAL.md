@@ -43,3 +43,5 @@ Time to practice my Rust traits, too.
 Hmm. `config` seemed like a promising place to start but it goes deeper into trait management than I want to tackle right now (here just past 10pm). I think I need to listen to my gut and try making a _different_ game and let that guide my refactoring decisions.
 
 Okay, let's commit to having a _fixed_ sprite set. I can at least extract that part.
+
+There. Moved a good chunk of `ggez` stuff out of `src/main.rs` and into the `sweet-turnips` crate. That's more than enough for now, both because I meant to be asleep by this time and because I _really do_ need that second proto-game before I start refactoring for the sake of refactoring.
