@@ -24,11 +24,11 @@ pub struct WorldConfig {
 }
 
 #[derive(Debug, PartialEq, Serialize, Deserialize)]
-pub struct GameConfig {
+pub struct BitterGameConfig {
     pub world: WorldConfig,
 }
 
-fn example_game_config() -> GameConfig {
+fn example_game_config() -> BitterGameConfig {
     let world_config = WorldConfig {
         starting_villagers: vec![VillagerConfig { x: 4, y: 4 }, VillagerConfig { x: 4, y: 5 }],
         starting_farms: vec![
@@ -38,12 +38,12 @@ fn example_game_config() -> GameConfig {
         ],
     };
 
-    GameConfig {
+    BitterGameConfig {
         world: world_config,
     }
 }
 
-pub fn setup_game_config(config_path: PathBuf) -> GameConfig {
+pub fn setup_game_config(config_path: PathBuf) -> BitterGameConfig {
     if !config_path.exists() {
         let new_file =
             &File::create(config_path.clone()).expect("Could not create new config file");
@@ -54,7 +54,7 @@ pub fn setup_game_config(config_path: PathBuf) -> GameConfig {
 
     let config_string = fs::read_to_string(config_path).expect("Could not read config file");
 
-    let config: GameConfig =
+    let config: BitterGameConfig =
         serde_yaml::from_str(&config_string).expect("Could not parse config file");
 
     config

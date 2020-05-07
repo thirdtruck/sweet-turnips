@@ -14,7 +14,7 @@ use ggez::{Context, GameResult};
 
 use bitter::{Coords, Direction, EntityKey, Ticks, World, GRID_HEIGHT, GRID_WIDTH};
 
-use config::{GameConfig, WorldConfig};
+use config::{BitterGameConfig, WorldConfig};
 
 use renderer::sprite_grid_from_world;
 
@@ -125,7 +125,7 @@ fn prep_sprites(ctx: &mut Context, sprite_number: usize) -> GameResult<SpriteBat
 }
 
 impl MainState {
-    fn new(ctx: &mut Context, game_config: GameConfig) -> GameResult<MainState> {
+    fn new(ctx: &mut Context, game_config: BitterGameConfig) -> GameResult<MainState> {
         let sprites: Sprites = Sprites {
             curves: prep_sprites(ctx, 1)?,
             lines: prep_sprites(ctx, 2)?,
