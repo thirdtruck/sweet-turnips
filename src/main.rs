@@ -99,58 +99,6 @@ impl MainState {
         Ok(s)
     }
 
-    fn draw_all_spritebatches(&mut self, ctx: &mut Context) -> GameResult {
-        let origin_param = graphics::DrawParam::new()
-            .dest(na::Point2::new(0.0, 0.0))
-            .scale(na::Vector2::new(SPRITE_SCALE, SPRITE_SCALE));
-
-        graphics::draw(ctx, &self.sprites.lines, origin_param)?;
-        graphics::draw(ctx, &self.sprites.curves, origin_param)?;
-        graphics::draw(ctx, &self.sprites.crosses, origin_param)?;
-        graphics::draw(ctx, &self.sprites.corner_triangles, origin_param)?;
-        graphics::draw(ctx, &self.sprites.small_circles, origin_param)?;
-        graphics::draw(ctx, &self.sprites.big_circles, origin_param)?;
-        graphics::draw(ctx, &self.sprites.diamonds, origin_param)?;
-        graphics::draw(ctx, &self.sprites.dashes, origin_param)?;
-        graphics::draw(ctx, &self.sprites.dots, origin_param)?;
-        graphics::draw(ctx, &self.sprites.booms, origin_param)?;
-        graphics::draw(ctx, &self.sprites.skulls, origin_param)?;
-        graphics::draw(ctx, &self.sprites.side_triangles, origin_param)?;
-        graphics::draw(ctx, &self.sprites.ships, origin_param)?;
-        graphics::draw(ctx, &self.sprites.hearts, origin_param)?;
-        graphics::draw(ctx, &self.sprites.cursors, origin_param)?;
-        graphics::draw(ctx, &self.sprites.turnips, origin_param)?;
-        graphics::draw(ctx, &self.sprites.squids, origin_param)?;
-        graphics::draw(ctx, &self.sprites.lizards, origin_param)?;
-        graphics::draw(ctx, &self.sprites.balls, origin_param)?;
-        graphics::draw(ctx, &self.sprites.crabs, origin_param)?;
-        graphics::draw(ctx, &self.sprites.altars, origin_param)?;
-
-        self.sprites.lines.clear();
-        self.sprites.curves.clear();
-        self.sprites.crosses.clear();
-        self.sprites.corner_triangles.clear();
-        self.sprites.small_circles.clear();
-        self.sprites.big_circles.clear();
-        self.sprites.diamonds.clear();
-        self.sprites.dashes.clear();
-        self.sprites.dots.clear();
-        self.sprites.booms.clear();
-        self.sprites.skulls.clear();
-        self.sprites.side_triangles.clear();
-        self.sprites.ships.clear();
-        self.sprites.hearts.clear();
-        self.sprites.cursors.clear();
-        self.sprites.turnips.clear();
-        self.sprites.squids.clear();
-        self.sprites.lizards.clear();
-        self.sprites.balls.clear();
-        self.sprites.crabs.clear();
-        self.sprites.altars.clear();
-
-        Ok(())
-    }
-
     fn move_cursor(&mut self, direction: Direction) {
         match direction {
             Direction::Up => {
@@ -247,7 +195,7 @@ impl event::EventHandler for MainState {
 
         self.render_sprite_grid(sprite_grid);
 
-        self.draw_all_spritebatches(ctx)?;
+        self.sprites.draw_all_sprites(ctx)?;
 
         graphics::present(ctx)?;
 

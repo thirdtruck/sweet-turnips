@@ -2,6 +2,7 @@ use ggez;
 use ggez::graphics;
 use ggez::graphics::Color;
 use ggez::{Context, GameResult};
+use ggez::nalgebra as na;
 
 pub use ggez::graphics::spritebatch::SpriteBatch;
 
@@ -9,6 +10,8 @@ const GRID_WIDTH: u8 = 8;
 const GRID_HEIGHT: u8 = 8;
 
 const SPRITE_GRID_LENGTH: usize = (GRID_WIDTH * GRID_HEIGHT) as usize;
+
+const SPRITE_SCALE: f32 = 4.0;
 
 #[derive(Copy, Clone, Debug, PartialEq)]
 #[allow(dead_code)]
@@ -88,6 +91,58 @@ impl Sprites {
         };
 
         Ok(sprites)
+    }
+
+    pub fn draw_all_sprites(&mut self, ctx: &mut Context) -> GameResult {
+        let origin_param = graphics::DrawParam::new()
+            .dest(na::Point2::new(0.0, 0.0))
+            .scale(na::Vector2::new(SPRITE_SCALE, SPRITE_SCALE));
+
+        graphics::draw(ctx, &self.lines, origin_param)?;
+        graphics::draw(ctx, &self.curves, origin_param)?;
+        graphics::draw(ctx, &self.crosses, origin_param)?;
+        graphics::draw(ctx, &self.corner_triangles, origin_param)?;
+        graphics::draw(ctx, &self.small_circles, origin_param)?;
+        graphics::draw(ctx, &self.big_circles, origin_param)?;
+        graphics::draw(ctx, &self.diamonds, origin_param)?;
+        graphics::draw(ctx, &self.dashes, origin_param)?;
+        graphics::draw(ctx, &self.dots, origin_param)?;
+        graphics::draw(ctx, &self.booms, origin_param)?;
+        graphics::draw(ctx, &self.skulls, origin_param)?;
+        graphics::draw(ctx, &self.side_triangles, origin_param)?;
+        graphics::draw(ctx, &self.ships, origin_param)?;
+        graphics::draw(ctx, &self.hearts, origin_param)?;
+        graphics::draw(ctx, &self.cursors, origin_param)?;
+        graphics::draw(ctx, &self.turnips, origin_param)?;
+        graphics::draw(ctx, &self.squids, origin_param)?;
+        graphics::draw(ctx, &self.lizards, origin_param)?;
+        graphics::draw(ctx, &self.balls, origin_param)?;
+        graphics::draw(ctx, &self.crabs, origin_param)?;
+        graphics::draw(ctx, &self.altars, origin_param)?;
+
+        self.lines.clear();
+        self.curves.clear();
+        self.crosses.clear();
+        self.corner_triangles.clear();
+        self.small_circles.clear();
+        self.big_circles.clear();
+        self.diamonds.clear();
+        self.dashes.clear();
+        self.dots.clear();
+        self.booms.clear();
+        self.skulls.clear();
+        self.side_triangles.clear();
+        self.ships.clear();
+        self.hearts.clear();
+        self.cursors.clear();
+        self.turnips.clear();
+        self.squids.clear();
+        self.lizards.clear();
+        self.balls.clear();
+        self.crabs.clear();
+        self.altars.clear();
+
+        Ok(())
     }
 }
 
