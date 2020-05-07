@@ -39,3 +39,7 @@ Well! That refactoring is coming along nicely. Dinner time, though, so I have to
 Dabbling in refactoring tonight. Wanted to see how much trouble it would be to extract a library with common functionality, at least on the purely technical part. Wasn't hard at all! I'm hoping that I can speed up build times by moving more code into the crate so that it doesn't have to be recompiled every time.
 
 Time to practice my Rust traits, too.
+
+Hmm. `config` seemed like a promising place to start but it goes deeper into trait management than I want to tackle right now (here just past 10pm). I think I need to listen to my gut and try making a _different_ game and let that guide my refactoring decisions.
+
+Okay, let's commit to having a _fixed_ sprite set. I can at least extract that part.

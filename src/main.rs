@@ -1,24 +1,22 @@
 mod bitter;
 mod config;
 mod renderer;
-mod sprites;
 
 use ggez;
 use ggez::event;
 use ggez::event::{KeyCode, KeyMods};
 use ggez::graphics;
-use ggez::graphics::spritebatch::SpriteBatch;
 use ggez::graphics::{Color, DrawParam};
 use ggez::nalgebra as na;
 use ggez::{Context, GameResult};
 
 use bitter::{Coords, Direction, EntityKey, Ticks, World, GRID_HEIGHT, GRID_WIDTH};
 
-use config::{BitterGameConfig, WorldConfig};
+use config::{GameConfig, WorldConfig};
 
 use renderer::sprite_grid_from_world;
 
-use sprites::{SpriteGrid, SpriteType, Sprites};
+use sweet_turnips::sprites::{SpriteGrid, SpriteType, Sprites, SpriteBatch};
 
 use std::convert::From;
 use std::path;
@@ -117,7 +115,7 @@ fn prep_sprites(ctx: &mut Context, sprite_number: usize) -> GameResult<SpriteBat
     let original = graphics::Image::new(ctx, filepath).unwrap();
     let inverted = invert(ctx, &original)?;
 
-    let mut inverted_batch = graphics::spritebatch::SpriteBatch::new(inverted);
+    let mut inverted_batch = SpriteBatch::new(inverted);
     inverted_batch.set_filter(ggez::graphics::FilterMode::Nearest);
 
     // Source images are "inverted" by our standard, hence the reverse positioning
@@ -125,7 +123,7 @@ fn prep_sprites(ctx: &mut Context, sprite_number: usize) -> GameResult<SpriteBat
 }
 
 impl MainState {
-    fn new(ctx: &mut Context, game_config: BitterGameConfig) -> GameResult<MainState> {
+    fn new(ctx: &mut Context, game_config: GameConfig) -> GameResult<MainState> {
         let sprites: Sprites = Sprites {
             curves: prep_sprites(ctx, 1)?,
             lines: prep_sprites(ctx, 2)?,

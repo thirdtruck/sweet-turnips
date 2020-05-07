@@ -1,5 +1,5 @@
 use crate::bitter::{EntityKey, World};
-use crate::sprites::SpriteGrid;
+use sweet_turnips::sprites::SpriteGrid;
 
 use ggez::graphics::Color;
 

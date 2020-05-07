@@ -5,8 +5,6 @@ use std::fs;
 use std::fs::File;
 use std::path::PathBuf;
 
-use sweet_turnips::config::GameConfig;
-
 #[derive(Debug, PartialEq, Serialize, Deserialize)]
 pub struct VillagerConfig {
     pub x: u8,
@@ -26,13 +24,11 @@ pub struct WorldConfig {
 }
 
 #[derive(Debug, PartialEq, Serialize, Deserialize)]
-pub struct BitterGameConfig {
+pub struct GameConfig {
     pub world: WorldConfig,
 }
 
-impl GameConfig<'_> for BitterGameConfig {}
-
-fn example_game_config() -> BitterGameConfig {
+fn example_game_config() -> GameConfig {
     let world_config = WorldConfig {
         starting_villagers: vec![VillagerConfig { x: 4, y: 4 }, VillagerConfig { x: 4, y: 5 }],
         starting_farms: vec![
@@ -42,12 +38,12 @@ fn example_game_config() -> BitterGameConfig {
         ],
     };
 
-    BitterGameConfig {
+    GameConfig {
         world: world_config,
     }
 }
 
-pub fn setup_game_config(config_path: PathBuf) -> BitterGameConfig {
+pub fn setup_game_config(config_path: PathBuf) -> GameConfig {
     if !config_path.exists() {
         let new_file =
             &File::create(config_path.clone()).expect("Could not create new config file");
@@ -58,7 +54,7 @@ pub fn setup_game_config(config_path: PathBuf) -> BitterGameConfig {
 
     let config_string = fs::read_to_string(config_path).expect("Could not read config file");
 
-    let config: BitterGameConfig =
+    let config: GameConfig =
         serde_yaml::from_str(&config_string).expect("Could not parse config file");
 
     config

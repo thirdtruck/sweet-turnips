@@ -1,7 +1,8 @@
-use ggez::graphics::spritebatch::SpriteBatch;
+pub use ggez::graphics::spritebatch::SpriteBatch;
 use ggez::graphics::Color;
 
-use crate::bitter::{GRID_HEIGHT, GRID_WIDTH};
+const GRID_WIDTH: u8 = 8;
+const GRID_HEIGHT: u8 = 8;
 
 const SPRITE_GRID_LENGTH: usize = (GRID_WIDTH * GRID_HEIGHT) as usize;
 
