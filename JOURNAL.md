@@ -45,3 +45,5 @@ Hmm. `config` seemed like a promising place to start but it goes deeper into tra
 Okay, let's commit to having a _fixed_ sprite set. I can at least extract that part.
 
 There. Moved a good chunk of `ggez` stuff out of `src/main.rs` and into the `sweet-turnips` crate. That's more than enough for now, both because I meant to be asleep by this time and because I _really do_ need that second proto-game before I start refactoring for the sake of refactoring.
+
+I can always implement these proto-games, including `bitter-turnips` itself, as `/examples`! Yeah, let's flip the script here and move `src/main.rs` into `examples/bitter-turnips.rs` or the like.
