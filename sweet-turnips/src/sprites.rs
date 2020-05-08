@@ -4,7 +4,7 @@ use ggez::graphics::{Color, DrawParam};
 use ggez::{Context, GameResult};
 use ggez::nalgebra as na;
 
-pub use ggez::graphics::spritebatch::SpriteBatch;
+use ggez::graphics::spritebatch::SpriteBatch;
 
 // TODO: Make these constants into parameters wherever practical
 const GRID_WIDTH: u8 = 8;
