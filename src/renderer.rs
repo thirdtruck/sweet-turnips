@@ -1,7 +1,5 @@
 use crate::bitter::{EntityKey, World};
-use sweet_turnips::sprites::{SpriteGrid, SpriteGridRenderer};
-
-use ggez::graphics::Color;
+use sweet_turnips::sprites::{Color, SpriteGrid, SpriteGridRenderer};
 
 pub struct WorldRenderer {
     pub world: World,

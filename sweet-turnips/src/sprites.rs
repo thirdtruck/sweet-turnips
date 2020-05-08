@@ -1,10 +1,12 @@
 use ggez;
 use ggez::graphics;
-use ggez::graphics::{Color, DrawParam};
+use ggez::graphics::DrawParam;
 use ggez::{Context, GameResult};
 use ggez::nalgebra as na;
 
 use ggez::graphics::spritebatch::SpriteBatch;
+
+pub use ggez::graphics::Color;
 
 // TODO: Make these constants into parameters wherever practical
 const GRID_WIDTH: u8 = 8;
