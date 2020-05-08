@@ -49,3 +49,7 @@ There. Moved a good chunk of `ggez` stuff out of `src/main.rs` and into the `swe
 I can always implement these proto-games, including `bitter-turnips` itself, as `/examples`! Yeah, let's flip the script here and move `src/main.rs` into `examples/bitter-turnips.rs` or the like.
 
 Alright. Finally used a trait all my own. Also, I wonder how long the villager spawn event has been broken such that it ignores the cursor position ...
+
+# 08May2020
+
+Dabbling in refactors to divorce `bitter-turnips` from `ggez` in the hopes of (a) reducing compilation time with pre-compilation of `sweet-turnips` and (b) make it easier to replace `ggez` later if I can't fix the sprite rotation issues otherwise.
