@@ -2,17 +2,16 @@ mod bitter;
 mod config;
 mod renderer;
 
-use ggez;
-use ggez::event;
-use ggez::event::{KeyCode, KeyMods};
-use ggez::{Context, GameResult};
-
 use bitter::{Coords, Direction, EntityKey, Ticks, World, GRID_HEIGHT, GRID_WIDTH};
 
 use config::{GameConfig, WorldConfig};
 
 use renderer::WorldRenderer;
 
+use sweet_turnips;
+use sweet_turnips::{Context, GameResult};
+use sweet_turnips::event;
+use sweet_turnips::event::{KeyCode, KeyMods};
 use sweet_turnips::sprites::{Sprites, SpriteGridRenderer};
 
 use std::convert::From;
@@ -158,9 +157,9 @@ pub fn main() -> GameResult {
 
     let game_config = config::setup_game_config(config_path);
 
-    let cb = ggez::ContextBuilder::new("bitter-turnips", "ggez")
+    let cb = sweet_turnips::ContextBuilder::new("bitter-turnips", "JC Holder")
         .add_resource_path(resource_dir)
-        .window_mode(ggez::conf::WindowMode::default().dimensions(
+        .window_mode(sweet_turnips::conf::WindowMode::default().dimensions(
             GRID_WIDTH as f32 * SPRITE_SIZE,
             GRID_HEIGHT as f32 * SPRITE_SIZE,
         ));
