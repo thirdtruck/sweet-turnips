@@ -61,3 +61,5 @@ Let's put that `Cursor` where it belongs instead.
 So that refactoring wasn't too bad. That _did_ end up tying the cursor position update to the world advancement rate, though, so I'll have to fix that.
 
 Fix wasn't too bad! I realized that I could _resolve_ any outstanding events in the `World` on every `update` call even if I don't `tick` the internal world clock over. That let me preserve `CursorMoved` as a game event like any other.
+
+And removed some unnecessary complexity from the rendering code that was bugging me!
