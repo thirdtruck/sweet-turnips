@@ -20,22 +20,9 @@ use std::path;
 const SPRITE_SCALE: f32 = 4.0;
 const SPRITE_SIZE: f32 = 8.0 * SPRITE_SCALE;
 
-#[derive(Copy, Clone)]
-struct Cursor {
-    x: u8,
-    y: u8,
-}
-
-impl Cursor {
-    fn new() -> Self {
-        Self { x: 2, y: 2 }
-    }
-}
-
 struct MainState {
     world: World,
     sprites: Sprites,
-    cursor: Cursor,
     selected_villager_key: Option<EntityKey>,
     ticks: Ticks,
 }
@@ -49,7 +36,6 @@ impl MainState {
         let s = MainState {
             world: game_config.world.into(),
             sprites,
-            cursor: Cursor::new(),
             selected_villager_key: None,
             ticks,
         };
@@ -57,28 +43,7 @@ impl MainState {
     }
 
     fn move_cursor(&mut self, direction: Direction) {
-        match direction {
-            Direction::Up => {
-                if self.cursor.y > 1 {
-                    self.cursor.y -= 1
-                }
-            }
-            Direction::Down => {
-                if self.cursor.y < GRID_HEIGHT - 2 {
-                    self.cursor.y += 1
-                }
-            }
-            Direction::Left => {
-                if self.cursor.x > 1 {
-                    self.cursor.x -= 1
-                }
-            }
-            Direction::Right => {
-                if self.cursor.x < GRID_WIDTH - 2 {
-                    self.cursor.x += 1
-                }
-            }
-        }
+        self.world = self.world.with_cursor_moved(direction);
     }
 
     fn spawn_egg(&mut self, coords: Coords) {
@@ -94,7 +59,7 @@ impl event::EventHandler for MainState {
             self.world = self.world.ticked();
         }
 
-        self.selected_villager_key = self.world.villager_key_at(self.cursor.x, self.cursor.y);
+        self.selected_villager_key = self.world.villager_key_at(self.world.cursor_coords());
 
         Ok(())
     }
@@ -112,7 +77,7 @@ impl event::EventHandler for MainState {
             KeyCode::A => self.move_cursor(Direction::Left),
             KeyCode::S => self.move_cursor(Direction::Down),
             KeyCode::D => self.move_cursor(Direction::Right),
-            KeyCode::Space => self.spawn_egg((self.cursor.x, self.cursor.x)),
+            KeyCode::Space => self.spawn_egg(self.world.cursor_coords()),
             _ => (),
         }
     }
@@ -124,7 +89,9 @@ impl event::EventHandler for MainState {
         };
         let mut sprite_grid = renderer.render_grid();
 
-        sprite_grid.cursor_at(self.cursor.x + 1, self.cursor.y + 1);
+        let coords = self.world.cursor_coords();
+
+        sprite_grid.cursor_at(coords.0 + 1, coords.1 + 1);
 
         self.sprites.render_sprite_grid(sprite_grid);
 

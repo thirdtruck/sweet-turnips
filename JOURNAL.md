@@ -57,3 +57,5 @@ Dabbling in refactors to divorce `bitter-turnips` from `ggez` in the hopes of (a
 Doesn't seem to have had a noticeable effect. I'll probably have to shift more things into runtime dependencies, e.g. the config file.
 
 Let's put that `Cursor` where it belongs instead.
+
+So that refactoring wasn't too bad. That _did_ end up tying the cursor position update to the world advancement rate, though, so I'll have to fix that.

@@ -8,7 +8,7 @@ use rand::{
 
 use slotmap::{new_key_type, SecondaryMap, SlotMap};
 
-use entities::{DeathMarker, Farm, GameEntity, Villager};
+use entities::{Cursor, DeathMarker, Farm, GameEntity, Villager};
 use events::{WorldEvent, WE};
 
 pub const GRID_WIDTH: u8 = 8;
@@ -53,11 +53,12 @@ pub struct World {
     ticks: Ticks,
     pub satiation: SecondaryMap<EntityKey, u8>,
     pub villagers: SecondaryMap<EntityKey, Villager>,
+    pub cursors: SecondaryMap<EntityKey, Cursor>,
 }
 
 impl World {
     pub fn new() -> Self {
-        let world = World {
+        let mut world = World {
             entities: SlotMap::with_key(),
             coords: SecondaryMap::new(),
             events: vec![],
@@ -66,9 +67,20 @@ impl World {
             farms: SecondaryMap::new(),
             satiation: SecondaryMap::new(),
             villagers: SecondaryMap::new(),
+            cursors: SecondaryMap::new(),
         };
 
+        let ck = world.entities.insert(GameEntity);
+        let cursor = Cursor { key: ck };
+        world.cursors.insert(ck, cursor);
+        world.coords.insert(ck, (2, 2));
+
         world
+    }
+
+    pub fn cursor_coords(&self) -> Coords {
+        let cursor = self.cursors.values().nth(0).expect("Found no cursor");
+        self.coords[cursor.key]
     }
 
     pub fn ticked(&self) -> Self {
@@ -105,6 +117,7 @@ impl World {
                 WE::FarmsCultivated => world.farms_cultivated(),
                 WE::VillagersMoved => world.villagers_moved(),
                 WE::EggLaid(coords) => world.egg_laid(coords),
+                WE::CursorMoved(dir) => world.cursor_moved(dir),
             };
 
             world.events.extend(new_events);
@@ -118,6 +131,39 @@ impl World {
         events.push(evt);
 
         Self { events, ..self }
+    }
+
+    fn cursor_moved(&mut self, dir: Direction) -> Vec<WorldEvent> {
+        // We assume there's one and only one cursor for convenience
+        let cursor = self.cursors.values().nth(0).expect("Found no cursor");
+        let (mut x, mut y) = self.coords[cursor.key];
+
+        match dir {
+            Direction::Up => {
+                if y > 1 {
+                    y -= 1
+                }
+            }
+            Direction::Down => {
+                if y < GRID_HEIGHT - 2 {
+                    y += 1
+                }
+            }
+            Direction::Left => {
+                if x > 1 {
+                    x -= 1
+                }
+            }
+            Direction::Right => {
+                if x < GRID_WIDTH - 2 {
+                    x += 1
+                }
+            }
+        };
+
+        self.coords[cursor.key] = (x, y);
+
+        vec![]
     }
 
     fn villager_moved(&mut self, key: EntityKey, dir: Direction) -> Vec<WorldEvent> {
@@ -345,10 +391,14 @@ impl World {
         self.clone().with_event(WE::EggLaid(coords))
     }
 
-    pub fn villager_key_at(&self, x: u8, y: u8) -> Option<EntityKey> {
+    pub fn with_cursor_moved(&self, dir: Direction) -> Self {
+        self.clone().with_event(WE::CursorMoved(dir))
+    }
+
+    pub fn villager_key_at(&self, coords: Coords) -> Option<EntityKey> {
         for v in self.villagers.values() {
             let (vx, vy) = self.coords[v.key];
-            if vx == x && vy == y {
+            if vx == coords.0 && vy == coords.1 {
                 return Some(v.key);
             }
         }

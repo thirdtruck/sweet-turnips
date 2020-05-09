@@ -2,6 +2,7 @@ use crate::bitter::{Coords, Direction, EntityKey};
 
 #[derive(Copy, Clone, Debug)]
 pub enum WorldEvent {
+    CursorMoved(Direction),
     GravesCleared,
     FarmsCultivated,
     VillagersMoved,

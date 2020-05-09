@@ -4,6 +4,11 @@ use crate::bitter::{EntityKey, Ticks};
 pub struct GameEntity;
 
 #[derive(Copy, Clone, Debug)]
+pub struct Cursor {
+    pub key: EntityKey,
+}
+
+#[derive(Copy, Clone, Debug)]
 pub struct DeathMarker {
     pub key: EntityKey,
 }
