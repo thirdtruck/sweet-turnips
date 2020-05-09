@@ -53,3 +53,7 @@ Alright. Finally used a trait all my own. Also, I wonder how long the villager s
 # 08May2020
 
 Dabbling in refactors to divorce `bitter-turnips` from `ggez` in the hopes of (a) reducing compilation time with pre-compilation of `sweet-turnips` and (b) make it easier to replace `ggez` later if I can't fix the sprite rotation issues otherwise.
+
+Doesn't seem to have had a noticeable effect. I'll probably have to shift more things into runtime dependencies, e.g. the config file.
+
+Let's put that `Cursor` where it belongs instead.
