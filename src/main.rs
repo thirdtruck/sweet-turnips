@@ -115,6 +115,9 @@ impl From<WorldConfig> for World {
             world.add_farm_at(f.x, f.y);
         }
 
+        let c = config.starting_cursor;
+        world.add_cursor_at((c.x, c.y));
+
         world
     }
 }

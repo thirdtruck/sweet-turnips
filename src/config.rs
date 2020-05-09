@@ -18,9 +18,16 @@ pub struct FarmConfig {
 }
 
 #[derive(Debug, PartialEq, Serialize, Deserialize)]
+pub struct CursorConfig {
+    pub x: u8,
+    pub y: u8,
+}
+
+#[derive(Debug, PartialEq, Serialize, Deserialize)]
 pub struct WorldConfig {
     pub starting_villagers: Vec<VillagerConfig>,
     pub starting_farms: Vec<FarmConfig>,
+    pub starting_cursor: CursorConfig,
 }
 
 #[derive(Debug, PartialEq, Serialize, Deserialize)]
@@ -36,6 +43,7 @@ fn example_game_config() -> GameConfig {
             FarmConfig { x: 5, y: 5 },
             FarmConfig { x: 5, y: 6 },
         ],
+        starting_cursor: CursorConfig { x: 2, y: 2 },
     };
 
     GameConfig {

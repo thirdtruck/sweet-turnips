@@ -58,7 +58,7 @@ pub struct World {
 
 impl World {
     pub fn new() -> Self {
-        let mut world = World {
+        World {
             entities: SlotMap::with_key(),
             coords: SecondaryMap::new(),
             events: vec![],
@@ -68,14 +68,7 @@ impl World {
             satiation: SecondaryMap::new(),
             villagers: SecondaryMap::new(),
             cursors: SecondaryMap::new(),
-        };
-
-        let ck = world.entities.insert(GameEntity);
-        let cursor = Cursor { key: ck };
-        world.cursors.insert(ck, cursor);
-        world.coords.insert(ck, (2, 2));
-
-        world
+        }
     }
 
     pub fn cursor_coords(&self) -> Coords {
@@ -365,6 +358,14 @@ impl World {
 
         vec![]
     }
+
+    pub fn add_cursor_at(&mut self, coords: Coords) {
+        let ck = self.entities.insert(GameEntity);
+        let cursor = Cursor { key: ck };
+        self.cursors.insert(ck, cursor);
+        self.coords.insert(ck, coords);
+    }
+
 
     pub fn add_villager_at(&mut self, x: u8, y: u8) {
         let entity = GameEntity;
