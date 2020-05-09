@@ -99,7 +99,7 @@ impl World {
             .events_processed()
     }
 
-    fn events_processed(self) -> Self {
+    pub fn events_processed(&self) -> Self {
         let mut world = self.clone();
 
         while let Some(evt) = world.events.pop() {

@@ -57,6 +57,8 @@ impl event::EventHandler for MainState {
 
         if (self.ticks + 1) % 40 == 0 {
             self.world = self.world.ticked();
+        } else {
+            self.world = self.world.events_processed();
         }
 
         self.selected_villager_key = self.world.villager_key_at(self.world.cursor_coords());
