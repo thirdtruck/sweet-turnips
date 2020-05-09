@@ -1,6 +1,6 @@
 mod bitter;
 mod config;
-mod renderer;
+mod render;
 
 use bitter::{Coords, Direction, EntityKey, Ticks, World, GRID_HEIGHT, GRID_WIDTH};
 
@@ -84,7 +84,7 @@ impl event::EventHandler for MainState {
 
     fn draw(&mut self, ctx: &mut Context) -> GameResult {
         let mut sprite_grid =
-            renderer::sprite_grid_from_world(&self.world, self.selected_villager_key);
+            render::sprite_grid_from_world(&self.world, self.selected_villager_key);
 
         let coords = self.world.cursor_coords();
 
