@@ -1,18 +1,7 @@
 use crate::bitter::{EntityKey, World};
-use sweet_turnips::sprites::{Color, SpriteGrid, SpriteGridRenderer};
+use sweet_turnips::sprites::{Color, SpriteGrid};
 
-pub struct WorldRenderer {
-    pub world: World,
-    pub selected_villager_key: Option<EntityKey>,
-}
-
-impl SpriteGridRenderer for WorldRenderer {
-    fn render_grid(&self) -> SpriteGrid {
-        sprite_grid_from_world(&self.world, self. selected_villager_key)
-    }
-}
-
-fn sprite_grid_from_world(
+pub fn sprite_grid_from_world(
     world: &World,
     selected_villager_key: Option<EntityKey>,
 ) -> SpriteGrid {

@@ -6,13 +6,11 @@ use bitter::{Coords, Direction, EntityKey, Ticks, World, GRID_HEIGHT, GRID_WIDTH
 
 use config::{GameConfig, WorldConfig};
 
-use renderer::WorldRenderer;
-
 use sweet_turnips;
 use sweet_turnips::{Context, GameResult};
 use sweet_turnips::event;
 use sweet_turnips::event::{KeyCode, KeyMods};
-use sweet_turnips::sprites::{Sprites, SpriteGridRenderer};
+use sweet_turnips::sprites::{Sprites};
 
 use std::convert::From;
 use std::path;
@@ -85,11 +83,8 @@ impl event::EventHandler for MainState {
     }
 
     fn draw(&mut self, ctx: &mut Context) -> GameResult {
-        let renderer = WorldRenderer {
-            world: self.world.clone(),
-            selected_villager_key: self.selected_villager_key,
-        };
-        let mut sprite_grid = renderer.render_grid();
+        let mut sprite_grid =
+            renderer::sprite_grid_from_world(&self.world, self.selected_villager_key);
 
         let coords = self.world.cursor_coords();
 
