@@ -88,8 +88,11 @@ impl event::EventHandler for MainState {
 }
 
 impl From<WorldConfig> for World {
-    fn from(_config: WorldConfig) -> Self {
-        let world = Self::new().with_player_ship_added_at((2, 5));
+    fn from(config: WorldConfig) -> Self {
+        let player_ship_coords =
+            (config.starting_player_ship.x, config.starting_player_ship.y);
+
+        let world = Self::new().with_player_ship_added_at(player_ship_coords);
 
         world
     }
