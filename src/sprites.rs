@@ -199,6 +199,7 @@ impl Sprites {
 
         match sprite_type {
             SpriteType::BigCircle => self.big_circles.add(gp.draw_param),
+            SpriteType::SmallCircle => self.small_circles.add(gp.draw_param),
             SpriteType::Lizard(color) => self.lizards.add(gp.draw_param.color(color)),
             SpriteType::Turnip => self.turnips.add(gp.color(RED).draw_param),
             SpriteType::Skull => self.skulls.add(gp.draw_param),
@@ -231,6 +232,11 @@ impl SpriteGrid {
     pub fn big_circle_at(&mut self, x: u8, y: u8) {
         let index = (y * GRID_WIDTH + x) as usize;
         self.sprite_types[index] = SpriteType::BigCircle;
+    }
+
+    pub fn small_circle_at(&mut self, x: u8, y: u8) {
+        let index = (y * GRID_WIDTH + x) as usize;
+        self.sprite_types[index] = SpriteType::SmallCircle;
     }
 
     pub fn lizard_at(&mut self, x: u8, y: u8, color: Color) {
