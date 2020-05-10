@@ -63,3 +63,7 @@ So that refactoring wasn't too bad. That _did_ end up tying the cursor position 
 Fix wasn't too bad! I realized that I could _resolve_ any outstanding events in the `World` on every `update` call even if I don't `tick` the internal world clock over. That let me preserve `CursorMoved` as a game event like any other.
 
 And removed some unnecessary complexity from the rendering code that was bugging me!
+
+# 10May2020
+
+Time to make `bitter-turnips` an example and `sweet-turnips` the main module!
