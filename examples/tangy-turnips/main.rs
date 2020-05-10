@@ -38,12 +38,8 @@ impl MainState {
         Ok(s)
     }
 
-    fn move_cursor(&mut self, direction: Direction) {
-        self.world = self.world.with_cursor_moved(direction);
-    }
-
-    fn spawn_egg(&mut self, coords: Coords) {
-        self.world = self.world.with_egg_spawn_requested_at(coords);
+    fn move_player_ship(&mut self, direction: Direction) {
+        self.world = self.world.with_player_ship_moved(direction);
     }
 }
 
@@ -69,11 +65,10 @@ impl event::EventHandler for MainState {
     ) {
         match keycode {
             KeyCode::Escape => event::quit(ctx),
-            KeyCode::W => self.move_cursor(Direction::Up),
-            KeyCode::A => self.move_cursor(Direction::Left),
-            KeyCode::S => self.move_cursor(Direction::Down),
-            KeyCode::D => self.move_cursor(Direction::Right),
-            KeyCode::Space => self.spawn_egg(self.world.cursor_coords()),
+            KeyCode::W => self.move_player_ship(Direction::Up),
+            KeyCode::A => self.move_player_ship(Direction::Left),
+            KeyCode::S => self.move_player_ship(Direction::Down),
+            KeyCode::D => self.move_player_ship(Direction::Right),
             _ => (),
         }
     }
@@ -92,7 +87,7 @@ impl event::EventHandler for MainState {
 
 impl From<WorldConfig> for World {
     fn from(config: WorldConfig) -> Self {
-        let mut world = Self::new();
+        let world = Self::new().with_player_ship_at((2, 5));
 
         world
     }

@@ -20,5 +20,11 @@ pub fn sprite_grid_from_world(
         }
     }
 
+    for ship in world.player_ships.values() {
+        let coords = world.coords[ship.key];
+
+        sprite_grid.ship_at(coords.0, coords.1);
+    }
+
     sprite_grid
 }
