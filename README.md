@@ -10,6 +10,8 @@ Created by JC Holder (jc@thirdtruck.org).
 
 ## Bitter Turnips
 
+`cargo run --example bitter-turnips`
+
 ### Gameplay
 
 Villagers move around every turn (sometimes overlapping).
