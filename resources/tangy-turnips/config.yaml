@@ -1,0 +1,5 @@
+---
+world:
+  starting_player_ship:
+    x: 3
+    y: 5
