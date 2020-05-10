@@ -59,22 +59,6 @@ impl World {
         }
     }
 
-    fn with_latest_event_processed(self) -> Self {
-        if self.events.len() == 0 {
-            self
-        } else  {
-            let mut world = self.clone();
-
-            if let Some(event) = world.events.pop() {
-                match event {
-                    WE::PlayerShipMoved(dir) => world.with_player_ship_moved(dir),
-                }
-            } else {
-                world
-            }
-        }
-    }
-
     pub fn ticked(&self) -> Self {
         let world = self.clone();
 
@@ -153,5 +137,21 @@ impl World {
 
     pub fn with_player_ship_move_requested(&self, dir: Direction) -> Self {
         self.clone().with_event(WE::PlayerShipMoved(dir))
+    }
+
+    fn with_latest_event_processed(self) -> Self {
+        if self.events.len() == 0 {
+            self
+        } else  {
+            let mut world = self.clone();
+
+            if let Some(event) = world.events.pop() {
+                match event {
+                    WE::PlayerShipMoved(dir) => world.with_player_ship_moved(dir),
+                }
+            } else {
+                world
+            }
+        }
     }
 }
