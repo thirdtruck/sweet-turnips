@@ -1,5 +1,5 @@
-use crate::tangy::{EntityKey, World, GRID_HEIGHT, GRID_WIDTH};
-use sweet_turnips::sprites::{Color, SpriteGrid};
+use crate::tangy::{World, GRID_HEIGHT, GRID_WIDTH};
+use sweet_turnips::sprites::{SpriteGrid};
 
 const MAX_X: u8 = GRID_WIDTH - 1;
 

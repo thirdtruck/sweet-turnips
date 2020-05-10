@@ -2,7 +2,7 @@ mod tangy;
 mod config;
 mod render;
 
-use tangy::{Coords, Direction, EntityKey, Ticks, World, GRID_HEIGHT, GRID_WIDTH};
+use tangy::{Direction, Ticks, World, GRID_HEIGHT, GRID_WIDTH};
 
 use config::{GameConfig, WorldConfig};
 
@@ -74,8 +74,7 @@ impl event::EventHandler for MainState {
     }
 
     fn draw(&mut self, ctx: &mut Context) -> GameResult {
-        let mut sprite_grid =
-            render::sprite_grid_from_world(&self.world);
+        let sprite_grid = render::sprite_grid_from_world(&self.world);
 
         self.sprites.render_sprite_grid(sprite_grid);
 
@@ -86,7 +85,7 @@ impl event::EventHandler for MainState {
 }
 
 impl From<WorldConfig> for World {
-    fn from(config: WorldConfig) -> Self {
+    fn from(_config: WorldConfig) -> Self {
         let world = Self::new().with_player_ship_at((2, 5));
 
         world

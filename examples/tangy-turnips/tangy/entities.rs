@@ -1,4 +1,4 @@
-use crate::tangy::{EntityKey, Ticks};
+use crate::tangy::{EntityKey};
 
 #[derive(Copy, Clone, Debug)]
 pub struct GameEntity;
