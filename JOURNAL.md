@@ -67,3 +67,5 @@ And removed some unnecessary complexity from the rendering code that was bugging
 # 10May2020
 
 Time to make `bitter-turnips` an example and `sweet-turnips` the main module! Well, that was super easy! Time to make _another_ game using this library, then.
+
+**Damn!** Two hours or so later and I have a proof of concept for a shmup (shoot'em up)! Simulated scrolling and player ship movement already! Feeling high hopes for this proto-game approach.
