@@ -111,12 +111,12 @@ impl World {
 
         match dir {
             Direction::Up => {
-                if y > 1 {
+                if y > 0 {
                     y -= 1
                 }
             }
             Direction::Down => {
-                if y < GRID_HEIGHT - 2 {
+                if y < GRID_HEIGHT - 1 {
                     y += 1
                 }
             }
