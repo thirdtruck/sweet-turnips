@@ -1,4 +1,4 @@
-use crate::bitter::{EntityKey, World};
+use crate::tangy::{EntityKey, World};
 use sweet_turnips::sprites::{Color, SpriteGrid};
 
 pub fn sprite_grid_from_world(

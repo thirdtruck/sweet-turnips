@@ -1,8 +1,8 @@
-mod bitter;
+mod tangy;
 mod config;
 mod render;
 
-use bitter::{Coords, Direction, EntityKey, Ticks, World, GRID_HEIGHT, GRID_WIDTH};
+use tangy::{Coords, Direction, EntityKey, Ticks, World, GRID_HEIGHT, GRID_WIDTH};
 
 use config::{GameConfig, WorldConfig};
 
@@ -124,7 +124,7 @@ pub fn main() -> GameResult {
 
     let game_config = config::setup_game_config(config_path);
 
-    let cb = sweet_turnips::ContextBuilder::new("bitter-turnips", "JC Holder")
+    let cb = sweet_turnips::ContextBuilder::new("tangy-turnips", "JC Holder")
         .add_resource_path(resource_dir)
         .window_mode(sweet_turnips::conf::WindowMode::default().dimensions(
             GRID_WIDTH as f32 * SPRITE_SIZE,
