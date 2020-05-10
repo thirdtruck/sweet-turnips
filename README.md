@@ -1,12 +1,16 @@
-# Bitter Turnips
+# Sweet Turnips
 
-An entry for Bitter Jam 2020.
+Extracted from a game entry for Bitter Jam 2020.
 
 An experiment in learning `ggez`, ECS (entity component systems), and event-driven architecture.
 
 Created by JC Holder (jc@thirdtruck.org).
 
-## Gameplay
+# Examples
+
+## Bitter Turnips
+
+### Gameplay
 
 Villagers move around every turn (sometimes overlapping).
 
@@ -18,7 +22,7 @@ Villagers die if they go hungry for too long.
 
 How many villagers can you keep alive?
 
-## Controls
+### Controls
 
 * `W` - move cursor up
 * `A` - move cursor left
