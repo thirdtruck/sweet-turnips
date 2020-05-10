@@ -6,28 +6,14 @@ use std::fs::File;
 use std::path::PathBuf;
 
 #[derive(Debug, PartialEq, Serialize, Deserialize)]
-pub struct VillagerConfig {
-    pub x: u8,
-    pub y: u8,
-}
-
-#[derive(Debug, PartialEq, Serialize, Deserialize)]
-pub struct FarmConfig {
-    pub x: u8,
-    pub y: u8,
-}
-
-#[derive(Debug, PartialEq, Serialize, Deserialize)]
-pub struct CursorConfig {
+pub struct PlayerShipConfig {
     pub x: u8,
     pub y: u8,
 }
 
 #[derive(Debug, PartialEq, Serialize, Deserialize)]
 pub struct WorldConfig {
-    pub starting_villagers: Vec<VillagerConfig>,
-    pub starting_farms: Vec<FarmConfig>,
-    pub starting_cursor: CursorConfig,
+    pub starting_player_ship: PlayerShipConfig,
 }
 
 #[derive(Debug, PartialEq, Serialize, Deserialize)]
@@ -37,13 +23,7 @@ pub struct GameConfig {
 
 fn example_game_config() -> GameConfig {
     let world_config = WorldConfig {
-        starting_villagers: vec![VillagerConfig { x: 4, y: 4 }, VillagerConfig { x: 4, y: 5 }],
-        starting_farms: vec![
-            FarmConfig { x: 5, y: 4 },
-            FarmConfig { x: 5, y: 5 },
-            FarmConfig { x: 5, y: 6 },
-        ],
-        starting_cursor: CursorConfig { x: 2, y: 2 },
+        starting_player_ship: PlayerShipConfig { x: 2, y: 5 },
     };
 
     GameConfig {
