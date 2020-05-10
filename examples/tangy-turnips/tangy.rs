@@ -59,6 +59,22 @@ impl World {
         }
     }
 
+    pub fn with_latest_event_processed(self) -> Self {
+        if self.events.len() == 0 {
+            self
+        } else  {
+            let mut world = self.clone();
+
+            if let Some(event) = world.events.pop() {
+                match event {
+                    WE::PlayerShipMoved(dir) => world.with_player_ship_moved(dir),
+                }
+            } else {
+                world
+            }
+        }
+    }
+
     pub fn ticked(&self) -> Self {
         let world = self.clone();
 
@@ -73,12 +89,8 @@ impl World {
     pub fn events_processed(&self) -> Self {
         let mut world = self.clone();
 
-        while let Some(evt) = world.events.pop() {
-            let new_events = match evt {
-                WE::PlayerShipMoved(dir) => world.player_ship_moved(dir),
-            };
-
-            world.events.extend(new_events);
+        while world.events.len() > 0 {
+            world = world.with_latest_event_processed();
         }
 
         world
@@ -104,10 +116,12 @@ impl World {
         Self { events, ..self }
     }
 
-    fn player_ship_moved(&mut self, dir: Direction) -> Vec<WorldEvent> {
+    fn with_player_ship_moved(&self, dir: Direction) -> Self {
+        let mut world = self.clone();
+
         // We assume there's one and only one player ship for convenience
-        let player_ship = self.player_ships.values().nth(0).expect("Found no player ship");
-        let (mut x, mut y) = self.coords[player_ship.key];
+        let player_ship = world.player_ships.values().nth(0).expect("Found no player ship");
+        let (mut x, mut y) = world.coords[player_ship.key];
 
         match dir {
             Direction::Up => {
@@ -132,12 +146,12 @@ impl World {
             }
         };
 
-        self.coords[player_ship.key] = (x, y);
+        world.coords[player_ship.key] = (x, y);
 
-        vec![]
+        world
     }
 
-    pub fn with_player_ship_moved(&self, dir: Direction) -> Self {
+    pub fn with_player_ship_move_requested(&self, dir: Direction) -> Self {
         self.clone().with_event(WE::PlayerShipMoved(dir))
     }
 }

@@ -39,7 +39,7 @@ impl MainState {
     }
 
     fn move_player_ship(&mut self, direction: Direction) {
-        self.world = self.world.with_player_ship_moved(direction);
+        self.world = self.world.with_player_ship_move_requested(direction);
     }
 }
 
