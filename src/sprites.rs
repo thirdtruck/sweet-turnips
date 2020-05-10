@@ -198,6 +198,7 @@ impl Sprites {
         }
 
         match sprite_type {
+            SpriteType::Ship => self.ships.add(gp.draw_param),
             SpriteType::BigCircle => self.big_circles.add(gp.draw_param),
             SpriteType::SmallCircle => self.small_circles.add(gp.draw_param),
             SpriteType::Lizard(color) => self.lizards.add(gp.draw_param.color(color)),
@@ -227,6 +228,11 @@ impl SpriteGrid {
         SpriteGrid {
             sprite_types: [SpriteType::Empty; SPRITE_GRID_LENGTH],
         }
+    }
+
+    pub fn ship_at(&mut self, x: u8, y: u8) {
+        let index = (y * GRID_WIDTH + x) as usize;
+        self.sprite_types[index] = SpriteType::Ship;
     }
 
     pub fn big_circle_at(&mut self, x: u8, y: u8) {
