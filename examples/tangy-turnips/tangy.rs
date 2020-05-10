@@ -80,7 +80,7 @@ impl World {
         world
     }
 
-    pub fn with_player_ship_at(self, coords: Coords) -> Self {
+    pub fn with_player_ship_added_at(self, coords: Coords) -> Self {
         let mut world = self.clone();
 
         let key = world.entities.insert(GameEntity);

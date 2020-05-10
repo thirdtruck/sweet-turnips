@@ -86,7 +86,7 @@ impl event::EventHandler for MainState {
 
 impl From<WorldConfig> for World {
     fn from(_config: WorldConfig) -> Self {
-        let world = Self::new().with_player_ship_at((2, 5));
+        let world = Self::new().with_player_ship_added_at((2, 5));
 
         world
     }
