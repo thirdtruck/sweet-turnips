@@ -66,4 +66,4 @@ And removed some unnecessary complexity from the rendering code that was bugging
 
 # 10May2020
 
-Time to make `bitter-turnips` an example and `sweet-turnips` the main module!
+Time to make `bitter-turnips` an example and `sweet-turnips` the main module! Well, that was super easy! Time to make _another_ game using this library, then.

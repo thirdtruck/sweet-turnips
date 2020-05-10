@@ -31,3 +31,14 @@ How many villagers can you keep alive?
 * `S` - move cursor down
 * `D` - move cursor right
 * `Space` - spawn a villager at where the cursor points
+
+# TODO
+
+## Game Ideas
+
++ Tangy turnips: shmup (shoot-em up)
++ Salty turnips: first person dungeon crawler
++ Sour turnips: visual novel / dating sim
++ Umami turnips: JRPG
++ Roasted turnips: platformer
++ Fried turnips: tactical battle
