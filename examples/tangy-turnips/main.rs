@@ -21,7 +21,6 @@ const SPRITE_SIZE: f32 = 8.0 * SPRITE_SCALE;
 struct MainState {
     world: World,
     sprites: Sprites,
-    selected_villager_key: Option<EntityKey>,
     ticks: Ticks,
 }
 
@@ -34,7 +33,6 @@ impl MainState {
         let s = MainState {
             world: game_config.world.into(),
             sprites,
-            selected_villager_key: None,
             ticks,
         };
         Ok(s)
@@ -58,8 +56,6 @@ impl event::EventHandler for MainState {
         } else {
             self.world = self.world.events_processed();
         }
-
-        self.selected_villager_key = self.world.villager_key_at(self.world.cursor_coords());
 
         Ok(())
     }
@@ -86,10 +82,6 @@ impl event::EventHandler for MainState {
         let mut sprite_grid =
             render::sprite_grid_from_world(&self.world);
 
-        let coords = self.world.cursor_coords();
-
-        sprite_grid.cursor_at(coords.0 + 1, coords.1 + 1);
-
         self.sprites.render_sprite_grid(sprite_grid);
 
         self.sprites.draw_all_sprites(ctx)?;
@@ -101,17 +93,6 @@ impl event::EventHandler for MainState {
 impl From<WorldConfig> for World {
     fn from(config: WorldConfig) -> Self {
         let mut world = Self::new();
-
-        for v in config.starting_villagers {
-            world.add_villager_at(v.x, v.y);
-        }
-
-        for f in config.starting_farms {
-            world.add_farm_at(f.x, f.y);
-        }
-
-        let c = config.starting_cursor;
-        world.add_cursor_at((c.x, c.y));
 
         world
     }
