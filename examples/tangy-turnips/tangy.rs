@@ -59,7 +59,7 @@ impl World {
         }
     }
 
-    pub fn with_latest_event_processed(self) -> Self {
+    fn with_latest_event_processed(self) -> Self {
         if self.events.len() == 0 {
             self
         } else  {
@@ -83,10 +83,10 @@ impl World {
             ..world
         };
 
-        world.events_processed()
+        world.with_events_processed()
     }
 
-    pub fn events_processed(&self) -> Self {
+    pub fn with_events_processed(&self) -> Self {
         let mut world = self.clone();
 
         while world.events.len() > 0 {
