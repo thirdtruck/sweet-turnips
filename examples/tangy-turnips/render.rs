@@ -8,9 +8,16 @@ pub fn sprite_grid_from_world(
 ) -> SpriteGrid {
     let mut sprite_grid = SpriteGrid::new();
 
+    let y_transit = (world.ticks % GRID_HEIGHT as usize) as u8;
+
     for y in 0..GRID_HEIGHT {
-        sprite_grid.big_circle_at(0, y);
-        sprite_grid.big_circle_at(MAX_X, y);
+        if y == y_transit {
+            sprite_grid.small_circle_at(0, y);
+            sprite_grid.small_circle_at(MAX_X, y);
+        } else {
+            sprite_grid.big_circle_at(0, y);
+            sprite_grid.big_circle_at(MAX_X, y);
+        }
     }
 
     sprite_grid

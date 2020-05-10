@@ -50,7 +50,7 @@ pub struct World {
     pub coords: SecondaryMap<EntityKey, Coords>,
     pub death_markers: SecondaryMap<EntityKey, DeathMarker>,
     pub farms: SecondaryMap<EntityKey, Farm>,
-    ticks: Ticks,
+    pub ticks: Ticks,
     pub satiation: SecondaryMap<EntityKey, u8>,
     pub villagers: SecondaryMap<EntityKey, Villager>,
     pub cursors: SecondaryMap<EntityKey, Cursor>,
