@@ -12,23 +12,32 @@ use sweet_turnips::event;
 use sweet_turnips::event::{KeyCode, KeyMods};
 use sweet_turnips::sprites::{Sprites};
 
+use midir::{MidiInput, Ignore};
+
 use std::convert::From;
 use std::fs;
 use std::path;
+use std::thread;
+use std::sync::mpsc;
+use std::io::{stdin};
 
 const GAME_NAME: &str = "tangy-turnips";
 
 const SPRITE_SCALE: f32 = 4.0;
 const SPRITE_SIZE: f32 = 8.0 * SPRITE_SCALE;
 
+type MidiReceiver = mpsc::Receiver<(u8, u8)>;
+
 struct MainState {
     world: World,
     sprites: Sprites,
     ticks: Ticks,
+    rx: Option<MidiReceiver>,
+    tick_speed: usize,
 }
 
 impl MainState {
-    fn new(ctx: &mut Context, game_config: GameConfig) -> GameResult<MainState> {
+    fn new(ctx: &mut Context, game_config: GameConfig, rx: Option<MidiReceiver>) -> GameResult<MainState> {
         let sprites = Sprites::new(ctx)?;
 
         let ticks: Ticks = 0;
@@ -37,6 +46,8 @@ impl MainState {
             world: game_config.world.into(),
             sprites,
             ticks,
+            rx,
+            tick_speed: 40,
         };
         Ok(s)
     }
@@ -48,9 +59,42 @@ impl MainState {
 
 impl event::EventHandler for MainState {
     fn update(&mut self, _ctx: &mut Context) -> GameResult {
+        let mut tick_speed: usize = self.tick_speed;
+        let mut dir: Option<Direction> = None;
+
+        if let Some(receiver) = &self.rx {
+            // Mapped to a Korg nanoKONTROL2
+            // TODO: Add mapping options to config
+
+            while let Ok(key_value) = receiver.try_recv() {
+                let (key, value) = key_value;
+
+                if key == 43 && value == 127 { // rewind
+                    dir = Some(Direction::Left);
+                }
+
+                if key == 44 && value == 127 { // fast forward
+                    dir = Some(Direction::Right);
+                }
+
+                if key == 16 {
+                    if value > 0 {
+                        tick_speed = value as usize;
+                    } else {
+                        tick_speed = 1;
+                    }
+                }
+            }
+        }
+
+        self.tick_speed = tick_speed;
+        if let Some(d) = dir {
+            self.move_player_ship(d);
+        }
+
         self.ticks += 1;
 
-        if (self.ticks + 1) % 40 == 0 {
+        if (self.ticks + 1) % self.tick_speed == 0 {
             self.world = self.world.ticked();
         } else {
             self.world = self.world.with_events_processed();
@@ -99,6 +143,40 @@ impl From<WorldConfig> for World {
 }
 
 pub fn main() -> GameResult {
+    let (tx, rx) = mpsc::channel();
+
+    thread::spawn(move || {
+        let mut midi_in = MidiInput::new("midir reading input").expect("Unable to read MIDI inputs");
+        midi_in.ignore(Ignore::None);
+
+        let in_ports = midi_in.ports();
+        let in_port = match in_ports.len() {
+            0 => None,
+            1 => Some(&in_ports[0]),
+            _ => Some(&in_ports[1]),
+        };
+
+        if in_port.is_none() {
+            return;
+        }
+
+        let in_port = in_port.expect("Unable to select a MIDI input");
+
+        let in_port_name = midi_in.port_name(in_port).expect("Unable to fetch fetch MIDI port name");
+
+        println!("\nFound {} MIDI connections", in_ports.len());
+        println!("\nOpening connection to {}", in_port_name);
+
+        let _connection = midi_in.connect(in_port, "midir-read-input", move |_, message, _| {
+            let (key, value) = (message[1], message[2]);
+            tx.send((key, value)).unwrap();
+        }, ()).expect("Unable to open connection to MIDI input");
+
+        // TODO: Find a better way to keep this thread alive
+        let mut input = String::new();
+        stdin().read_line(&mut input).expect("Unable to read input from STDIN");
+    });
+
     let resource_dir = path::PathBuf::from("./resources");
 
     let config_dir = resource_dir.join(GAME_NAME);
@@ -116,7 +194,7 @@ pub fn main() -> GameResult {
 
     let (ctx, event_loop) = &mut cb.build()?;
 
-    let state = &mut MainState::new(ctx, game_config)?;
+    let state = &mut MainState::new(ctx, game_config, Some(rx))?;
 
     event::run(ctx, event_loop, state)
 }

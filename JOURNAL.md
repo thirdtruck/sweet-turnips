@@ -69,3 +69,9 @@ And removed some unnecessary complexity from the rendering code that was bugging
 Time to make `bitter-turnips` an example and `sweet-turnips` the main module! Well, that was super easy! Time to make _another_ game using this library, then.
 
 **Damn!** Two hours or so later and I have a proof of concept for a shmup (shoot'em up)! Simulated scrolling and player ship movement already! Feeling high hopes for this proto-game approach.
+
+# 13May2020
+
+Time to play around with my brand new nanoKONTROL2 MIDI controller! Let's see how readily I can use it as example input.
+
+It worked! Now you can steer the ship and even control the flight speed (well, the world tick speed) via the MIDI controller! I'm mad (elated) with power!
