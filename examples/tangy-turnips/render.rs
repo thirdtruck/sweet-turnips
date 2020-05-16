@@ -24,5 +24,11 @@ pub fn sprite_grid_from_world(world: &World) -> SpriteGrid {
         sprite_grid.ship_at(coords.0, coords.1);
     }
 
+    for ship in world.enemy_ships.values() {
+        let coords = world.coords[ship.key];
+
+        sprite_grid.turnip_at(coords.0, coords.1);
+    }
+
     sprite_grid
 }

@@ -7,3 +7,8 @@ pub struct GameEntity;
 pub struct PlayerShip {
     pub key: EntityKey,
 }
+
+#[derive(Copy, Clone, Debug)]
+pub struct EnemyShip {
+    pub key: EntityKey,
+}

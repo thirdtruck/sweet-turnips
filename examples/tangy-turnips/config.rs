@@ -12,8 +12,15 @@ pub struct PlayerShipConfig {
 }
 
 #[derive(Debug, PartialEq, Serialize, Deserialize)]
+pub struct EnemyShipConfig {
+    pub x: u8,
+    pub y: u8,
+}
+
+#[derive(Debug, PartialEq, Serialize, Deserialize)]
 pub struct WorldConfig {
     pub starting_player_ship: PlayerShipConfig,
+    pub starting_enemy_ships: Vec<EnemyShipConfig>,
 }
 
 #[derive(Debug, PartialEq, Serialize, Deserialize)]
@@ -24,6 +31,9 @@ pub struct GameConfig {
 fn example_game_config() -> GameConfig {
     let world_config = WorldConfig {
         starting_player_ship: PlayerShipConfig { x: 2, y: 5 },
+        starting_enemy_ships: vec![
+            EnemyShipConfig { x: 3, y: 1 },
+        ],
     };
 
     GameConfig {

@@ -134,9 +134,16 @@ impl event::EventHandler for MainState {
 
 impl From<WorldConfig> for World {
     fn from(config: WorldConfig) -> Self {
+        let mut world = Self::new();
+
         let player_ship_coords = (config.starting_player_ship.x, config.starting_player_ship.y);
 
-        let world = Self::new().with_player_ship_added_at(player_ship_coords);
+        world = world.with_player_ship_added_at(player_ship_coords);
+
+        for enemy_config in config.starting_enemy_ships.iter() {
+            let coords = (enemy_config.x, enemy_config.y);
+            world = world.with_enemy_ship_added_at(coords);
+        }
 
         world
     }

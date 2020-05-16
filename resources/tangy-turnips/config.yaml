@@ -1,5 +1,8 @@
 ---
 world:
   starting_player_ship:
-    x: 3
+    x: 2
     y: 5
+  starting_enemy_ships:
+    - x: 3
+      y: 1

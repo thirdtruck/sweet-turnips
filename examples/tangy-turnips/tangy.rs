@@ -8,7 +8,7 @@ use rand::{
 
 use slotmap::{new_key_type, SecondaryMap, SlotMap};
 
-use entities::{GameEntity, PlayerShip};
+use entities::{GameEntity, EnemyShip, PlayerShip};
 use events::{WorldEvent, WE};
 
 pub const GRID_WIDTH: u8 = 8;
@@ -46,6 +46,7 @@ pub struct World {
     pub coords: SecondaryMap<EntityKey, Coords>,
     pub ticks: Ticks,
     pub player_ships: SecondaryMap<EntityKey, PlayerShip>,
+    pub enemy_ships: SecondaryMap<EntityKey, EnemyShip>,
 }
 
 impl World {
@@ -56,6 +57,7 @@ impl World {
             events: vec![],
             ticks: 0,
             player_ships: SecondaryMap::new(),
+            enemy_ships: SecondaryMap::new(),
         }
     }
 
@@ -88,6 +90,19 @@ impl World {
         let ship = PlayerShip { key };
 
         world.player_ships.insert(key, ship);
+        world.coords.insert(key, coords);
+
+        world
+    }
+
+    pub fn with_enemy_ship_added_at(self, coords: Coords) -> Self {
+        let mut world = self.clone();
+
+        let key = world.entities.insert(GameEntity);
+
+        let ship = EnemyShip { key };
+
+        world.enemy_ships.insert(key, ship);
         world.coords.insert(key, coords);
 
         world
