@@ -69,7 +69,9 @@ impl World {
             ..world
         };
 
-        world.with_events_processed()
+        world
+            .with_event(WE::EnemyShipsMoved)
+            .with_events_processed()
     }
 
     pub fn with_events_processed(&self) -> Self {
@@ -154,6 +156,39 @@ impl World {
         world
     }
 
+    fn with_enemy_ship_moved(&self, enemy_key: EntityKey, dir: Direction) -> Self {
+        let mut world = self.clone();
+
+        let (mut x, mut y) = world.coords[enemy_key];
+
+        match dir {
+            Direction::Up => {
+                if y > 0 {
+                    y -= 1
+                }
+            }
+            Direction::Down => {
+                if y < GRID_HEIGHT - 1 {
+                    y += 1
+                }
+            }
+            Direction::Left => {
+                if x > 1 {
+                    x -= 1
+                }
+            }
+            Direction::Right => {
+                if x < GRID_WIDTH - 2 {
+                    x += 1
+                }
+            }
+        };
+
+        world.coords[enemy_key] = (x, y);
+
+        world
+    }
+
     pub fn with_player_ship_move_requested(&self, dir: Direction) -> Self {
         self.clone().with_event(WE::PlayerShipMoved(dir))
     }
@@ -166,6 +201,15 @@ impl World {
 
             if let Some(event) = world.events.pop() {
                 match event {
+                    WE::EnemyShipsMoved => {
+                        for key in world.enemy_ships.keys() {
+                            world
+                                .events
+                                .push(WE::EnemyShipMoved(key, Direction::Down));
+                        }
+                        world
+                    },
+                    WE::EnemyShipMoved(key, dir) => world.with_enemy_ship_moved(key, dir),
                     WE::PlayerShipMoved(dir) => world.with_player_ship_moved(dir),
                 }
             } else {
