@@ -1,10 +1,10 @@
-use crate::tangy::{Direction, EntityKey};
+use crate::tangy::{Direction, EnemyShipKey};
 
 #[derive(Copy, Clone, Debug)]
 pub enum WorldEvent {
     PlayerShipMoved(Direction),
     EnemyShipsMoved,
-    EnemyShipMoved(EntityKey, Direction),
+    EnemyShipMoved(EnemyShipKey, Direction),
 }
 
 pub type WE = WorldEvent;

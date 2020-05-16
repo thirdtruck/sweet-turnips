@@ -14,7 +14,13 @@ use events::{WorldEvent, WE};
 pub const GRID_WIDTH: u8 = 8;
 pub const GRID_HEIGHT: u8 = 8;
 
-new_key_type! { pub struct EntityKey; }
+new_key_type! {
+    pub struct EntityKey;
+
+    pub struct PlayerShipKey;
+
+    pub struct EnemyShipKey;
+}
 
 pub type Ticks = usize;
 
@@ -45,8 +51,8 @@ pub struct World {
     entities: SlotMap<EntityKey, GameEntity>,
     pub coords: SecondaryMap<EntityKey, Coords>,
     pub ticks: Ticks,
-    pub player_ships: SecondaryMap<EntityKey, PlayerShip>,
-    pub enemy_ships: SecondaryMap<EntityKey, EnemyShip>,
+    pub player_ships: SlotMap<PlayerShipKey, PlayerShip>,
+    pub enemy_ships: SlotMap<EnemyShipKey, EnemyShip>,
 }
 
 impl World {
@@ -56,8 +62,8 @@ impl World {
             coords: SecondaryMap::new(),
             events: vec![],
             ticks: 0,
-            player_ships: SecondaryMap::new(),
-            enemy_ships: SecondaryMap::new(),
+            player_ships: SlotMap::with_key(),
+            enemy_ships: SlotMap::with_key(),
         }
     }
 
@@ -91,7 +97,7 @@ impl World {
 
         let ship = PlayerShip { key };
 
-        world.player_ships.insert(key, ship);
+        world.player_ships.insert(ship);
         world.coords.insert(key, coords);
 
         world
@@ -104,7 +110,7 @@ impl World {
 
         let ship = EnemyShip { key };
 
-        world.enemy_ships.insert(key, ship);
+        world.enemy_ships.insert(ship);
         world.coords.insert(key, coords);
 
         world
@@ -156,10 +162,12 @@ impl World {
         world
     }
 
-    fn with_enemy_ship_moved(&self, enemy_key: EntityKey, dir: Direction) -> Self {
+    fn with_enemy_ship_moved(&self, key: EnemyShipKey, dir: Direction) -> Self {
         let mut world = self.clone();
 
-        let (mut x, mut y) = world.coords[enemy_key];
+        let ship = world.enemy_ships[key];
+
+        let (mut x, mut y) = world.coords[ship.key];
 
         match dir {
             Direction::Up => {
@@ -184,7 +192,7 @@ impl World {
             }
         };
 
-        world.coords[enemy_key] = (x, y);
+        world.coords[ship.key] = (x, y);
 
         world
     }
