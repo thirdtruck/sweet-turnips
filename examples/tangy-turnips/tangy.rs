@@ -155,39 +155,42 @@ impl World {
     fn with_player_ship_moved(&self, dir: Direction) -> Self {
         let mut world = self.clone();
 
-        // We assume there's one and only one player ship for convenience
-        let player_ship = world
+        let keys_and_coords: Vec<(EntityKey, Coords)> = world
             .player_ships
             .values()
-            .nth(0)
-            .expect("Found no player ship");
+            .map(|ps| (ps.key, world.coords[ps.key]))
+            .collect();
 
-        let (mut x, mut y) = world.coords[player_ship.key];
+        for key_and_coords in keys_and_coords {
+            let (key, coords) = (key_and_coords.0, key_and_coords.1);
 
-        match dir {
-            Direction::Up => {
-                if y > 0 {
-                    y -= 1
-                }
-            }
-            Direction::Down => {
-                if y < GRID_HEIGHT - 1 {
-                    y += 1
-                }
-            }
-            Direction::Left => {
-                if x > 1 {
-                    x -= 1
-                }
-            }
-            Direction::Right => {
-                if x < GRID_WIDTH - 2 {
-                    x += 1
-                }
-            }
-        };
+            let (mut x, mut y) = coords;
 
-        world.coords[player_ship.key] = (x, y);
+            match dir {
+                Direction::Up => {
+                    if y > 0 {
+                        y -= 1
+                    }
+                }
+                Direction::Down => {
+                    if y < GRID_HEIGHT - 1 {
+                        y += 1
+                    }
+                }
+                Direction::Left => {
+                    if x > 1 {
+                        x -= 1
+                    }
+                }
+                Direction::Right => {
+                    if x < GRID_WIDTH - 2 {
+                        x += 1
+                    }
+                }
+            };
+
+            world.coords[key] = (x, y);
+        }
 
         world
     }
