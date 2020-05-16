@@ -81,3 +81,7 @@ It worked! Now you can steer the ship and even control the flight speed (well, t
 Time for a little refactoring! Let's extract that MIDI code out into `sweet-turnips`.
 
 And that was pretty straightforward! Rust and type-checking for the win.
+
+Added an enemy ship and made it move! Yay!
+
+Now let's refactor a bit. I've been bitten before by neglecting to assign an entity to all secondary maps it would need so I want to move that initialization into the initializer function for each entity struct.
