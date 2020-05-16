@@ -79,3 +79,5 @@ It worked! Now you can steer the ship and even control the flight speed (well, t
 # 16May2020
 
 Time for a little refactoring! Let's extract that MIDI code out into `sweet-turnips`.
+
+And that was pretty straightforward! Rust and type-checking for the win.
