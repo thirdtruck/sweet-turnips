@@ -104,7 +104,11 @@ impl World {
         let mut world = self.clone();
 
         // We assume there's one and only one player ship for convenience
-        let player_ship = world.player_ships.values().nth(0).expect("Found no player ship");
+        let player_ship = world
+            .player_ships
+            .values()
+            .nth(0)
+            .expect("Found no player ship");
         let (mut x, mut y) = world.coords[player_ship.key];
 
         match dir {
@@ -142,7 +146,7 @@ impl World {
     fn with_latest_event_processed(self) -> Self {
         if self.events.len() == 0 {
             self
-        } else  {
+        } else {
             let mut world = self.clone();
 
             if let Some(event) = world.events.pop() {

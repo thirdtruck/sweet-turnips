@@ -1,17 +1,17 @@
-mod tangy;
 mod config;
 mod render;
+mod tangy;
 
 use tangy::{Direction, Ticks, World, GRID_HEIGHT, GRID_WIDTH};
 
 use config::{GameConfig, WorldConfig};
 
 use sweet_turnips;
-use sweet_turnips::{Context, GameResult};
 use sweet_turnips::event;
 use sweet_turnips::event::{KeyCode, KeyMods};
-use sweet_turnips::sprites::{Sprites};
 use sweet_turnips::midi::{connect_to_midi, MidiReceiver};
+use sweet_turnips::sprites::Sprites;
+use sweet_turnips::{Context, GameResult};
 
 use std::convert::From;
 use std::fs;
@@ -32,7 +32,11 @@ struct MainState {
 }
 
 impl MainState {
-    fn new(ctx: &mut Context, game_config: GameConfig, rx: Option<MidiReceiver>) -> GameResult<MainState> {
+    fn new(
+        ctx: &mut Context,
+        game_config: GameConfig,
+        rx: Option<MidiReceiver>,
+    ) -> GameResult<MainState> {
         let sprites = Sprites::new(ctx)?;
 
         let ticks: Ticks = 0;
@@ -64,11 +68,13 @@ impl event::EventHandler for MainState {
             while let Ok(key_value) = receiver.try_recv() {
                 let (key, value) = key_value;
 
-                if key == 43 && value == 127 { // rewind
+                if key == 43 && value == 127 {
+                    // rewind
                     dir = Some(Direction::Left);
                 }
 
-                if key == 44 && value == 127 { // fast forward
+                if key == 44 && value == 127 {
+                    // fast forward
                     dir = Some(Direction::Right);
                 }
 
@@ -128,8 +134,7 @@ impl event::EventHandler for MainState {
 
 impl From<WorldConfig> for World {
     fn from(config: WorldConfig) -> Self {
-        let player_ship_coords =
-            (config.starting_player_ship.x, config.starting_player_ship.y);
+        let player_ship_coords = (config.starting_player_ship.x, config.starting_player_ship.y);
 
         let world = Self::new().with_player_ship_added_at(player_ship_coords);
 

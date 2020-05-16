@@ -366,7 +366,6 @@ impl World {
         self.coords.insert(ck, coords);
     }
 
-
     pub fn add_villager_at(&mut self, x: u8, y: u8) {
         let entity = GameEntity;
         let key = self.entities.insert(entity);

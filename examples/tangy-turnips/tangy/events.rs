@@ -1,4 +1,4 @@
-use crate::tangy::{Direction};
+use crate::tangy::Direction;
 
 #[derive(Copy, Clone, Debug)]
 pub enum WorldEvent {

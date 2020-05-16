@@ -1,8 +1,8 @@
 use ggez;
 use ggez::graphics;
 use ggez::graphics::DrawParam;
-use ggez::{Context, GameResult};
 use ggez::nalgebra as na;
+use ggez::{Context, GameResult};
 
 use ggez::graphics::spritebatch::SpriteBatch;
 
@@ -188,7 +188,6 @@ impl Sprites {
 
         Ok(())
     }
-
 
     fn render_sprite_at(&mut self, sprite_type: SpriteType, x: u8, y: u8) {
         let gp = GridParam::new().at(x, y);

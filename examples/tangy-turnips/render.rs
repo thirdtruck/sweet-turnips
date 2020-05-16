@@ -1,11 +1,9 @@
 use crate::tangy::{World, GRID_HEIGHT, GRID_WIDTH};
-use sweet_turnips::sprites::{SpriteGrid};
+use sweet_turnips::sprites::SpriteGrid;
 
 const MAX_X: u8 = GRID_WIDTH - 1;
 
-pub fn sprite_grid_from_world(
-    world: &World,
-) -> SpriteGrid {
+pub fn sprite_grid_from_world(world: &World) -> SpriteGrid {
     let mut sprite_grid = SpriteGrid::new();
 
     let y_transit = (world.ticks % GRID_HEIGHT as usize) as u8;
