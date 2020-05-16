@@ -8,7 +8,7 @@ use rand::{
 
 use slotmap::{new_key_type, SecondaryMap, SlotMap};
 
-use entities::{GameEntity, EnemyShip, PlayerShip};
+use entities::{EnemyShip, GameEntity, PlayerShip};
 use events::{WorldEvent, WE};
 
 pub const GRID_WIDTH: u8 = 8;
@@ -263,12 +263,10 @@ impl World {
                 match event {
                     WE::EnemyShipsMoved => {
                         for key in world.enemy_ships.keys() {
-                            world
-                                .events
-                                .push(WE::EnemyShipMoved(key, Direction::Down));
+                            world.events.push(WE::EnemyShipMoved(key, Direction::Down));
                         }
                         world
-                    },
+                    }
                     WE::PlayerShipDied(coords) => world.with_player_ship_death_at(coords),
                     WE::EnemyShipMoved(key, dir) => world.with_enemy_ship_moved(key, dir),
                     WE::PlayerShipMoved(dir) => world.with_player_ship_moved(dir),
