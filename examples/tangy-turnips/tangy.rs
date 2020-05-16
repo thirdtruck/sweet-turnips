@@ -77,7 +77,36 @@ impl World {
 
         world
             .with_event(WE::EnemyShipsMoved)
+            .with_any_collisions()
             .with_events_processed()
+    }
+
+    fn with_any_collisions(&self) -> Self {
+        let mut world = self.clone();
+
+        let all_player_ship_coords: Vec<Coords> = world
+            .player_ships
+            .values()
+            .map(|ps| world.coords[ps.key])
+            .collect();
+
+        for player_ship_coords in all_player_ship_coords {
+            let mut death_coords: Option<Coords> = None;
+
+            for enemy in world.enemy_ships.values() {
+                let enemy_coords = world.coords[enemy.key];
+
+                if player_ship_coords == enemy_coords {
+                    death_coords = Some(enemy_coords);
+                }
+            }
+
+            if let Some(coords) = death_coords {
+                world = world.with_event(WE::PlayerShipDied(coords));
+            }
+        }
+
+        world
     }
 
     pub fn with_events_processed(&self) -> Self {
@@ -132,6 +161,7 @@ impl World {
             .values()
             .nth(0)
             .expect("Found no player ship");
+
         let (mut x, mut y) = world.coords[player_ship.key];
 
         match dir {
@@ -197,6 +227,25 @@ impl World {
         world
     }
 
+    fn with_player_ship_death_at(&self, _coords: Coords) -> Self {
+        let mut world = self.clone();
+
+        let ship_keys: Vec<PlayerShipKey> = world.player_ships.keys().collect();
+
+        for key in world.player_ships.keys() {
+            let ship = world.player_ships[key];
+
+            world.entities.remove(ship.key);
+            world.coords.remove(ship.key);
+        }
+
+        for key in ship_keys.iter() {
+            world.player_ships.remove(*key);
+        }
+
+        world
+    }
+
     pub fn with_player_ship_move_requested(&self, dir: Direction) -> Self {
         self.clone().with_event(WE::PlayerShipMoved(dir))
     }
@@ -217,6 +266,7 @@ impl World {
                         }
                         world
                     },
+                    WE::PlayerShipDied(coords) => world.with_player_ship_death_at(coords),
                     WE::EnemyShipMoved(key, dir) => world.with_enemy_ship_moved(key, dir),
                     WE::PlayerShipMoved(dir) => world.with_player_ship_moved(dir),
                 }

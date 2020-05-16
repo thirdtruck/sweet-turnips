@@ -85,3 +85,5 @@ And that was pretty straightforward! Rust and type-checking for the win.
 Added an enemy ship and made it move! Yay!
 
 Now let's refactor a bit. I've been bitten before by neglecting to assign an entity to all secondary maps it would need so I want to move that initialization into the initializer function for each entity struct... Actually, I'll take that back. I don't like the idea of the entities knowing too much about how the `World` treats them. Gut instinct.
+
+Alright, time to make the enemy ships actually dangerous! Well, that took a bit more trouble than I expected but now it works! (Next: Fix the code where it assumes there's only one player ship since there can now be zero ships.)
