@@ -11,8 +11,8 @@ use sweet_turnips::{Context, GameResult};
 use sweet_turnips::event;
 use sweet_turnips::event::{KeyCode, KeyMods};
 use sweet_turnips::sprites::{Sprites};
-
-use midir::{MidiInput, Ignore};
+use sweet_turnips::midi;
+use sweet_turnips::midi::{MidiInput};
 
 use std::convert::From;
 use std::fs;
@@ -147,7 +147,7 @@ pub fn main() -> GameResult {
 
     thread::spawn(move || {
         let mut midi_in = MidiInput::new("midir reading input").expect("Unable to read MIDI inputs");
-        midi_in.ignore(Ignore::None);
+        midi_in.ignore(midi::Ignore::None);
 
         let in_ports = midi_in.ports();
         let in_port = match in_ports.len() {

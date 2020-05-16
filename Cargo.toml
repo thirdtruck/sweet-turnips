@@ -14,7 +14,8 @@ rand = "0.7.3"
 
 slotmap = "0.4.0"
 
+midir = "0.6.0"
+
 ggez = "0.5.1"
 
 [dev-dependencies]
-midir = "0.6.0"
