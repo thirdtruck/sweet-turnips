@@ -75,3 +75,7 @@ Time to make `bitter-turnips` an example and `sweet-turnips` the main module! We
 Time to play around with my brand new nanoKONTROL2 MIDI controller! Let's see how readily I can use it as example input.
 
 It worked! Now you can steer the ship and even control the flight speed (well, the world tick speed) via the MIDI controller! I'm mad (elated) with power!
+
+# 16May2020
+
+Time for a little refactoring! Let's extract that MIDI code out into `sweet-turnips`.
