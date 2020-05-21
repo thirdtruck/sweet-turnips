@@ -273,12 +273,12 @@ impl World {
         if self.events.len() == 0 {
             self
         } else {
-            let mut world = self.clone();
+            let mut events = self.events.clone();
 
-            if let Some(event) = world.events.pop() {
-                world.with_event_processed(event)
+            if let Some(event) = events.pop() {
+                Self { events, ..self }.with_event_processed(event)
             } else {
-                world
+                self
             }
         }
     }
