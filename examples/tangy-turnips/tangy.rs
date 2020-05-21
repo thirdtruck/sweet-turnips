@@ -276,21 +276,26 @@ impl World {
             let mut world = self.clone();
 
             if let Some(event) = world.events.pop() {
-                match event {
-                    WE::EnemyShipsMoved => {
-                        for key in world.enemy_ships.keys() {
-                            world.events.push(WE::EnemyShipMoved(key, Direction::Down));
-                        }
-                        world
-                    }
-                    WE::EnemyShipRemoved(key) => world.with_enemy_ship_removed(key),
-                    WE::PlayerShipDied(coords) => world.with_player_ship_death_at(coords),
-                    WE::EnemyShipMoved(key, dir) => world.with_enemy_ship_moved(key, dir),
-                    WE::PlayerShipMoved(dir) => world.with_player_ship_moved(dir),
-                }
+                world.with_event_processed(event)
             } else {
                 world
             }
+        }
+    }
+
+    fn with_event_processed(self, event: WorldEvent) -> Self {
+        match event {
+            WE::EnemyShipsMoved => {
+                let mut events = self.events.clone();
+                for key in self.enemy_ships.keys() {
+                    events.push(WE::EnemyShipMoved(key, Direction::Down));
+                }
+                Self { events, ..self }
+            }
+            WE::EnemyShipRemoved(key) => self.with_enemy_ship_removed(key),
+            WE::PlayerShipDied(coords) => self.with_player_ship_death_at(coords),
+            WE::EnemyShipMoved(key, dir) => self.with_enemy_ship_moved(key, dir),
+            WE::PlayerShipMoved(dir) => self.with_player_ship_moved(dir),
         }
     }
 }
