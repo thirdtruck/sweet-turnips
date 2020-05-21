@@ -87,3 +87,9 @@ Added an enemy ship and made it move! Yay!
 Now let's refactor a bit. I've been bitten before by neglecting to assign an entity to all secondary maps it would need so I want to move that initialization into the initializer function for each entity struct... Actually, I'll take that back. I don't like the idea of the entities knowing too much about how the `World` treats them. Gut instinct.
 
 Alright, time to make the enemy ships actually dangerous! Well, that took a bit more trouble than I expected but now it works! (Next: Fix the code where it assumes there's only one player ship since there can now be zero ships. Update: That wasn't too hard to fix at all!)
+
+# 20May2020
+
+Felt like squeezing in a little dev time before bed.
+
+Ran into a curious error while adding the "enemies disappear off the bottom of the screen" functionality. I hit a state where the game tried to update the coordinates of the enemy after all of the enemy's ECS mappings had been cleared out. I fixed it but it required more knowledge of the system than I liked. Perhaps I need to add certian rules to enforce this, like removing more mutability and enforcing a more functional style.

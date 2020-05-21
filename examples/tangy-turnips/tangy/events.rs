@@ -6,6 +6,7 @@ pub enum WorldEvent {
     PlayerShipDied(Coords),
     EnemyShipsMoved,
     EnemyShipMoved(EnemyShipKey, Direction),
+    EnemyShipRemoved(EnemyShipKey),
 }
 
 pub type WE = WorldEvent;

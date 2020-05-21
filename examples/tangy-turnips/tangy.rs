@@ -145,6 +145,19 @@ impl World {
         world
     }
 
+    pub fn with_enemy_ship_removed(self, ship_key: EnemyShipKey) -> Self {
+        let mut world = self.clone();
+
+        let ship = world.enemy_ships[ship_key];
+
+        world.entities.remove(ship.key);
+        world.coords.remove(ship.key);
+
+        world.enemy_ships.remove(ship_key);
+
+        world
+    }
+
     pub fn with_event(self, evt: WorldEvent) -> Self {
         let mut events = self.events.clone();
         events.push(evt);
@@ -211,6 +224,9 @@ impl World {
             Direction::Down => {
                 if y < GRID_HEIGHT - 1 {
                     y += 1
+                } else {
+                    // They've scrolled off the screen
+                    world = world.with_event(WE::EnemyShipRemoved(key));
                 }
             }
             Direction::Left => {
@@ -267,6 +283,7 @@ impl World {
                         }
                         world
                     }
+                    WE::EnemyShipRemoved(key) => world.with_enemy_ship_removed(key),
                     WE::PlayerShipDied(coords) => world.with_player_ship_death_at(coords),
                     WE::EnemyShipMoved(key, dir) => world.with_enemy_ship_moved(key, dir),
                     WE::PlayerShipMoved(dir) => world.with_player_ship_moved(dir),
