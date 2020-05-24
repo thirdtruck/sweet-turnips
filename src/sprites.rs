@@ -222,6 +222,10 @@ pub struct SpriteGrid {
     sprite_types: [SpriteType; SPRITE_GRID_LENGTH],
 }
 
+fn index(x: u8, y: u8) -> usize {
+    (y * GRID_WIDTH + x) as usize
+}
+
 impl SpriteGrid {
     pub fn new() -> Self {
         SpriteGrid {
@@ -230,43 +234,39 @@ impl SpriteGrid {
     }
 
     pub fn ship_at(&mut self, x: u8, y: u8) {
-        let index = (y * GRID_WIDTH + x) as usize;
-        self.sprite_types[index] = SpriteType::Ship;
+        self.sprite_types[index(x, y)] = SpriteType::Ship;
     }
 
     pub fn big_circle_at(&mut self, x: u8, y: u8) {
-        let index = (y * GRID_WIDTH + x) as usize;
-        self.sprite_types[index] = SpriteType::BigCircle;
+        self.sprite_types[index(x, y)] = SpriteType::BigCircle;
     }
 
     pub fn small_circle_at(&mut self, x: u8, y: u8) {
-        let index = (y * GRID_WIDTH + x) as usize;
-        self.sprite_types[index] = SpriteType::SmallCircle;
+        self.sprite_types[index(x, y)] = SpriteType::SmallCircle;
     }
 
     pub fn lizard_at(&mut self, x: u8, y: u8, color: Color) {
-        let index = (y * GRID_WIDTH + x) as usize;
-        self.sprite_types[index] = SpriteType::Lizard(color);
+        self.sprite_types[index(x, y)] = SpriteType::Lizard(color);
     }
 
     pub fn turnip_at(&mut self, x: u8, y: u8) {
-        let index = (y * GRID_WIDTH + x) as usize;
-        self.sprite_types[index] = SpriteType::Turnip;
+        self.sprite_types[index(x, y)] = SpriteType::Turnip;
     }
 
     pub fn skull_at(&mut self, x: u8, y: u8) {
-        let index = (y * GRID_WIDTH + x) as usize;
-        self.sprite_types[index] = SpriteType::Skull;
+        self.sprite_types[index(x, y)] = SpriteType::Skull;
     }
 
     pub fn cursor_at(&mut self, x: u8, y: u8) {
-        let index = (y * GRID_WIDTH + x) as usize;
-        self.sprite_types[index] = SpriteType::Cursor;
+        self.sprite_types[index(x, y)] = SpriteType::Cursor;
+    }
+
+    pub fn sprite_at(&mut self, x: u8, y: u8, sprite_type: SpriteType) {
+        self.sprite_types[index(x, y)] = sprite_type;
     }
 
     pub fn sprite_type_at(&self, x: u8, y: u8) -> SpriteType {
-        let index = (y * GRID_WIDTH + x) as usize;
-        self.sprite_types[index]
+        self.sprite_types[index(x, y)]
     }
 }
 

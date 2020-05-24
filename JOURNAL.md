@@ -93,3 +93,9 @@ Alright, time to make the enemy ships actually dangerous! Well, that took a bit 
 Felt like squeezing in a little dev time before bed.
 
 Ran into a curious error while adding the "enemies disappear off the bottom of the screen" functionality. I hit a state where the game tried to update the coordinates of the enemy after all of the enemy's ECS mappings had been cleared out. I fixed it but it required more knowledge of the system than I liked. Perhaps I need to add certian rules to enforce this, like removing more mutability and enforcing a more functional style.
+
+# 24May2020
+
+Time to dip my toe into Rust macros! Been meaning to try that to make sprite helper method management less painful.
+
+Rethinking this macro idea. I can probably get more mileage out of using more general methods.
