@@ -3,6 +3,7 @@ pub mod sprites;
 
 pub use ggez::conf;
 pub use ggez::event;
+pub use ggez::event::EventsLoop;
 pub use ggez::{Context, ContextBuilder, GameResult};
 
 use ggez::conf::WindowMode;
@@ -12,18 +13,23 @@ use serde_yaml;
 
 use std::fs;
 use std::fs::File;
+use std::path;
 use std::path::PathBuf;
 
 use sprites::{SPRITE_SCALE, SPRITE_SIZE};
 
+// TODO:
+// * Add an UnfinalizedAppConfig struct and have AppConfig::new return that
+// * Move config methods to UnfinalizedAppConfig
+// * Add a finalize() method that returns a vetted AppConfig
 pub struct AppConfig {
     game_name: String,
     author_name: String,
-    grid_dimensions: (usize, usize),
+    grid_dimensions: (u8, u8),
 }
 
 impl AppConfig {
-    pub fn new(grid_dimensions: (usize, usize)) -> Self {
+    pub fn new(grid_dimensions: (u8, u8)) -> Self {
         Self {
             game_name: "A Sweet Turnips Game".to_string(),
             author_name: "Your Name Goes Here".to_string(),
@@ -49,12 +55,36 @@ impl AppConfig {
         }
     }
 
-    pub fn grid_dimensions(self, grid_dimensions: (usize, usize)) -> Self {
+    pub fn grid_dimensions(self, grid_dimensions: (u8, u8)) -> Self {
         Self {
             grid_dimensions,
             ..self
         }
     }
+}
+
+pub fn build_context_and_event_loop(app_config: &AppConfig) -> GameResult<(Context, EventsLoop)> {
+    let (width, height) = app_config.grid_dimensions;
+
+    let cb = ContextBuilder::new(&app_config.game_name, &app_config.author_name)
+        .add_resource_path(resource_dir())
+        .window_mode(default_window_mode(width, height));
+
+    Ok(cb.build()?)
+}
+
+
+pub fn prep_config_path(app_config: &AppConfig) -> GameResult<PathBuf> {
+    let config_dir = resource_dir().join(&app_config.game_name);
+    let config_path = config_dir.join("config.yaml");
+
+    fs::create_dir_all(config_dir)?;
+
+    Ok(config_path)
+}
+
+fn resource_dir() -> PathBuf {
+    path::PathBuf::from("./resources")
 }
 
 pub fn default_window_mode(grid_width: u8, grid_height: u8) -> WindowMode {

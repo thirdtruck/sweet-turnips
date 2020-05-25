@@ -7,6 +7,7 @@ use tangy::{Direction, Ticks, World, GRID_HEIGHT, GRID_WIDTH};
 use config::{GameConfig, WorldConfig};
 
 use sweet_turnips;
+use sweet_turnips::AppConfig;
 use sweet_turnips::event;
 use sweet_turnips::event::{KeyCode, KeyMods};
 use sweet_turnips::midi::{connect_to_midi, MidiReceiver};
@@ -14,11 +15,10 @@ use sweet_turnips::sprites::SpriteContext;
 use sweet_turnips::{Context, GameResult};
 
 use std::convert::From;
-use std::fs;
-use std::path;
 use std::sync::mpsc;
 
 const GAME_NAME: &str = "tangy-turnips";
+const AUTHOR_NAME: &str = "JC Holder";
 
 struct MainState {
     world: World,
@@ -145,23 +145,19 @@ impl From<WorldConfig> for World {
 }
 
 pub fn main() -> GameResult {
+    let app_config = AppConfig::new((GRID_WIDTH, GRID_HEIGHT))
+        .game_name(GAME_NAME)
+        .author_name(AUTHOR_NAME);
+
+    let config_path = sweet_turnips::prep_config_path(&app_config)?;
+
+    let game_config = config::setup_game_config(config_path);
+
+    let (ctx, event_loop) = &mut sweet_turnips::build_context_and_event_loop(&app_config)?;
+
     let (tx, rx) = mpsc::channel();
 
     connect_to_midi(tx);
-
-    let resource_dir = path::PathBuf::from("./resources");
-
-    let config_dir = resource_dir.join(GAME_NAME);
-    let config_path = config_dir.join("config.yaml");
-
-    fs::create_dir_all(config_dir)?;
-    let game_config = config::setup_game_config(config_path);
-
-    let cb = sweet_turnips::ContextBuilder::new(GAME_NAME, "JC Holder")
-        .add_resource_path(resource_dir)
-        .window_mode(sweet_turnips::default_window_mode(GRID_WIDTH, GRID_HEIGHT));
-
-    let (ctx, event_loop) = &mut cb.build()?;
 
     let state = &mut MainState::new(ctx, game_config, Some(rx))?;
 

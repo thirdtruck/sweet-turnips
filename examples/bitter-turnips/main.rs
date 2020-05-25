@@ -7,14 +7,13 @@ use bitter::{Coords, Direction, EntityKey, Ticks, World, GRID_HEIGHT, GRID_WIDTH
 use config::{GameConfig, WorldConfig};
 
 use sweet_turnips;
+use sweet_turnips::AppConfig;
 use sweet_turnips::event;
 use sweet_turnips::event::{KeyCode, KeyMods};
 use sweet_turnips::sprites::SpriteContext;
 use sweet_turnips::{Context, GameResult};
 
 use std::convert::From;
-use std::fs;
-use std::path;
 
 const GAME_NAME: &str = "bitter-turnips";
 const AUTHOR_NAME: &str = "JC Holder";
@@ -112,19 +111,15 @@ impl From<WorldConfig> for World {
 }
 
 pub fn main() -> GameResult {
-    let resource_dir = path::PathBuf::from("./resources");
+    let app_config = AppConfig::new((GRID_WIDTH, GRID_HEIGHT))
+        .game_name(GAME_NAME)
+        .author_name(AUTHOR_NAME);
 
-    let config_dir = resource_dir.join(GAME_NAME);
-    let config_path = config_dir.join("config.yaml");
+    let config_path = sweet_turnips::prep_config_path(&app_config)?;
 
-    fs::create_dir_all(config_dir)?;
     let game_config = config::setup_game_config(config_path);
 
-    let cb = sweet_turnips::ContextBuilder::new(GAME_NAME, AUTHOR_NAME)
-        .add_resource_path(resource_dir)
-        .window_mode(sweet_turnips::default_window_mode(GRID_WIDTH, GRID_HEIGHT));
-
-    let (ctx, event_loop) = &mut cb.build()?;
+    let (ctx, event_loop) = &mut sweet_turnips::build_context_and_event_loop(&app_config)?;
 
     let state = &mut MainState::new(ctx, game_config)?;
 
