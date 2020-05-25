@@ -80,6 +80,9 @@ impl World {
         };
 
         world
+            .with_event(WE::PlayerBulletsMoved)
+            .with_any_collisions()
+            .with_events_processed()
             .with_event(WE::EnemyShipsMoved)
             .with_any_collisions()
             .with_events_processed()
@@ -251,6 +254,44 @@ impl World {
         world
     }
 
+    fn with_player_bullet_moved(&self, key: PlayerBulletKey, dir: Direction) -> Self {
+        let mut world = self.clone();
+
+        let ship = world.player_bullets[key];
+
+        let (mut x, mut y) = world.coords[ship.key];
+
+        match dir {
+            Direction::Up => {
+                if y > 0 {
+                    y -= 1
+                } else {
+                    // They've scrolled off the screen
+                    world = world.with_event(WE::PlayerBulletRemoved(key));
+                }
+            }
+            Direction::Down => {
+                if y < GRID_HEIGHT - 1 {
+                    y += 1
+                }
+            }
+            Direction::Left => {
+                if x > 1 {
+                    x -= 1
+                }
+            }
+            Direction::Right => {
+                if x < GRID_WIDTH - 2 {
+                    x += 1
+                }
+            }
+        };
+
+        world.coords[ship.key] = (x, y);
+
+        world
+    }
+
     fn with_enemy_ship_moved(&self, key: EnemyShipKey, dir: Direction) -> Self {
         let mut world = self.clone();
 
@@ -368,11 +409,19 @@ impl World {
                 }
                 Self { events, ..self }
             }
+            WE::PlayerBulletsMoved => {
+                let mut events = self.events.clone();
+                for key in self.player_bullets.keys() {
+                    events.push(WE::PlayerBulletMoved(key, Direction::Up));
+                }
+                Self { events, ..self }
+            }
             WE::EnemyShipRemoved(key) => self.with_enemy_ship_removed(key),
             WE::PlayerShipDied(coords) => self.with_player_ship_death_at(coords),
             WE::EnemyShipMoved(key, dir) => self.with_enemy_ship_moved(key, dir),
             WE::PlayerShipMoved(dir) => self.with_player_ship_moved(dir),
             WE::PlayerBulletFired(coords) => self.with_player_bullet_fired_from(coords),
+            WE::PlayerBulletMoved(key, coords) => self.with_player_bullet_moved(key, coords),
             WE::PlayerBulletRemoved(key) => self.with_player_bullet_removed(key),
         }
     }

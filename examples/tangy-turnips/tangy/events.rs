@@ -6,6 +6,8 @@ pub enum WorldEvent {
     PlayerShipDied(Coords),
     PlayerBulletFired(Coords),
     PlayerBulletRemoved(PlayerBulletKey),
+    PlayerBulletMoved(PlayerBulletKey, Direction),
+    PlayerBulletsMoved,
     EnemyShipsMoved,
     EnemyShipMoved(EnemyShipKey, Direction),
     EnemyShipRemoved(EnemyShipKey),
