@@ -100,7 +100,7 @@ impl GridParam {
 
 #[derive(Copy, Clone, Debug, PartialEq)]
 #[allow(dead_code)]
-pub enum SpriteType {
+enum SpriteType {
     Curve,
     Line,
     Cross,
