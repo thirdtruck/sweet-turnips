@@ -16,6 +16,47 @@ use std::path::PathBuf;
 
 use sprites::{SPRITE_SCALE, SPRITE_SIZE};
 
+pub struct AppConfig {
+    game_name: String,
+    author_name: String,
+    grid_dimensions: (usize, usize),
+}
+
+impl AppConfig {
+    pub fn new(grid_dimensions: (usize, usize)) -> Self {
+        Self {
+            game_name: "A Sweet Turnips Game".to_string(),
+            author_name: "Your Name Goes Here".to_string(),
+            grid_dimensions,
+        }
+    }
+
+    pub fn game_name<S>(self, game_name: S) -> Self
+        where S: AsRef<str>
+    {
+        Self {
+            game_name: game_name.as_ref().to_string(),
+            ..self
+        }
+    }
+
+    pub fn author_name<S>(self, author_name: S) -> Self
+        where S: AsRef<str>
+    {
+        Self {
+            author_name: author_name.as_ref().to_string(),
+            ..self
+        }
+    }
+
+    pub fn grid_dimensions(self, grid_dimensions: (usize, usize)) -> Self {
+        Self {
+            grid_dimensions,
+            ..self
+        }
+    }
+}
+
 pub fn default_window_mode(grid_width: u8, grid_height: u8) -> WindowMode {
     conf::WindowMode::default().dimensions(
         grid_width as f32 * SPRITE_SIZE * SPRITE_SCALE,
