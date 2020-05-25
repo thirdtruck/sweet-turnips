@@ -24,7 +24,7 @@ pub struct Sprite {
 }
 
 impl Sprite {
-    pub fn new(sprite_type: SpriteType) -> Self {
+    fn new(sprite_type: SpriteType) -> Self {
         Self {
             sprite_type,
             grid_param: GridParam::new(),
