@@ -233,34 +233,6 @@ impl SpriteGrid {
         }
     }
 
-    pub fn ship_at(&mut self, x: u8, y: u8) {
-        self.sprite_types[index(x, y)] = SpriteType::Ship;
-    }
-
-    pub fn big_circle_at(&mut self, x: u8, y: u8) {
-        self.sprite_types[index(x, y)] = SpriteType::BigCircle;
-    }
-
-    pub fn small_circle_at(&mut self, x: u8, y: u8) {
-        self.sprite_types[index(x, y)] = SpriteType::SmallCircle;
-    }
-
-    pub fn lizard_at(&mut self, x: u8, y: u8, color: Color) {
-        self.sprite_types[index(x, y)] = SpriteType::Lizard(color);
-    }
-
-    pub fn turnip_at(&mut self, x: u8, y: u8) {
-        self.sprite_types[index(x, y)] = SpriteType::Turnip;
-    }
-
-    pub fn skull_at(&mut self, x: u8, y: u8) {
-        self.sprite_types[index(x, y)] = SpriteType::Skull;
-    }
-
-    pub fn cursor_at(&mut self, x: u8, y: u8) {
-        self.sprite_types[index(x, y)] = SpriteType::Cursor;
-    }
-
     pub fn sprite_at(&mut self, sprite_type: SpriteType, x: u8, y: u8) {
         self.sprite_types[index(x, y)] = sprite_type;
     }
