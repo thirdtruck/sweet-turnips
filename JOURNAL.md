@@ -105,3 +105,5 @@ Okay, refactoring towards general methods seems to have been the simpler approac
 That said, I still don't like how sprite modifiers are handled right now. Let's see if we can improve on that.
 
 Phew! That was a lot of refactoring but I like how handling feels now. More ergonomic.
+
+Phew again! Did more refactoring and I feel all the better for it. Good move! Tickles my craftsperson itch.
