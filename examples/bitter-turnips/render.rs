@@ -18,19 +18,19 @@ impl BitterSpriteGrid for SpriteGrid {
     }
 
     fn farm_at(&mut self, x: u8, y: u8) {
-        self.sprite_at(SpriteType::Turnip, x, y);
+        self.render_sprite_at(Sprite::new(SpriteType::Turnip), x, y);
     }
 
     fn villager_at(&mut self, color: Color, x: u8, y: u8) {
-        self.sprite_at(SpriteType::Lizard(color), x, y);
+        self.render_sprite_at(Sprite::new(SpriteType::Lizard(color)), x, y);
     }
 
     fn death_marker_at(&mut self, x: u8, y: u8) {
-        self.sprite_at(SpriteType::Skull, x, y);
+        self.render_sprite_at(Sprite::new(SpriteType::Skull), x, y);
     }
 
     fn cursor_at(&mut self, x: u8, y: u8) {
-        self.sprite_at(SpriteType::Cursor, x, y);
+        self.render_sprite_at(Sprite::new(SpriteType::Cursor), x, y);
     }
 }
 
