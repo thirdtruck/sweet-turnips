@@ -24,7 +24,8 @@ const RED: Color = Color {
     a: 1.0,
 };
 
-struct GridParam {
+#[derive(Copy, Clone, Debug)]
+pub struct GridParam {
     draw_param: DrawParam,
 }
 
@@ -46,7 +47,7 @@ impl GridParam {
         }
     }
 
-    fn color(&self, color: Color) -> Self {
+    pub fn color(&self, color: Color) -> Self {
         GridParam {
             draw_param: self.draw_param.color(color),
         }
@@ -189,12 +190,12 @@ impl Sprites {
         Ok(())
     }
 
-    fn render_sprite_at(&mut self, sprite_type: SpriteType, x: u8, y: u8) {
-        let gp = GridParam::new().at(x, y);
-
+    fn render_sprite_at(&mut self, sprite_type: SpriteType, gp: GridParam, x: u8, y: u8) {
         if sprite_type == SpriteType::Empty {
             return;
         }
+
+        let gp = gp.at(x, y);
 
         match sprite_type {
             SpriteType::Ship => self.ships.add(gp.draw_param),
@@ -212,7 +213,11 @@ impl Sprites {
         for x in 0..GRID_WIDTH {
             for y in 0..GRID_HEIGHT {
                 let sprite_type = sprite_grid.sprite_type_at(x, y);
-                self.render_sprite_at(sprite_type, x, y);
+                let grid_param = match sprite_grid.grid_param_at(x, y) {
+                    Some(gp) => gp,
+                    None => GridParam::new(),
+                };
+                self.render_sprite_at(sprite_type, grid_param, x, y);
             }
         }
     }
@@ -220,6 +225,7 @@ impl Sprites {
 
 pub struct SpriteGrid {
     sprite_types: [SpriteType; SPRITE_GRID_LENGTH],
+    grid_params: [Option<GridParam>; SPRITE_GRID_LENGTH],
 }
 
 fn index(x: u8, y: u8) -> usize {
@@ -230,6 +236,7 @@ impl SpriteGrid {
     pub fn new() -> Self {
         SpriteGrid {
             sprite_types: [SpriteType::Empty; SPRITE_GRID_LENGTH],
+            grid_params: [None; SPRITE_GRID_LENGTH],
         }
     }
 
@@ -237,8 +244,12 @@ impl SpriteGrid {
         self.sprite_types[index(x, y)] = sprite_type;
     }
 
-    pub fn sprite_type_at(&self, x: u8, y: u8) -> SpriteType {
+    fn sprite_type_at(&self, x: u8, y: u8) -> SpriteType {
         self.sprite_types[index(x, y)]
+    }
+
+    fn grid_param_at(&self, x: u8, y: u8) -> Option<GridParam> {
+        self.grid_params[index(x, y)]
     }
 }
 
