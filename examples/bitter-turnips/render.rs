@@ -8,6 +8,8 @@ const RED: Color = Color {
     a: 1.0,
 };
 
+// This trait exists solely to map more domain-specific
+// (i.e. game-specific) language onto SpriteGrid's commands
 trait BitterSpriteGrid {
     fn border_at(&mut self, x: u8, y: u8);
     fn farm_at(&mut self, x: u8, y: u8);

@@ -3,6 +3,8 @@ use sweet_turnips::sprites::{Sprite, SpriteGrid};
 
 const MAX_X: u8 = GRID_WIDTH - 1;
 
+// This trait exists solely to map more domain-specific
+// (i.e. game-specific) language onto SpriteGrid's commands
 trait TangySpriteGrid {
     fn player_ship_at(&mut self, x: u8, y: u8);
     fn enemy_ship_at(&mut self, x: u8, y: u8);
