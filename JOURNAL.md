@@ -103,3 +103,5 @@ Rethinking this macro idea. I can probably get more mileage out of using more ge
 Okay, refactoring towards general methods seems to have been the simpler approach. No need to use macros unless I actually need them. Might come up later if I end up craving for a sprite-defining DSL.
 
 That said, I still don't like how sprite modifiers are handled right now. Let's see if we can improve on that.
+
+Phew! That was a lot of refactoring but I like how handling feels now. More ergonomic.
