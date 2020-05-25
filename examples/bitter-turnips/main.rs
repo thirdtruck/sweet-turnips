@@ -83,12 +83,8 @@ impl event::EventHandler for MainState {
     }
 
     fn draw(&mut self, ctx: &mut Context) -> GameResult {
-        let mut sprite_grid =
+        let sprite_grid =
             render::sprite_grid_from_world(&self.world, self.selected_villager_key);
-
-        let coords = self.world.cursor_coords();
-
-        sprite_grid.cursor_at(coords.0 + 1, coords.1 + 1);
 
         self.sprites.render_sprite_grid(sprite_grid);
 
