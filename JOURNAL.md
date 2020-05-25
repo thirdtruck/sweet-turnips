@@ -107,3 +107,5 @@ That said, I still don't like how sprite modifiers are handled right now. Let's 
 Phew! That was a lot of refactoring but I like how handling feels now. More ergonomic.
 
 Phew again! Did more refactoring and I feel all the better for it. Good move! Tickles my craftsperson itch.
+
+Phew yet again! Stayed up rather late refactoring that config setup. That did advance my understanding of templating in Rust!
