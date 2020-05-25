@@ -30,7 +30,7 @@ pub struct GridParam {
 }
 
 impl GridParam {
-    fn new() -> Self {
+    pub fn new() -> Self {
         let draw_param = graphics::DrawParam::new();
 
         GridParam { draw_param }
@@ -242,6 +242,12 @@ impl SpriteGrid {
 
     pub fn sprite_at(&mut self, sprite_type: SpriteType, x: u8, y: u8) {
         self.sprite_types[index(x, y)] = sprite_type;
+        self.grid_params[index(x, y)] = None;
+    }
+
+    pub fn modified_sprite_at(&mut self, sprite_type: SpriteType, grid_param: Option<GridParam>, x: u8, y: u8) {
+        self.sprite_types[index(x, y)] = sprite_type;
+        self.grid_params[index(x, y)] = grid_param;
     }
 
     fn sprite_type_at(&self, x: u8, y: u8) -> SpriteType {

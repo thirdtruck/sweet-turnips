@@ -1,5 +1,5 @@
 use crate::bitter::{EntityKey, World};
-use sweet_turnips::sprites::{Color, SpriteGrid, SpriteType};
+use sweet_turnips::sprites::{Color, GridParam, SpriteGrid, SpriteType};
 
 trait BitterSpriteGrid {
     fn border_at(&mut self, x: u8, y: u8);
