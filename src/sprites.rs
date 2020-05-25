@@ -25,7 +25,30 @@ const RED: Color = Color {
 };
 
 #[derive(Copy, Clone, Debug)]
-pub struct GridParam {
+pub struct Sprite {
+    sprite_type: SpriteType,
+    grid_param: GridParam,
+}
+
+impl Sprite {
+    pub fn new(sprite_type: SpriteType) -> Self {
+        Self {
+            sprite_type,
+            grid_param: GridParam::new(),
+        }
+    }
+
+    pub fn colored(self, color: Color) -> Self {
+        Self {
+            grid_param: self.grid_param.color(color),
+            ..self
+        }
+    }
+}
+
+
+#[derive(Copy, Clone, Debug)]
+struct GridParam {
     draw_param: DrawParam,
 }
 
@@ -245,9 +268,9 @@ impl SpriteGrid {
         self.grid_params[index(x, y)] = None;
     }
 
-    pub fn modified_sprite_at(&mut self, sprite_type: SpriteType, grid_param: Option<GridParam>, x: u8, y: u8) {
-        self.sprite_types[index(x, y)] = sprite_type;
-        self.grid_params[index(x, y)] = grid_param;
+    pub fn render_sprite_at(&mut self, sprite: Sprite, x: u8, y: u8) {
+        self.sprite_types[index(x, y)] = sprite.sprite_type;
+        self.grid_params[index(x, y)] = Some(sprite.grid_param.at(x, y));
     }
 
     fn sprite_type_at(&self, x: u8, y: u8) -> SpriteType {
