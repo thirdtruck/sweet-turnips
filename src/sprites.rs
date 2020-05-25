@@ -17,6 +17,22 @@ const SPRITE_GRID_LENGTH: usize = (GRID_WIDTH * GRID_HEIGHT) as usize;
 const SPRITE_SCALE: f32 = 4.0;
 const SPRITE_SIZE: f32 = 8.0;
 
+/// A sprite that can be rendered to the sprite grid
+///
+/// Use helper functions like `turnip` to generate a specific sprite.
+///
+/// Use modifying methods like `colored` to generate modified versions of the sprite.
+///
+/// ## Examples
+///
+/// ```
+/// let purpleish = Color { r: 0.5, g: 0.1, b: 0.7, a: 1.0 };
+/// let sprite = Sprite::turnip().colored(purpleish);
+/// sprite_grid.render_sprite_at(sprite, x, y);
+/// ```
+///
+/// ## TODO
+/// + Add helper functions for the rest of the sprite types
 #[derive(Copy, Clone, Debug)]
 pub struct Sprite {
     sprite_type: SpriteType,
