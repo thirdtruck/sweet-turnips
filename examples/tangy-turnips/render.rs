@@ -1,5 +1,5 @@
 use crate::tangy::{World, GRID_HEIGHT, GRID_WIDTH};
-use sweet_turnips::sprites::{Sprite, SpriteGrid, SpriteType};
+use sweet_turnips::sprites::{Sprite, SpriteGrid};
 
 const MAX_X: u8 = GRID_WIDTH - 1;
 
@@ -12,19 +12,19 @@ trait TangySpriteGrid {
 
 impl TangySpriteGrid for SpriteGrid {
     fn player_ship_at(&mut self, x: u8, y: u8) {
-        self.render_sprite_at(Sprite::new(SpriteType::Ship), x, y);
+        self.render_sprite_at(Sprite::ship(), x, y);
     }
 
     fn enemy_ship_at(&mut self, x: u8, y: u8) {
-        self.render_sprite_at(Sprite::new(SpriteType::Turnip), x, y);
+        self.render_sprite_at(Sprite::turnip(), x, y);
     }
 
     fn big_gutter_at(&mut self, x: u8, y: u8) {
-        self.render_sprite_at(Sprite::new(SpriteType::BigCircle), x, y);
+        self.render_sprite_at(Sprite::big_circle(), x, y);
     }
 
     fn small_gutter_at(&mut self, x: u8, y: u8) {
-        self.render_sprite_at(Sprite::new(SpriteType::SmallCircle), x, y);
+        self.render_sprite_at(Sprite::small_circle(), x, y);
     }
 }
 

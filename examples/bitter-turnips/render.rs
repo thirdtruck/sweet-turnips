@@ -12,13 +12,13 @@ trait BitterSpriteGrid {
 impl BitterSpriteGrid for SpriteGrid {
     fn border_at(&mut self, x: u8, y: u8) {
         let blueish = Color { r: 0.4, g: 0.1, b: 0.7, a: 1.0 };
-        let sprite = Sprite::new(SpriteType::BigCircle).colored(blueish);
+        let sprite = Sprite::big_circle().colored(blueish);
 
         self.render_sprite_at(sprite, x, y);
     }
 
     fn farm_at(&mut self, x: u8, y: u8) {
-        self.render_sprite_at(Sprite::new(SpriteType::Turnip), x, y);
+        self.render_sprite_at(Sprite::turnip(), x, y);
     }
 
     fn villager_at(&mut self, color: Color, x: u8, y: u8) {
@@ -26,11 +26,11 @@ impl BitterSpriteGrid for SpriteGrid {
     }
 
     fn death_marker_at(&mut self, x: u8, y: u8) {
-        self.render_sprite_at(Sprite::new(SpriteType::Skull), x, y);
+        self.render_sprite_at(Sprite::skull(), x, y);
     }
 
     fn cursor_at(&mut self, x: u8, y: u8) {
-        self.render_sprite_at(Sprite::new(SpriteType::Cursor), x, y);
+        self.render_sprite_at(Sprite::cursor(), x, y);
     }
 }
 
