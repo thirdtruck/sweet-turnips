@@ -193,7 +193,7 @@ impl SpriteContext {
         Ok(sprite_context)
     }
 
-    pub fn draw_all_sprites(&mut self, ctx: &mut Context) -> GameResult {
+    fn draw_all_sprites(&mut self, ctx: &mut Context) -> GameResult {
         let origin_param = graphics::DrawParam::new()
             .dest(na::Point2::new(0.0, 0.0))
             .scale(na::Vector2::new(SPRITE_SCALE, SPRITE_SCALE));
@@ -268,7 +268,7 @@ impl SpriteContext {
         };
     }
 
-    pub fn render_sprite_grid(&mut self, sprite_grid: SpriteGrid) {
+    pub fn render_sprite_grid(&mut self, sprite_grid: SpriteGrid, ctx: &mut Context) -> GameResult {
         for x in 0..GRID_WIDTH {
             for y in 0..GRID_HEIGHT {
                 let sprite_type = sprite_grid.sprite_type_at(x, y);
@@ -279,6 +279,8 @@ impl SpriteContext {
                 self.render_sprite_at(sprite_type, grid_param, x, y);
             }
         }
+
+        self.draw_all_sprites(ctx)
     }
 }
 

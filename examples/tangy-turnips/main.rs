@@ -124,9 +124,7 @@ impl event::EventHandler for MainState {
     fn draw(&mut self, ctx: &mut Context) -> GameResult {
         let sprite_grid = render::sprite_grid_from_world(&self.world);
 
-        self.sprite_context.render_sprite_grid(sprite_grid);
-
-        self.sprite_context.draw_all_sprites(ctx)?;
+        self.sprite_context.render_sprite_grid(sprite_grid, ctx)?;
 
         Ok(())
     }
