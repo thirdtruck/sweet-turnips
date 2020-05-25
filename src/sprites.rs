@@ -261,7 +261,7 @@ impl SpriteGrid {
         self.sprite_types[index(x, y)] = SpriteType::Cursor;
     }
 
-    pub fn sprite_at(&mut self, x: u8, y: u8, sprite_type: SpriteType) {
+    pub fn sprite_at(&mut self, sprite_type: SpriteType, x: u8, y: u8) {
         self.sprite_types[index(x, y)] = sprite_type;
     }
 
