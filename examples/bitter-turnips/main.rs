@@ -13,7 +13,10 @@ use sweet_turnips::sprites::SpriteContext;
 use sweet_turnips::{Context, GameResult};
 
 use std::convert::From;
+use std::fs;
 use std::path;
+
+const GAME_NAME: &str = "bitter-turnips";
 
 struct MainState {
     world: World,
@@ -110,11 +113,13 @@ impl From<WorldConfig> for World {
 pub fn main() -> GameResult {
     let resource_dir = path::PathBuf::from("./resources");
 
-    let config_path = resource_dir.join("config.yaml");
+    let config_dir = resource_dir.join(GAME_NAME);
+    let config_path = config_dir.join("config.yaml");
 
+    fs::create_dir_all(config_dir)?;
     let game_config = config::setup_game_config(config_path);
 
-    let cb = sweet_turnips::ContextBuilder::new("bitter-turnips", "JC Holder")
+    let cb = sweet_turnips::ContextBuilder::new(GAME_NAME, "JC Holder")
         .add_resource_path(resource_dir)
         .window_mode(sweet_turnips::default_window_mode(GRID_WIDTH, GRID_HEIGHT));
 
