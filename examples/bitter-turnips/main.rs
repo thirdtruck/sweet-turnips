@@ -9,7 +9,7 @@ use config::{GameConfig, WorldConfig};
 use sweet_turnips;
 use sweet_turnips::event;
 use sweet_turnips::event::{KeyCode, KeyMods};
-use sweet_turnips::sprites::Sprites;
+use sweet_turnips::sprites::SpriteContext;
 use sweet_turnips::{Context, GameResult};
 
 use std::convert::From;
@@ -20,20 +20,20 @@ const SPRITE_SIZE: f32 = 8.0 * SPRITE_SCALE;
 
 struct MainState {
     world: World,
-    sprites: Sprites,
+    sprite_context: SpriteContext,
     selected_villager_key: Option<EntityKey>,
     ticks: Ticks,
 }
 
 impl MainState {
     fn new(ctx: &mut Context, game_config: GameConfig) -> GameResult<MainState> {
-        let sprites = Sprites::new(ctx)?;
+        let sprite_context = SpriteContext::new(ctx)?;
 
         let ticks: Ticks = 0;
 
         let s = MainState {
             world: game_config.world.into(),
-            sprites,
+            sprite_context,
             selected_villager_key: None,
             ticks,
         };
@@ -85,9 +85,9 @@ impl event::EventHandler for MainState {
     fn draw(&mut self, ctx: &mut Context) -> GameResult {
         let sprite_grid = render::sprite_grid_from_world(&self.world, self.selected_villager_key);
 
-        self.sprites.render_sprite_grid(sprite_grid);
+        self.sprite_context.render_sprite_grid(sprite_grid);
 
-        self.sprites.draw_all_sprites(ctx)?;
+        self.sprite_context.draw_all_sprites(ctx)?;
 
         Ok(())
     }

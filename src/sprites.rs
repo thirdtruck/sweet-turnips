@@ -140,7 +140,7 @@ enum SpriteType {
     Empty,
 }
 
-pub struct Sprites {
+pub struct SpriteContext {
     curves: SpriteBatch,
     lines: SpriteBatch,
     crosses: SpriteBatch,
@@ -164,9 +164,9 @@ pub struct Sprites {
     altars: SpriteBatch,
 }
 
-impl Sprites {
+impl SpriteContext {
     pub fn new(ctx: &mut Context) -> GameResult<Self> {
-        let sprites: Sprites = Sprites {
+        let sprite_context = Self {
             curves: prep_sprites(ctx, 1)?,
             lines: prep_sprites(ctx, 2)?,
             crosses: prep_sprites(ctx, 3)?,
@@ -190,7 +190,7 @@ impl Sprites {
             altars: prep_sprites(ctx, 21)?,
         };
 
-        Ok(sprites)
+        Ok(sprite_context)
     }
 
     pub fn draw_all_sprites(&mut self, ctx: &mut Context) -> GameResult {
