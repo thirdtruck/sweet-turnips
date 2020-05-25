@@ -67,7 +67,6 @@ impl Sprite {
     }
 }
 
-
 #[derive(Copy, Clone, Debug)]
 struct GridParam {
     draw_param: DrawParam,

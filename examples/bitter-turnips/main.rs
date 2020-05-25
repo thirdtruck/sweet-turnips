@@ -83,8 +83,7 @@ impl event::EventHandler for MainState {
     }
 
     fn draw(&mut self, ctx: &mut Context) -> GameResult {
-        let sprite_grid =
-            render::sprite_grid_from_world(&self.world, self.selected_villager_key);
+        let sprite_grid = render::sprite_grid_from_world(&self.world, self.selected_villager_key);
 
         self.sprites.render_sprite_grid(sprite_grid);
 
