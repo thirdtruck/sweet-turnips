@@ -1,0 +1,17 @@
+---
+world:
+  starting_villagers:
+    - x: 4
+      y: 4
+    - x: 4
+      y: 5
+  starting_farms:
+    - x: 5
+      y: 4
+    - x: 5
+      y: 5
+    - x: 5
+      y: 6
+  starting_cursor:
+    x: 2
+    y: 2
