@@ -17,13 +17,6 @@ const SPRITE_GRID_LENGTH: usize = (GRID_WIDTH * GRID_HEIGHT) as usize;
 const SPRITE_SCALE: f32 = 4.0;
 const SPRITE_SIZE: f32 = 8.0;
 
-const RED: Color = Color {
-    r: 1.0,
-    g: 0.0,
-    b: 0.0,
-    a: 1.0,
-};
-
 #[derive(Copy, Clone, Debug)]
 pub struct Sprite {
     sprite_type: SpriteType,
@@ -58,11 +51,9 @@ impl Sprite {
         Self::new(SpriteType::Turnip)
     }
 
-    /*
     pub fn lizard() -> Self {
-        Self::new(SpriteType::Lizard(RED))
+        Self::new(SpriteType::Lizard)
     }
-    */
 
     pub fn cursor() -> Self {
         Self::new(SpriteType::Cursor)
@@ -127,7 +118,7 @@ pub enum SpriteType {
     Cursor,
     Turnip,
     Squid,
-    Lizard(Color),
+    Lizard,
     Ball,
     Crab,
     Altar,
@@ -254,8 +245,8 @@ impl Sprites {
             SpriteType::Ship => self.ships.add(gp.draw_param),
             SpriteType::BigCircle => self.big_circles.add(gp.draw_param),
             SpriteType::SmallCircle => self.small_circles.add(gp.draw_param),
-            SpriteType::Lizard(color) => self.lizards.add(gp.draw_param.color(color)),
-            SpriteType::Turnip => self.turnips.add(gp.color(RED).draw_param),
+            SpriteType::Lizard => self.lizards.add(gp.draw_param),
+            SpriteType::Turnip => self.turnips.add(gp.draw_param),
             SpriteType::Skull => self.skulls.add(gp.draw_param),
             SpriteType::Cursor => self.cursors.add(gp.draw_param),
             _ => unimplemented!("Unimplemented sprite type: {:?}", sprite_type),

@@ -1,5 +1,12 @@
 use crate::bitter::{EntityKey, World};
-use sweet_turnips::sprites::{Color, Sprite, SpriteGrid, SpriteType};
+use sweet_turnips::sprites::{Color, Sprite, SpriteGrid};
+
+const RED: Color = Color {
+    r: 1.0,
+    g: 0.0,
+    b: 0.0,
+    a: 1.0,
+};
 
 trait BitterSpriteGrid {
     fn border_at(&mut self, x: u8, y: u8);
@@ -11,18 +18,15 @@ trait BitterSpriteGrid {
 
 impl BitterSpriteGrid for SpriteGrid {
     fn border_at(&mut self, x: u8, y: u8) {
-        let blueish = Color { r: 0.4, g: 0.1, b: 0.7, a: 1.0 };
-        let sprite = Sprite::big_circle().colored(blueish);
-
-        self.render_sprite_at(sprite, x, y);
+        self.render_sprite_at(Sprite::big_circle(), x, y);
     }
 
     fn farm_at(&mut self, x: u8, y: u8) {
-        self.render_sprite_at(Sprite::turnip(), x, y);
+        self.render_sprite_at(Sprite::turnip().colored(RED), x, y);
     }
 
     fn villager_at(&mut self, color: Color, x: u8, y: u8) {
-        self.render_sprite_at(Sprite::new(SpriteType::Lizard(color)), x, y);
+        self.render_sprite_at(Sprite::lizard().colored(color), x, y);
     }
 
     fn death_marker_at(&mut self, x: u8, y: u8) {
