@@ -38,6 +38,36 @@ impl Sprite {
         }
     }
 
+    pub fn skull() -> Self {
+        Self::new(SpriteType::Skull)
+    }
+
+    pub fn ship() -> Self {
+        Self::new(SpriteType::Ship)
+    }
+
+    pub fn big_circle() -> Self {
+        Self::new(SpriteType::BigCircle)
+    }
+
+    pub fn small_circle() -> Self {
+        Self::new(SpriteType::SmallCircle)
+    }
+
+    pub fn turnip() -> Self {
+        Self::new(SpriteType::Turnip)
+    }
+
+    /*
+    pub fn lizard() -> Self {
+        Self::new(SpriteType::Lizard(RED))
+    }
+    */
+
+    pub fn cursor() -> Self {
+        Self::new(SpriteType::Cursor)
+    }
+
     pub fn colored(self, color: Color) -> Self {
         Self {
             grid_param: self.grid_param.color(color),
