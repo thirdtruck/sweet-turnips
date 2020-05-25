@@ -263,11 +263,6 @@ impl SpriteGrid {
         }
     }
 
-    pub fn sprite_at(&mut self, sprite_type: SpriteType, x: u8, y: u8) {
-        self.sprite_types[index(x, y)] = sprite_type;
-        self.grid_params[index(x, y)] = None;
-    }
-
     pub fn render_sprite_at(&mut self, sprite: Sprite, x: u8, y: u8) {
         self.sprite_types[index(x, y)] = sprite.sprite_type;
         self.grid_params[index(x, y)] = Some(sprite.grid_param.at(x, y));
