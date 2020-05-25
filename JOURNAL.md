@@ -113,3 +113,5 @@ Phew yet again! Stayed up rather late refactoring that config setup. That did ad
 # 25May2020
 
 Okay, that was enough refactoring for a while. Time for new functionality!
+
+Phew! That was a bit tiring but it's done! Now that I have two different entities with similar behavior (the enemy ship and player bullet), I can refactor out their common code and prepare some default behavior.
