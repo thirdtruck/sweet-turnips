@@ -26,7 +26,7 @@ pub fn default_window_mode(grid_width: u8, grid_height: u8) -> WindowMode {
 pub fn default_game_config_setup<'a, S, D>(config_path: PathBuf, example_game_config: S) -> D
 where
     S: Serialize,
-    for<'de> D: Deserialize<'de> + 'a
+    for<'de> D: Deserialize<'de> + 'a,
 {
     if !config_path.exists() {
         let new_file =
@@ -38,8 +38,7 @@ where
 
     let config_string = fs::read_to_string(config_path).expect("Could not read config file");
 
-    let config: D =
-        serde_yaml::from_str(&config_string).expect("Could not parse config file");
+    let config: D = serde_yaml::from_str(&config_string).expect("Could not parse config file");
 
     config
 }
