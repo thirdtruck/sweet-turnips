@@ -109,3 +109,7 @@ Phew! That was a lot of refactoring but I like how handling feels now. More ergo
 Phew again! Did more refactoring and I feel all the better for it. Good move! Tickles my craftsperson itch.
 
 Phew yet again! Stayed up rather late refactoring that config setup. That did advance my understanding of templating in Rust!
+
+# 25May2020
+
+Okay, that was enough refactoring for a while. Time for new functionality!

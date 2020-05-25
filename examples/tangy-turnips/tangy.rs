@@ -8,7 +8,7 @@ use rand::{
 
 use slotmap::{new_key_type, SecondaryMap, SlotMap};
 
-use entities::{EnemyShip, GameEntity, PlayerShip};
+use entities::{EnemyShip, GameEntity, PlayerBullet, PlayerShip};
 use events::{WorldEvent, WE};
 
 pub const GRID_WIDTH: u8 = 8;
@@ -18,6 +18,8 @@ new_key_type! {
     pub struct EntityKey;
 
     pub struct PlayerShipKey;
+
+    pub struct PlayerBulletKey;
 
     pub struct EnemyShipKey;
 }
@@ -52,6 +54,7 @@ pub struct World {
     pub coords: SecondaryMap<EntityKey, Coords>,
     pub ticks: Ticks,
     pub player_ships: SlotMap<PlayerShipKey, PlayerShip>,
+    pub player_bullets: SlotMap<PlayerBulletKey, PlayerBullet>,
     pub enemy_ships: SlotMap<EnemyShipKey, EnemyShip>,
 }
 
@@ -63,6 +66,7 @@ impl World {
             events: vec![],
             ticks: 0,
             player_ships: SlotMap::with_key(),
+            player_bullets: SlotMap::with_key(),
             enemy_ships: SlotMap::with_key(),
         }
     }
@@ -269,6 +273,39 @@ impl World {
         self.clone().with_event(WE::PlayerShipMoved(dir))
     }
 
+    pub fn with_player_bullets_fired(&self) -> Self {
+        let mut world = self.clone();
+
+        for ship in self.player_ships.values() {
+            let coords = world.coords[ship.key];
+            world = world.with_event(WE::PlayerBulletFired(coords));
+        }
+
+        world
+    }
+
+    fn with_player_bullet_fired_from(&self, coords: Coords) -> Self {
+        let mut world = self.clone();
+
+        let (x, y) = coords;
+
+        if y < 2 {
+            // Don't bother spawning a bullet if it would just disappear off the top of the screen
+            return world
+        }
+
+        let y = y - 1;
+
+        let key = world.entities.insert(GameEntity);
+
+        let bullet = PlayerBullet { key };
+
+        world.player_bullets.insert(bullet);
+        world.coords.insert(key, (x, y));
+
+        world
+    }
+
     fn with_latest_event_processed(self) -> Self {
         if self.events.len() == 0 {
             self
@@ -296,6 +333,7 @@ impl World {
             WE::PlayerShipDied(coords) => self.with_player_ship_death_at(coords),
             WE::EnemyShipMoved(key, dir) => self.with_enemy_ship_moved(key, dir),
             WE::PlayerShipMoved(dir) => self.with_player_ship_moved(dir),
+            WE::PlayerBulletFired(coords) => self.with_player_bullet_fired_from(coords),
         }
     }
 }

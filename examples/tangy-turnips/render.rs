@@ -7,6 +7,7 @@ const MAX_X: u8 = GRID_WIDTH - 1;
 // (i.e. game-specific) language onto SpriteGrid's commands
 trait TangySpriteGrid {
     fn player_ship_at(&mut self, x: u8, y: u8);
+    fn player_bullet_at(&mut self, x: u8, y: u8);
     fn enemy_ship_at(&mut self, x: u8, y: u8);
     fn big_gutter_at(&mut self, x: u8, y: u8);
     fn small_gutter_at(&mut self, x: u8, y: u8);
@@ -15,6 +16,10 @@ trait TangySpriteGrid {
 impl TangySpriteGrid for SpriteGrid {
     fn player_ship_at(&mut self, x: u8, y: u8) {
         self.render_sprite_at(Sprite::ship(), x, y);
+    }
+
+    fn player_bullet_at(&mut self, x: u8, y: u8) {
+        self.render_sprite_at(Sprite::ball(), x, y);
     }
 
     fn enemy_ship_at(&mut self, x: u8, y: u8) {
@@ -43,6 +48,12 @@ pub fn sprite_grid_from_world(world: &World) -> SpriteGrid {
             sprite_grid.big_gutter_at(0, y);
             sprite_grid.big_gutter_at(MAX_X, y);
         }
+    }
+
+    for bullet in world.player_bullets.values() {
+        let coords = world.coords[bullet.key];
+
+        sprite_grid.player_bullet_at(coords.0, coords.1);
     }
 
     for ship in world.player_ships.values() {

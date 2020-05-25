@@ -9,6 +9,11 @@ pub struct PlayerShip {
 }
 
 #[derive(Copy, Clone, Debug)]
+pub struct PlayerBullet {
+    pub key: EntityKey,
+}
+
+#[derive(Copy, Clone, Debug)]
 pub struct EnemyShip {
     pub key: EntityKey,
 }

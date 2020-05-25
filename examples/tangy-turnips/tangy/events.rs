@@ -4,6 +4,7 @@ use crate::tangy::{Coords, Direction, EnemyShipKey};
 pub enum WorldEvent {
     PlayerShipMoved(Direction),
     PlayerShipDied(Coords),
+    PlayerBulletFired(Coords),
     EnemyShipsMoved,
     EnemyShipMoved(EnemyShipKey, Direction),
     EnemyShipRemoved(EnemyShipKey),

@@ -51,6 +51,10 @@ impl MainState {
     fn move_player_ship(&mut self, direction: Direction) {
         self.world = self.world.with_player_ship_move_requested(direction);
     }
+
+    fn fire_bullets(&mut self) {
+        self.world = self.world.with_player_bullets_fired();
+    }
 }
 
 impl event::EventHandler for MainState {
@@ -114,6 +118,7 @@ impl event::EventHandler for MainState {
             KeyCode::A => self.move_player_ship(Direction::Left),
             KeyCode::S => self.move_player_ship(Direction::Down),
             KeyCode::D => self.move_player_ship(Direction::Right),
+            KeyCode::Space => self.fire_bullets(),
             _ => (),
         }
     }

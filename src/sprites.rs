@@ -75,6 +75,10 @@ impl Sprite {
         Self::new(SpriteType::Cursor)
     }
 
+    pub fn ball() -> Self {
+        Self::new(SpriteType::Ball)
+    }
+
     pub fn colored(self, color: Color) -> Self {
         Self {
             grid_param: self.grid_param.color(color),
@@ -264,6 +268,7 @@ impl SpriteContext {
             SpriteType::Turnip => self.turnips.add(gp.draw_param),
             SpriteType::Skull => self.skulls.add(gp.draw_param),
             SpriteType::Cursor => self.cursors.add(gp.draw_param),
+            SpriteType::Ball => self.balls.add(gp.draw_param),
             _ => unimplemented!("Unimplemented sprite type: {:?}", sprite_type),
         };
     }
