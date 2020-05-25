@@ -10,7 +10,7 @@ use sweet_turnips;
 use sweet_turnips::event;
 use sweet_turnips::event::{KeyCode, KeyMods};
 use sweet_turnips::midi::{connect_to_midi, MidiReceiver};
-use sweet_turnips::sprites::{SPRITE_SCALE, SPRITE_SIZE, SpriteContext};
+use sweet_turnips::sprites::SpriteContext;
 use sweet_turnips::{Context, GameResult};
 
 use std::convert::From;
@@ -159,10 +159,7 @@ pub fn main() -> GameResult {
 
     let cb = sweet_turnips::ContextBuilder::new(GAME_NAME, "JC Holder")
         .add_resource_path(resource_dir)
-        .window_mode(sweet_turnips::conf::WindowMode::default().dimensions(
-            GRID_WIDTH as f32 * SPRITE_SIZE * SPRITE_SCALE,
-            GRID_HEIGHT as f32 * SPRITE_SIZE * SPRITE_SCALE,
-        ));
+        .window_mode(sweet_turnips::default_window_mode(GRID_WIDTH, GRID_HEIGHT));
 
     let (ctx, event_loop) = &mut cb.build()?;
 
