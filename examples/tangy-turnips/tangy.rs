@@ -88,6 +88,32 @@ impl World {
     fn with_any_collisions(&self) -> Self {
         let mut world = self.clone();
 
+        let mut bullet_keys_to_remove: Vec<PlayerBulletKey> = vec![];
+        let mut enemy_ship_keys_to_remove: Vec<EnemyShipKey> = vec![];
+
+        for bullet_key in world.player_bullets.keys() {
+            let bullet = world.player_bullets[bullet_key];
+            let bullet_coords = world.coords[bullet.key];
+
+            for enemy_key in world.enemy_ships.keys() {
+                let enemy = world.enemy_ships[enemy_key];
+                let enemy_coords = world.coords[enemy.key];
+
+                if bullet_coords == enemy_coords {
+                    bullet_keys_to_remove.push(bullet_key);
+                    enemy_ship_keys_to_remove.push(enemy_key);
+                }
+            }
+        }
+
+        for key in bullet_keys_to_remove.iter() {
+            world = world.with_event(WE::PlayerBulletRemoved(*key));
+        }
+
+        for key in enemy_ship_keys_to_remove.iter() {
+            world = world.with_event(WE::EnemyShipRemoved(*key));
+        }
+
         let all_player_ship_coords: Vec<Coords> = world
             .player_ships
             .values()
@@ -145,6 +171,19 @@ impl World {
 
         world.enemy_ships.insert(ship);
         world.coords.insert(key, coords);
+
+        world
+    }
+
+    pub fn with_player_bullet_removed(self, bullet_key: PlayerBulletKey) -> Self {
+        let mut world = self.clone();
+
+        let bullet = world.player_bullets[bullet_key];
+
+        world.entities.remove(bullet.key);
+        world.coords.remove(bullet.key);
+
+        world.player_bullets.remove(bullet_key);
 
         world
     }
@@ -334,6 +373,7 @@ impl World {
             WE::EnemyShipMoved(key, dir) => self.with_enemy_ship_moved(key, dir),
             WE::PlayerShipMoved(dir) => self.with_player_ship_moved(dir),
             WE::PlayerBulletFired(coords) => self.with_player_bullet_fired_from(coords),
+            WE::PlayerBulletRemoved(key) => self.with_player_bullet_removed(key),
         }
     }
 }
