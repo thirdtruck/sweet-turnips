@@ -99,3 +99,5 @@ Ran into a curious error while adding the "enemies disappear off the bottom of t
 Time to dip my toe into Rust macros! Been meaning to try that to make sprite helper method management less painful.
 
 Rethinking this macro idea. I can probably get more mileage out of using more general methods.
+
+Okay, refactoring towards general methods seems to have been the simpler approach. No need to use macros unless I actually need them. Might come up later if I end up craving for a sprite-defining DSL.
