@@ -14,8 +14,8 @@ const GRID_HEIGHT: u8 = 8;
 
 const SPRITE_GRID_LENGTH: usize = (GRID_WIDTH * GRID_HEIGHT) as usize;
 
-const SPRITE_SCALE: f32 = 4.0;
-const SPRITE_SIZE: f32 = 8.0;
+pub const SPRITE_SCALE: f32 = 4.0;
+pub const SPRITE_SIZE: f32 = 8.0;
 
 /// A sprite that can be rendered to the sprite grid
 ///
