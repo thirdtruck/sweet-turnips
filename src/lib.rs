@@ -38,7 +38,8 @@ impl AppConfig {
     }
 
     pub fn game_name<S>(self, game_name: S) -> Self
-        where S: AsRef<str>
+    where
+        S: AsRef<str>,
     {
         Self {
             game_name: game_name.as_ref().to_string(),
@@ -47,7 +48,8 @@ impl AppConfig {
     }
 
     pub fn author_name<S>(self, author_name: S) -> Self
-        where S: AsRef<str>
+    where
+        S: AsRef<str>,
     {
         Self {
             author_name: author_name.as_ref().to_string(),
@@ -72,7 +74,6 @@ pub fn build_context_and_event_loop(app_config: &AppConfig) -> GameResult<(Conte
 
     Ok(cb.build()?)
 }
-
 
 pub fn prep_config_path(app_config: &AppConfig) -> GameResult<PathBuf> {
     let config_dir = resource_dir().join(&app_config.game_name);

@@ -7,10 +7,10 @@ use bitter::{Coords, Direction, EntityKey, Ticks, World, GRID_HEIGHT, GRID_WIDTH
 use config::{GameConfig, WorldConfig};
 
 use sweet_turnips;
-use sweet_turnips::AppConfig;
 use sweet_turnips::event;
 use sweet_turnips::event::{KeyCode, KeyMods};
 use sweet_turnips::sprites::SpriteContext;
+use sweet_turnips::AppConfig;
 use sweet_turnips::{Context, GameResult};
 
 use std::convert::From;
