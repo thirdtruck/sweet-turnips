@@ -43,7 +43,7 @@ impl MainState {
             sprite_context,
             ticks,
             rx,
-            tick_speed: 40,
+            tick_speed: 20,
         };
         Ok(s)
     }

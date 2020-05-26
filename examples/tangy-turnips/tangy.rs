@@ -79,13 +79,22 @@ impl World {
             ..world
         };
 
-        world
+        let world = world
             .with_event(WE::PlayerBulletsMoved)
             .with_any_collisions()
-            .with_events_processed()
-            .with_event(WE::EnemyShipsMoved)
-            .with_any_collisions()
-            .with_events_processed()
+            .with_events_processed();
+
+        let world = if world.ticks % 2 == 0 {
+            // On every other tick
+            world
+                .with_event(WE::EnemyShipsMoved)
+                .with_any_collisions()
+                .with_events_processed()
+        } else {
+            world
+        };
+
+        world
     }
 
     fn with_any_collisions(&self) -> Self {
